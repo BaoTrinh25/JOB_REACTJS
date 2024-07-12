@@ -6,9 +6,9 @@ const Footer = () => {
       <div className="container mx-auto text-center text-white">
         <div className="mb-4">
           <ul className="flex justify-center space-x-6">
-            <li><a href="#" className="hover:text-gray-300">Privacy Policy</a></li>
-            <li><a href="#" className="hover:text-gray-300">Terms of Service</a></li>
-            <li><a href="#" className="hover:text-gray-300">Contact Us</a></li>
+            <li className="hover:text-gray-300">Privacy Policy</li>
+            <li className="hover:text-gray-300">Terms of Service</li>
+            <li className="hover:text-gray-300">Contact Us</li>
           </ul>
         </div>
         <div>

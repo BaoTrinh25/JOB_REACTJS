@@ -41,6 +41,5 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.4"
-  },
-  "proxy": "https://baotrinh.pythonanywhere.com"
+  }
 }
