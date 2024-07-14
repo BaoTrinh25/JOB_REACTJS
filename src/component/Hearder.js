@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/job-seeker.png'
-import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser } from 'react-icons/fa';
+import { MyUserContext } from '../configs/Context';
 
 const Header = () => {
+  const user = useContext(MyUserContext);
   return (
     <header className="bg-green-700 flex fixed w-full top-0 z-50">
-      <div className="w-50%] flex items-center">  
-      <Link to='/'>
-        <div className="flex items-center ml-7">
+      <div className="w-50%] flex items-center">
+        <Link to='/'>
+          <div className="flex items-center ml-7">
             <img src={logo} alt="Logo" className="h-12 w-12 mr-5" />
             <h1 className="text-white text-3xl font-bold font-serif">DTT JOB</h1>
-        </div>
-      </Link>
+          </div>
+        </Link>
       </div>
       <div className="flex items-center ml-auto">
         <nav className="p-4 flex justify-between items-center mr-5">
@@ -38,19 +40,31 @@ const Header = () => {
             <li className="text-center group">
               <Link to="/contact" className="text-white group-hover:text-yellow-400">
                 <FaEnvelope className="text-white mx-auto group-hover:text-yellow-400" /> Contact
-              </Link> 
+              </Link>
             </li>
           </ul>
         </nav>
         <div className="h-10 w-px bg-gray-300"></div>
         <div>
-            <Link to="/login" className="text-white hover:text-yellow-400 mx-3">
-              <FaSignInAlt className="inline mr-1" /> Sign in
-            </Link>
-            <Link to="/register" className="text-white hover:text-yellow-400 mx-3 mr-7">
-              <FaUserPlus className="inline mr-1" /> Register
-            </Link>
-          </div>
+
+          {user !== null ? (
+            <>
+              <Link to="/profile" className="text-white hover:text-yellow-400 mx-5">
+                <FaUser className="inline mr-1" /> Profile
+              </Link>
+
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="text-white hover:text-yellow-400 mx-3">
+                <FaSignInAlt className="inline mr-1" /> Sign in
+              </Link>
+              <Link to="/register" className="text-white hover:text-yellow-400 mx-3 mr-7">
+                <FaUserPlus className="inline mr-1" /> Register
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

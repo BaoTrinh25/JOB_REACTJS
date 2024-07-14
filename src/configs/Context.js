@@ -1,7 +1,10 @@
 import React, { createContext, useState, useContext } from 'react';
 
+export const MyUserContext = createContext();
+export const MyDispatchContext = createContext();
+
 // Tạo Context
-const AuthContext = createContext();
+export const Context = createContext();
 
 // Tạo Provider component
 export const AuthProvider = ({ children }) => {

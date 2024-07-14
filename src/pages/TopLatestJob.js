@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllJob } from '../configs/APIs';
 
-const LatestJob = () => {
+const TopLatestJob = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -50,6 +50,7 @@ const LatestJob = () => {
       <img src={job.image} alt={job.title} className="w-14 h-14 rounded-sm border-2 border-cyan-900 mb-4" />
       <div className="flex-1 items-center m-auto">
         <h2 className="text-lg font-bold">{job.title}</h2>
+        <p className="text-gray-600">Ngày đăng: {job.created_date}</p>
         <p className="text-red-800">Deadline: {job.deadline}</p>
         <p>Kinh nghiệm: {job.experience}</p>
         <p>Khu vực: {job.area.name}</p>
@@ -72,4 +73,4 @@ const LatestJob = () => {
   );
 };
 
-export default LatestJob;
+export default TopLatestJob;

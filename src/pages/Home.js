@@ -3,14 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
 import APIs, { endpoints } from '../configs/APIs';
 import moment from "moment";
-import "moment/locale/vi";
 import { FaTag, FaHeart } from 'react-icons/fa';
-import JobPopular from "./JobPopular";
-import LatestJob from "./LatestJob";
+import TopLatestJob from "./TopLatestJob";
+import TopPopular from "./TopPopular";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [companyTypes, setCompanyTypes] = useState([]);
+  const [employmentTypes, setEmploymentTypes] = useState([]);
   const [post, setPost] = useState([]);
   const [typeId, setTypeId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,35 +19,38 @@ const Home = () => {
 
   const loadTypes = async () => {
     try {
-      let res = await APIs.get(endpoints['companytypes']);
-      setCompanyTypes(res.data);
+      let res = await APIs.get(endpoints['employmenttypes']);
+      setEmploymentTypes(res.data);
     } catch (ex) {
       console.error(ex);
     }
   };
 
-  const loadPost = async () => {
-    if (page > 0) {
-      let url = `${endpoints["jobs"]}?title=${title}&type_id=${typeId}&page=${page}`;
-      try {
-        setLoading(true);
-        let res = await APIs.get(url);
-        if (page === 1) setPost(res.data.results);
-        else if (page > 1)
-          setPost((current) => {
-            return [...current, ...res.data.results];
-          });
-
-        if (res.data.next === null) {
-          setPage(0);
-        }
-      } catch (ex) {
-        console.error(ex);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
+  // const loadPost = async () => {
+  //   if (page > 0) {
+  //     let url = `${endpoints['jobs']}?title=${title}&type_id=${typeId}&page=${page}`;
+  //     try {
+  //       setLoading(true);
+  //       let res = await APIs.get(url);
+  //       if (page === 1) {
+  //         setPost(res.data.results);
+  //       }
+  //       else if (page > 1) {
+  //         setPost((current) => {
+  //           return [...current, ...res.data.results];
+  //         });
+  //       }
+  //       if (res.data.next === null) {
+  //         setPage(0);
+  //       }
+  //     } catch (ex) {
+  //       console.error(ex);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  //   console.log(typeId);
+  // };
 
   const search = (value, callback) => {
     setPage(1);
@@ -59,9 +61,9 @@ const Home = () => {
     loadTypes();
   }, []);
 
-  useEffect(() => {
-    loadPost();
-  }, [title, typeId, page]);
+  // useEffect(() => {
+  //   loadPost();
+  // }, [title, typeId, page]);
 
   return (
     <div>
@@ -92,7 +94,7 @@ const Home = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <div className="flex overflow-x-auto py-2 justify-center">
             <button
               onClick={() => search("", setTypeId)}
@@ -101,7 +103,8 @@ const Home = () => {
               <FaHeart className="mr-2" />
               All
             </button>
-            {companyTypes?.map((type) => (
+
+            {employmentTypes?.map((type) => (
               <button
                 key={type.id}
                 onClick={() => search(type.id, setTypeId)}
@@ -112,8 +115,8 @@ const Home = () => {
               </button>
             ))}
           </div>
-        </div>
-
+        </div> */}
+{/* 
         <div className="mb-6">
           <input
             type="text"
@@ -122,7 +125,7 @@ const Home = () => {
             onChange={(e) => search(e.target.value, setTitle)}
             className="w-full h-13 px-4 py-2 m-3 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-600"
           />
-        </div>
+        </div> */}
 
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
@@ -148,18 +151,18 @@ const Home = () => {
               </div>
             ))}
           </div>
-          <LatestJob />
+          <TopLatestJob />
          
         </div>
 
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-orange-700">Công việc phổ biến</h2>
-            <button onClick={() => navigate("/jobs")} className="bg-lime-500 font-semibold">
+            <button onClick={() => navigate("/jobs_popular")} className="bg-lime-500 font-semibold">
               Xem tất cả
             </button>
           </div>
-          <LatestJob />
+          <TopPopular />
         </div>
        
        

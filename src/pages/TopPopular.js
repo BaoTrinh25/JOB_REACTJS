@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchPopularJob } from '../configs/APIs';
 
-const JobPopular = () => {
+const TopPopular = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -16,8 +16,8 @@ const JobPopular = () => {
     while (hasMorePages) {
       try {
         const data = await fetchPopularJob(currentPage);
-        if (data && Array.isArray(data.results)) {
-          allJobs = [...allJobs, ...data.results];
+        if (data && Array.isArray(data)) {
+          allJobs = [...allJobs, ...data];
           currentPage++;
           if (data.next === null) {
             hasMorePages = false;
@@ -44,15 +44,15 @@ const JobPopular = () => {
   const renderJobItem = (job) => (
     <div
       key={job.id}
-      className="flex items-center mb-4 border-2 border-green-800 rounded-lg p-4 bg-indigo-50 cursor-pointer"
+      className="flex flex-col items-center mb-4 border-2 border-lime-600 rounded-lg p-4 bg-yellow-50 mx-5 cursor-pointer w-1/2"
       onClick={() => navigate(`/job_detail/${job.id}`)}
     >
-      <img src={job.image} alt={job.title} className="w-12 h-12 rounded-full mr-4" />
-      <div className="flex-1">
+      <img src={job.image} alt={job.title} className="w-14 h-14 rounded-sm border-2 border-cyan-900 mb-4" />
+      <div className="flex-1 items-center m-auto">
         <h2 className="text-lg font-bold">{job.title}</h2>
         <p className="text-red-800">Deadline: {job.deadline}</p>
-        <p>{job.experience}</p>
-        <p>{job.area.name}</p>
+        <p>Kinh nghiệm: {job.experience}</p>
+        <p>Khu vực: {job.area.name}</p>
       </div>
     </div>
   );
@@ -60,16 +60,16 @@ const JobPopular = () => {
   if (loading && jobs.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-500"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 flex">
       {jobs.map(renderJobItem)}
     </div>
   );
 };
 
-export default JobPopular;
+export default TopPopular;
