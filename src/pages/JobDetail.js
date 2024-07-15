@@ -18,7 +18,7 @@ const JobDetail = () => {
             try {
                 const response = await fetchJobDetail(jobId);
                 setJob(response.data);
-
+                console.log(response.data);
                 const favoriteJobs = JSON.parse(localStorage.getItem('favoriteJobs')) || [];
                 const isFav = favoriteJobs.some(item => item.id === jobId);
                 setIsFavorite(isFav);

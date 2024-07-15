@@ -9,10 +9,11 @@ export const endpoints = {
     'job_detail': (id) => `/jobs/${id}/`,  
     'users' : `/users/`,
     'employmenttypes': `/employmenttypes/`,
-    'popular_jobs': (pageNum) => `/jobs/popular/?page=${pageNum}`,
-    'register': '/users/',
-    'login': '/o/token/', 
-    'current-user': '/users/current-user/', 
+    'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
+    'register': `/users/`,
+    'login': `/o/token/`, 
+    'current-user': `/users/current-user/`, 
+    'company': (id) => `/companies/${id}/`
 };
 
 const APIs = axios.create({
@@ -36,7 +37,7 @@ export const fetchAllJob = async (pageNum = 1) => {
 //ds công việc phổ biến giảm dần theo số lượt apply
 export const fetchPopularJob = async (pageNum = 1) => {
     try {
-        const response = await APIs.get(endpoints['popular_jobs'](pageNum));
+        const response = await APIs.get(endpoints['jobs_popular'](pageNum));
         return response.data;
     } catch (error) {
         console.error('Error fetching popular job:', error);

@@ -15,7 +15,8 @@ import AllJobLatest from './pages/AllJobLatest';
 import AllJobPopular from './pages/AllJobPopular';
 import About from './pages/About';
 import JobDetail from './pages/JobDetail';
-import Profile from './pages/Profile';
+import ProfileEmployer from './pages/Company/ProfileEmployer';
+import EditInfoHiring from './pages/Company/Edit_InfoHiring';
 
 
 function MyTab() {
@@ -32,10 +33,11 @@ function MyTab() {
               <Route path="/register-employer" element={<RegisterEmployer />} />
               <Route path="/" element={<Home />} />
               <Route path="/jobs" element={<AllJobLatest />} />
-              <Route path="/jobs_popular" element={<AllJobPopular />} />
+              <Route path="/jobs-popular" element={<AllJobPopular />} />
               <Route path="/about" element={<About />} />
-              <Route path="/job_detail/:jobId" element={<JobDetail />} />
-              <Route path='/profile' element={<Profile />}/>
+              <Route path="/job-detail/:jobId" element={<JobDetail />} />
+              <Route path='/employer-profile' element={<ProfileEmployer />}/>
+              <Route path='/edit-infoHiring' element={<EditInfoHiring />}/>
 
               <Route path="*" component={() => <div>404 Not Found</div>} />
             </Routes>

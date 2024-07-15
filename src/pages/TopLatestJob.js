@@ -45,7 +45,7 @@ const TopLatestJob = () => {
     <div
       key={job.id}
       className="flex flex-col items-center mb-4 border-2 border-lime-600 rounded-lg p-4 bg-yellow-50 mx-5 cursor-pointer w-1/2"
-      onClick={() => navigate(`/job_detail/${job.id}`)}
+      onClick={() => navigate(`/job-detail/${job.id}`)}
     >
       <img src={job.image} alt={job.title} className="w-14 h-14 rounded-sm border-2 border-cyan-900 mb-4" />
       <div className="flex-1 items-center m-auto">
