@@ -12,8 +12,9 @@ export const endpoints = {
     'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
     'register': `/users/`,
     'login': `/o/token/`, 
-    'current-user': `/users/current-user/`, 
-    'company': (id) => `/companies/${id}/`
+    'current_user': `/users/current-user/`, 
+    'company': (id) => `/companies/${id}/`,
+    'patch_user': `/users/patch-current-user/`  
 };
 
 const APIs = axios.create({

@@ -3,10 +3,15 @@ import { MyUserContext } from '../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import AvatarEditor from 'react-avatar-editor';
 import { AiOutlineDelete } from 'react-icons/ai';
+import APIs, { authApi, endpoints } from '../../configs/APIs';
+import { getToken } from '../../utils/storage';
 
 const EditInfoHiring = () => {
     const user = useContext(MyUserContext);
     const navigate = useNavigate();
+    const [err, setErr] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const [formData, setFormData] = useState({
         first_name: user.first_name || '',
         last_name: user.last_name || '',
@@ -27,8 +32,47 @@ const EditInfoHiring = () => {
         });
     };
 
-    const handleSave = () => {
-        console.log("Saved Data: ", formData);
+    const handleSave = async () => {
+        let form = new FormData();
+        Object.keys(formData).forEach((key) => {
+            form.append(key, formData[key]);
+        });
+
+        if (avatarImage && editorRef.current) {
+            const canvas = editorRef.current.getImage();
+            canvas.toBlob((blob) => {
+                form.append('avatar', blob);
+                updateUser(form);
+            });
+        } else {
+            updateUser(form);
+        }
+    };
+
+    const updateUser = async (form) => {
+        try {
+            const token = getToken();
+            const res = await authApi(token).patch(endpoints["patch_user"],
+                form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (res.status === 200) {
+                alert('Cập nhật thông tin thành công!');
+                // // Cập nhật thông tin người dùng trong ngữ cảnh ứng dụng
+                // dispatch({
+                //     type: 'update_employer',
+                //     payload: res.data 
+                // });
+                navigate('employer-profile');
+            } else {
+                console.error('Lỗi khi cập nhật thông tin');
+            }
+        } catch (ex) {
+            console.error(ex);
+        }
     };
 
     const handleAvatarChange = (e) => {
@@ -38,15 +82,12 @@ const EditInfoHiring = () => {
         }
     };
 
-    const handleAvatarUpload = () => {
-        if (editorRef.current) {
-            const canvas = editorRef.current.getImage();
-            console.log(canvas.toDataURL());
-        }
-    };
-
     const handleDeleteAvatar = () => {
         setAvatarImage(null);
+        setFormData({
+            ...formData,
+            avatar: '',
+        });
     };
 
     return (
@@ -148,7 +189,7 @@ const EditInfoHiring = () => {
                     <div className="flex justify-end">
                         <button
                             type="button"
-                            onClick={handleSave}
+                            onClick={updateUser}
                             className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                         >
                             Save Changes
@@ -161,3 +202,4 @@ const EditInfoHiring = () => {
 };
 
 export default EditInfoHiring;
+

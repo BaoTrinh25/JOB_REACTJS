@@ -68,7 +68,7 @@ const Login = () => {
 
       localStorage.setItem("token", res.data.access_token);
       setTimeout(async () => {
-        let user = await authApi(res.data.access_token).get(endpoints["current-user"]);
+        let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
         console.info(user.data);
         dispatch({ "type": "login", 
                   "payload": user.data 
