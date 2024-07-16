@@ -1,43 +1,23 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { MyUserContext } from '../../configs/Context';
-import { endpoints, authApi } from '../../configs/APIs';
-import { getToken } from '../../utils/storage';
 import { useNavigate } from 'react-router-dom';
-import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoLink, IoInformationCircle } from 'react-icons/io5';
-import { FaUpload, FaHeart, FaSearch, FaBusinessTime, FaTrash, FaEdit, FaSlash, FaMobile, FaMobileAlt } from 'react-icons/fa';
-import bannerImage from '../../assets/banner_hiring.jpg'
+import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInformationCircle } from 'react-icons/io5';
+import { FaUpload, FaHeart, FaSearch, FaBusinessTime, FaTrash, FaEdit, FaSlash, FaMobileAlt } from 'react-icons/fa';
+import bannerImage from '../../assets/banner_hiring.jpg';
+import defaultAvatar from '../../assets/default_avatar.png';
 
 const ProfileEmployer = () => {
     const navigate = useNavigate();
     const user = useContext(MyUserContext);
-    console.log("Avatar:", user.avatar);
 
-    const [profileImage, setProfileImage] = useState(user.avatar);
-    const [selectedImage, setSelectedImage] = useState(null);
-
-    const [companyName, setCompanyName] = useState(user.company?.companyName || '');
-    const [editingCompanyName, setEditingCompanyName] = useState(false);
-
-    const [position, setPosition] = useState(user.company?.position || '');
-    const [editingPosition, setEditingPosition] = useState(false);
-
-    const [address, setAddress] = useState(user.company?.address || '');
-    const [editingAddress, setEditingAddress] = useState(false);
-
-    const [companyType, setCompanyType] = useState(user.company?.company_type || "");
-    const [editingCompanyType, setEditingCompanyType] = useState(false);
-
-    const [information, setInformation] = useState(user.company.information || '');
-    const [editingInformation, setEditingInformation] = useState(false);
-
-    const companyTypeMap = {
-        0: 'Công ty TNHH',
-        1: 'Công ty Cổ phần',
-        2: 'Công ty trách nhiệm hữu hạn một thành viên',
-        3: 'Công ty tư nhân',
-        4: 'Công ty liên doanh',
-        5: 'Công ty tập đoàn'
-    };
+    //khởi tạo giá trị avatar mặc định
+    const [profileImage, setProfileImage] = useState(defaultAvatar);
+    //nếu avatar kh null thì sẽ lấy giá trị để cập nhật.
+    useEffect(() => {
+        if (user && user.avatar) {
+            setProfileImage(user.avatar);
+        }
+    }, [user]);
 
     const dataList = [
         { id: 1, title: 'Cập nhật nhà tuyển dụng', icon: <FaUpload /> },
@@ -48,7 +28,7 @@ const ProfileEmployer = () => {
 
     const dataAccount = [
         { id: 1, title: 'Cập nhật thông tin tài khoản', icon: <FaUpload /> },
-        { id: 1, title: 'Xóa tài khoản', icon: <FaTrash /> },
+        { id: 2, title: 'Xóa tài khoản', icon: <FaTrash /> },
         { id: 3, title: 'Xóa thông tin NTD', icon: <FaSlash /> },
 
     ];
@@ -87,33 +67,17 @@ const ProfileEmployer = () => {
     }
 
     const handleChooseImage = async () => {
-        // Implement image picker logic for web here
-        // For example, use a file input and set the selected file to state
-    };
-
-    const handleUpdateAvatar = async (selectedImage) => {
-
-    };
-
-    const updateCompanyName = async () => {
-
-    };
-
-    const updatePosition = async () => {
-
-    };
-
-    const updateAddress = async () => {
-
-    };
-
-    const updateCompanyType = async () => {
-
-    };
-
-
-    const updateInformation = async () => {
-
+        // Implement logic to choose image here
+        // For example, use a file input and update selected image to state
+        // try {
+        //     const selectedImage = await openImagePicker(); 
+        //     // Cập nhật trạng thái profileImage với hình ảnh đã chọn
+        //     if (selectedImage) {
+        //         setProfileImage(selectedImage);
+        //     }
+        // } catch (error) {
+        //     console.error('Error choosing image:', error);
+        // }
     };
 
     return (
@@ -127,7 +91,7 @@ const ProfileEmployer = () => {
                     />
                     <div className="absolute bottom-0 left-20 transform -translate-x-1/3 translate-y-1/3">
                         <img
-                            src={profileImage}
+                            src={profileImage} //avatar
                             alt="Profile"
                             className="rounded-full w-40 h-40 object-cover border-4 border-orange-200"
                         />
@@ -139,14 +103,14 @@ const ProfileEmployer = () => {
                         </button>
                     </div>
                     <div>
-                        
+
                     </div>
                     <button
                         className="absolute -bottom-12 right-0 bg-gray-200 text-gray-600 hover:bg-orange-200 rounded-full p-2"
                         onClick={() => navigate('/edit-infoHiring')}
                     >
                         <div className='flex'>
-                            <FaEdit className="w-5 h-5" /> 
+                            <FaEdit className="w-5 h-5" />
                             <p>Edit Profile</p>
                         </div>
                     </button>
@@ -159,23 +123,23 @@ const ProfileEmployer = () => {
                     </div>
                     <div className="flex items-center mb-3 px-10">
                         <IoBriefcase className="mr-2 w-6 h-6" />
-                        <span className="font-sans">Vị trí: {user.company.position}</span>
+                        <span className="font-sans">Vị trí: {user?.company?.position}</span>
                     </div>
                     <div className="flex items-center mb-3 px-10">
                         <IoBusiness className="mr-2 w-6 h-6" />
-                        <span className="font-sans">Công ty: {user.company.companyName}</span>
+                        <span className="font-sans">Công ty: {user?.company?.companyName}</span>
                     </div>
                     <div className="flex items-center mb-3 px-10">
                         <IoLocation className="mr-2 w-6 h-6" />
-                        <span className="font-sans">Địa chỉ: {user.company.address}</span>
+                        <span className="font-sans">Địa chỉ: {user?.company?.address}</span>
                     </div>
                     <div className="flex items-center mb-3 px-10">
                         <IoContract className="mr-2 w-6 h-6" />
-                        <span className="font-sans">Loại hình công ty: {user.company.company_type_display}</span>
+                        <span className="font-sans">Loại hình công ty: {user?.company?.company_type_display}</span>
                     </div>
                     <div className="flex items-center mb-3 px-10">
                         <IoInformationCircle className="mr-2 w-6 h-6" />
-                        <span className="font-sans">Thông tin: {user.company.information}</span>
+                        <span className="font-sans">Thông tin: {user?.company?.information}</span>
                     </div>
                     <div className="flex items-center mb-3 px-10">
                         <FaBusinessTime className="mr-2 w-6 h-6" />
@@ -185,16 +149,6 @@ const ProfileEmployer = () => {
                         <FaMobileAlt className="mr-2 w-6 h-6" />
                         <span className="font-sans">Liên hệ: {user?.mobile}</span>
                     </div>
-                </div>
-
-
-
-                <div className="mb-4">
-                    
-                </div>
-
-                <div className="mb-4">
-
                 </div>
             </div>
             <div className="mt-8 w-full max-w-4xl">

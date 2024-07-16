@@ -1,16 +1,15 @@
 import React, { useState, useContext, useRef } from 'react';
-import { MyUserContext } from '../../configs/Context';
+import { MyUserContext, MyDispatchContext } from '../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import AvatarEditor from 'react-avatar-editor';
 import { AiOutlineDelete } from 'react-icons/ai';
-import APIs, { authApi, endpoints } from '../../configs/APIs';
+import { authApi, endpoints } from '../../configs/APIs';
 import { getToken } from '../../utils/storage';
 
 const EditInfoHiring = () => {
     const user = useContext(MyUserContext);
     const navigate = useNavigate();
-    const [err, setErr] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const dispatch = useContext(MyDispatchContext);
 
     const [formData, setFormData] = useState({
         first_name: user.first_name || '',
@@ -19,8 +18,8 @@ const EditInfoHiring = () => {
         gender: user.gender || 0,
         email: user.email || '',
         mobile: user.mobile || '',
-        avatar: user.avatar || '',
     });
+
     const [avatarImage, setAvatarImage] = useState(null);
     const editorRef = useRef(null);
 
@@ -33,40 +32,47 @@ const EditInfoHiring = () => {
     };
 
     const handleSave = async () => {
-        let form = new FormData();
-        Object.keys(formData).forEach((key) => {
-            form.append(key, formData[key]);
-        });
-
-        if (avatarImage && editorRef.current) {
-            const canvas = editorRef.current.getImage();
-            canvas.toBlob((blob) => {
-                form.append('avatar', blob);
-                updateUser(form);
+        try {
+            let form = new FormData();
+            Object.keys(formData).forEach((key) => {
+                form.append(key, formData[key]);
             });
-        } else {
-            updateUser(form);
+
+            if (avatarImage && editorRef.current) {
+                const canvas = editorRef.current.getImage();
+                canvas.toBlob((blob) => {
+                    form.append('avatar', blob);
+                    updateUser(form);
+                });
+            } else {
+                updateUser(form); // Gọi updateUser mà không gửi avatar
+            }
+        } catch (ex) {
+            console.error(ex);
         }
     };
 
     const updateUser = async (form) => {
         try {
             const token = getToken();
-            const res = await authApi(token).patch(endpoints["patch_user"],
-                form, {
+            console.log('Data sending to server:', form); // Log form data before sending
+
+            const res = await authApi(token).patch(endpoints["patch_user"], form, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
 
+            console.log('Response from server:', res.data); // Log response from server
+
             if (res.status === 200) {
                 alert('Cập nhật thông tin thành công!');
                 // // Cập nhật thông tin người dùng trong ngữ cảnh ứng dụng
-                // dispatch({
-                //     type: 'update_employer',
-                //     payload: res.data 
-                // });
-                navigate('employer-profile');
+                dispatch({
+                    type: 'update_employer',
+                    payload: res.data
+                });
+                navigate('/');
             } else {
                 console.error('Lỗi khi cập nhật thông tin');
             }
@@ -189,7 +195,7 @@ const EditInfoHiring = () => {
                     <div className="flex justify-end">
                         <button
                             type="button"
-                            onClick={updateUser}
+                            onClick={handleSave}
                             className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                         >
                             Save Changes
@@ -202,4 +208,3 @@ const EditInfoHiring = () => {
 };
 
 export default EditInfoHiring;
-

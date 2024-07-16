@@ -10,11 +10,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [post, setPost] = useState([]);
-  const [typeId, setTypeId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("");
   const [page, setPage] = useState(1);
-  const [selectedJob, setSelectedJob] = useState(null);
 
   const loadTypes = async () => {
     try {

@@ -4,7 +4,7 @@ import { MyDispatchContext, MyUserContext } from './configs/Context';
 import MyUserReducer from './configs/Reducers';
 import {useReducer } from 'react';
 import './index.css'; 
-import Header from "./component/Hearder";
+import Header from "./component/Header";
 import Footer from "./component/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register/Register";
@@ -39,7 +39,7 @@ function MyTab() {
               <Route path='/employer-profile' element={<ProfileEmployer />}/>
               <Route path='/edit-infoHiring' element={<EditInfoHiring />}/>
 
-              <Route path="*" component={() => <div>404 Not Found</div>} />
+              <Route path="*" element={() => <div>404 Not Found</div>} />
             </Routes>
           </main>
           <Footer />

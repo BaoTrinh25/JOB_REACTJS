@@ -3,6 +3,7 @@ import { Link,  useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { MyDispatchContext } from '../configs/Context';
 import APIs, { authApi, endpoints } from '../configs/APIs';
+import { setToken } from '../utils/storage';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +13,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const nav = useNavigate();
   const dispatch = useContext(MyDispatchContext);
+
+  // const token = getToken();
+  // console.log(token);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -66,7 +70,9 @@ const Login = () => {
         "grant_type": "password",
       });
 
-      localStorage.setItem("token", res.data.access_token);
+      // Lưu token vào localStorage bằng hàm setToken
+      setToken(res.data.access_token);
+      
       setTimeout(async () => {
         let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
         console.info(user.data);
