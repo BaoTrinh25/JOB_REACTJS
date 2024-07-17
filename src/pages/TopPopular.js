@@ -44,7 +44,7 @@ const TopPopular = () => {
   const renderJobItem = (job) => (
     <div
       key={job.id}
-      className="flex flex-col items-center mb-4 border-2 border-lime-600 rounded-lg p-4 bg-yellow-50 mx-5 cursor-pointer w-1/2"
+      className="flex flex-col items-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-7 border-2 border-lime-600 rounded-lg p-4 bg-yellow-50 mx-5 cursor-pointer w-full sm:w-1/3 md:w-1/4 lg:w-1/4"
       onClick={() => navigate(`/job-detail/${job.id}`)}
     >
       <img src={job.image} alt={job.title} className="w-14 h-14 rounded-sm border-2 border-cyan-900 mb-4" />
