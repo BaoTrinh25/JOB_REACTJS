@@ -18,9 +18,9 @@ const AllJobPopular = () => {
 
     try {
       const data = await fetchPopularJob(pageNum);
-      if (data && Array.isArray(data)) {
-        setJobs(data);
-        setFilteredJobs(data);
+      if (data && Array.isArray(data.results)) {
+        setJobs(data.results);
+        setFilteredJobs(data.results);
         setPage(pageNum);
         setHasNextPage(!!data.next);
       } else {

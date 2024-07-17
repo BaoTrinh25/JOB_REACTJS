@@ -58,6 +58,6 @@ const App = () => {
         </MyDispatchContext.Provider>
       </MyUserContext.Provider>
   );
-}
+};
 
 export default App;

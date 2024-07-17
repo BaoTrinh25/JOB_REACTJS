@@ -16,8 +16,8 @@ const TopPopular = () => {
     while (hasMorePages) {
       try {
         const data = await fetchPopularJob(currentPage);
-        if (data && Array.isArray(data)) {
-          allJobs = [...allJobs, ...data];
+        if (data && Array.isArray(data.results)) {
+          allJobs = [...allJobs, ...data.results];
           currentPage++;
           if (data.next === null) {
             hasMorePages = false;
