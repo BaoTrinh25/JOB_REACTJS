@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import APIs, { endpoints } from '../configs/APIs';
+import APIs, { endpoints }  from '../../configs/APIs';
 
 const About = () => {
   const [users, setUsers] = useState([]); 

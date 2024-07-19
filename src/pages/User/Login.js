@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { Link,  useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import { MyDispatchContext } from '../configs/Context';
-import APIs, { authApi, endpoints } from '../configs/APIs';
-import { setToken } from '../utils/storage';
+import { MyDispatchContext } from '../../configs/Context';
+import APIs, { authApi, endpoints } from '../../configs/APIs';
+import { setToken } from '../../utils/storage';
 
 const Login = () => {
   const [username, setUsername] = useState('');

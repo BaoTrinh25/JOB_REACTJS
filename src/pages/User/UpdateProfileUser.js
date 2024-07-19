@@ -6,7 +6,7 @@ import { AiOutlineDelete } from 'react-icons/ai';
 import { authApi, endpoints } from '../../configs/APIs';
 import { getToken } from '../../utils/storage';
 
-const EditInfoHiring = () => {
+const UpdateProfileUser = () => {
     const user = useContext(MyUserContext);
     const navigate = useNavigate();
     const dispatch = useContext(MyDispatchContext);
@@ -57,7 +57,9 @@ const EditInfoHiring = () => {
             const token = getToken();
             console.log('Data sending to server:', form); // Log form data before sending
 
-            const res = await authApi(token).patch(endpoints["patch_user"], form, {
+            const res = await authApi(token).patch(endpoints["patch_user"], 
+                form, 
+                {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -68,10 +70,10 @@ const EditInfoHiring = () => {
             if (res.status === 200) {
                 alert('Cập nhật thông tin thành công!');
                 // // Cập nhật thông tin người dùng trong ngữ cảnh ứng dụng
-                dispatch({
-                    type: 'update_employer',
-                    payload: res.data
-                });
+                // dispatch({
+                //     type: 'update_employer',
+                //     payload: res.data
+                // });
                 navigate('/');
             } else {
                 console.error('Lỗi khi cập nhật thông tin');
@@ -207,4 +209,4 @@ const EditInfoHiring = () => {
     );
 };
 
-export default EditInfoHiring;
+export default UpdateProfileUser;

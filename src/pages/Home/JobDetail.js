@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchJobDetail } from '../configs/APIs';
+import { fetchJobDetail } from '../../configs/APIs';
 import { BiBookmark } from 'react-icons/bi';
 import { BsFillBookmarkFill } from 'react-icons/bs';
 
@@ -95,23 +95,24 @@ const JobDetail = () => {
             <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
             <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">
                 <div>
-                    <p className="text-lg font-semibold">Công ty: {job.company.companyName}</p>
-                    <p>Tuyển vị trí: {job.position}</p>
-                    <p>Lĩnh vực: {job.career.name}</p>
-                    <p>Mức lương: {job.salary} VNĐ</p>
-                    <p>Loại hình công việc: {job.employmenttype.type}</p>
-                    <p>Số lượng tuyển: {job.quantity}</p>
-                    <p>Địa điểm: {job.location}</p>
-                    <p className="text-red-500">Hạn nộp hồ sơ: {job.deadline}</p>
+                    <p className="text-lg font-semibold">Công ty: {job.company?.companyName}</p>
+                    <p>Tuyển vị trí: {job?.position}</p>
+                    <p>Lĩnh vực: {job?.career.name}</p>
+                    <p>Mức lương: {job?.salary} VNĐ</p>
+                    <p>Giới tính: {job?.gender === 1 ? 'Nữ' : 'Nam'}</p>
+                    <p>Loại hình công việc: {job?.employmenttype.type}</p>
+                    <p>Số lượng tuyển: {job?.quantity}</p>
+                    <p>Địa điểm: {job?.location}</p>
+                    <p className="text-red-500">Hạn nộp hồ sơ: {job?.deadline}</p>
                     <h2 className="text-xl font-bold mt-4">Mô tả công việc:</h2>
-                    <p>{job.description}</p>
+                    <p>{job?.description}</p>
                     <h2 className="text-xl font-bold mt-4">Yêu cầu kinh nghiệm:</h2>
-                    <p>{job.experience}</p>
+                    <p>{job?.experience}</p>
                     <h2 className="text-xl font-bold mt-4">Thông tin công ty:</h2>
-                    <p>- Công ty: {job.company.companyName}</p>
-                    <p>- Địa chỉ: {job.company.address}</p>
-                    <p>- Loại doanh nghiệp: {job.company.company_type_display}</p>
-                    <p>- Thông tin chi tiết: {job.company.information}</p>
+                    <p>- Công ty: {job.company?.companyName}</p>
+                    <p>- Địa chỉ: {job.company?.address}</p>
+                    <p>- Loại doanh nghiệp: {job.company?.company_type_display}</p>
+                    <p>- Thông tin chi tiết: {job.company?.information}</p>
                 </div>
 
                 <div className="flex flex-col items-center mt-20">

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAllJob } from '../configs/APIs';
+import { fetchPopularJob } from '../../configs/APIs';
 
-const AllJobLatest = () => {
+const AllJobPopular = () => {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -10,7 +10,6 @@ const AllJobLatest = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedJob, setSelectedJob] = useState(null);
   const navigate = useNavigate();
 
   const fetchJobs = async (pageNum = 1) => {
@@ -18,15 +17,12 @@ const AllJobLatest = () => {
     setLoading(true);
 
     try {
-      const data = await fetchAllJob(pageNum);
+      const data = await fetchPopularJob(pageNum);
       if (data && Array.isArray(data.results)) {
         setJobs(data.results);
         setFilteredJobs(data.results);
         setPage(pageNum);
         setHasNextPage(!!data.next);
-        if (data.results.length > 0) {
-          setSelectedJob(data.results[0]);
-        }
       } else {
         console.error('API response does not contain a results array');
       }
@@ -59,17 +55,20 @@ const AllJobLatest = () => {
     }
   };
 
+  //Hàm containsAllWords kiểm tra xem tất cả các từ trong truy vấn có xuất hiện trong văn bản được tìm kiếm hay không.
   const containsAllWords = (text, searchWords) => {
     return searchWords.every(word =>
       text.toLowerCase().includes(word.toLowerCase())
     );
   };
 
+  // Tìm kiếm theo tiêu đề + khu vực + kinh nghiệm công việc,........
   const search = (query) => {
     setSearchQuery(query);
     if (query.trim() === "") {
       setFilteredJobs(jobs);
     } else {
+      //tách query thành các từ riêng biệt(cho phép tìm kiếm nhiều từ) và loại bỏ các khoảng trắng dư thừa.
       const searchWords = query.toLowerCase().split(/\s+/).filter(word => word.length > 0);
       const filtered = jobs.filter((job) =>
         containsAllWords(job.title, searchWords) ||
@@ -83,12 +82,23 @@ const AllJobLatest = () => {
       setFilteredJobs(filtered);
     }
   };
+  // const search = (query) => {
+  //   setSearchQuery(query);
+  //   if (query === "") {
+  //     setFilteredJobs(jobs);
+  //   } else {
+  //     const filtered = jobs.filter((job) =>
+  //       job.title.toLowerCase().includes(query.toLowerCase())
+  //     );
+  //     setFilteredJobs(filtered);
+  //   }
+  // };
 
   const renderJobItem = (job) => (
     <div
       key={job.id}
       className="flex flex-col items-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-7 border-2 border-lime-600 rounded-lg p-4 bg-yellow-50 mx-5 cursor-pointer w-full sm:w-1/3 md:w-1/4 lg:w-1/4"
-      onClick={() => navigate(`/job-detail/${job.id}`)}
+    onClick={() => navigate(`/job-detail/${job.id}`)}
     >
       <img src={job.image} alt={job.title} className="w-14 h-14 rounded-sm border-2 border-cyan-900 mb-4" />
       <div className="flex-1 items-center m-auto">
@@ -101,6 +111,8 @@ const AllJobLatest = () => {
     </div>
   );
 
+
+  // ẩn các nút chuyển trang nếu danh sách chưa vượt quá 10 công việc trên 1 trang
   const shouldShowPagination = filteredJobs.length > 10;
 
   return (
@@ -124,8 +136,8 @@ const AllJobLatest = () => {
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-400"></div>
         </div>
       ) : filteredJobs.length > 0 ? (
-          <div className="container mx-auto px-4 flex flex-wrap justify-center">
-            {filteredJobs.slice((page - 1) * 10, page * 10).map(renderJobItem)}
+        <div className="container mx-auto px-4 flex flex-wrap justify-center mt-10">
+          {filteredJobs.slice((page - 1) * 10, page * 10).map(renderJobItem)}
         </div>
       ) : (
         <div className="text-center py-4 text-gray-600">
@@ -155,4 +167,4 @@ const AllJobLatest = () => {
   );
 };
 
-export default AllJobLatest;
+export default AllJobPopular;

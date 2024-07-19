@@ -4,17 +4,21 @@ const BASE_URL = 'https://baotrinh.pythonanywhere.com';
 // const BASE_URL = 'http://127.0.0.1:8000/';
 
 export const endpoints = {
+    'patch_user': `/users/patch-current-user/`,
+    'current_user': `/users/current-user/`, 
+    'users' : `/users/`,
+    'register': `/users/`,
+    'login': `/o/token/`, 
+
+    'patch_jobSeeker': (id) => `/jobSeeker/${id}/`,
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
     'jobs': `/jobs/`,
     'job_detail': (id) => `/jobs/${id}/`,  
-    'users' : `/users/`,
     'employmenttypes': `/employmenttypes/`,
     'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
-    'register': `/users/`,
-    'login': `/o/token/`, 
-    'current_user': `/users/current-user/`, 
     'company': (id) => `/companies/${id}/`,
-    'patch_user': `/users/patch-current-user/`  
+    'careers': `/careers/`,
+    
 };
 
 const APIs = axios.create({

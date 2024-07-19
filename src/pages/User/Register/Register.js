@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate  } from "react-router-dom";
-import { MyDispatchContext } from "../../configs/Context";
-import APIs, { endpoints } from "../../configs/APIs";
+import { MyDispatchContext } from "../../../configs/Context";
+import APIs, { endpoints } from "../../../configs/APIs";
 
 const Register = () => {
 

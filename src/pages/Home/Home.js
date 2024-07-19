@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import APIs, { endpoints } from '../configs/APIs';
+import APIs, {endpoints} from "../../configs/APIs";
 import moment from "moment";
 import TopLatestJob from "./TopLatestJob";
 import TopPopular from "./TopPopular";
@@ -49,7 +49,7 @@ const Home = () => {
               By clicking Continue to join or sign in
             </p>
             <p className="text-sm text-gray-600 mt-4">
-              New to LinkedIn? <Link to="/login" className="text-blue-700">Join now</Link>
+              New to DDT JOB? <Link to="/login" className="text-blue-700">Join now</Link>
             </p>
           </div>
         </div>

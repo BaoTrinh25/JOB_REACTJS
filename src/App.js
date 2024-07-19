@@ -6,17 +6,19 @@ import {useReducer } from 'react';
 import './index.css'; 
 import Header from "./component/Header";
 import Footer from "./component/Footer";
-import Login from "./pages/Login";
-import Register from "./pages/Register/Register";
-import RegisterApplicant from "./pages/Register/RegisterApplicant";
-import RegisterEmployer from "./pages/Register/RegisterEmployer";
-import Home from "./pages/Home";
-import AllJobLatest from './pages/AllJobLatest';
-import AllJobPopular from './pages/AllJobPopular';
-import About from './pages/About';
-import JobDetail from './pages/JobDetail';
-import ProfileEmployer from './pages/Company/ProfileEmployer';
-import EditInfoHiring from './pages/Company/Edit_InfoHiring';
+import Login from './pages/User/Login';
+import Register from './pages/User/Register/Register';
+import RegisterApplicant from "./pages/User/Register/RegisterApplicant";
+import RegisterEmployer from "./pages/User/Register/RegisterEmployer";
+import Home from "./pages/Home/Home";
+import AllJobLatest from './pages/Home/AllJobLatest';
+import AllJobPopular from './pages/Home/AllJobPopular';
+import About from './pages/Home/About';
+import JobDetail from './pages/Home/JobDetail';
+import ProfileApplicant from './pages/User/JobSeeker/ProfileApplicant';
+import ProfileEmployer from './pages/User/Company/ProfileEmployer';
+import UpdateProfileUser from './pages/User/UpdateProfileUser';
+import UpdateInfoApplicant from './pages/User/JobSeeker/UpdateInfoApplicant';
 
 
 function MyTab() {
@@ -37,7 +39,9 @@ function MyTab() {
               <Route path="/about" element={<About />} />
               <Route path="/job-detail/:jobId" element={<JobDetail />} />
               <Route path='/employer-profile' element={<ProfileEmployer />}/>
-              <Route path='/edit-infoHiring' element={<EditInfoHiring />}/>
+              <Route path='/applicant-profile' element={<ProfileApplicant />}/>
+              <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />}/>
+              <Route path='/updateProfile-user' element={<UpdateProfileUser />}/>
 
               <Route path="*" element={() => <div>404 Not Found</div>} />
             </Routes>
