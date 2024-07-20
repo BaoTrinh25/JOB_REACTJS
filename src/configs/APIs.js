@@ -9,7 +9,7 @@ export const endpoints = {
     'register': `/users/`,
     'login': `/o/token/`, 
     'patch_user': `/users/patch-current-user/`,
-    'patch_jobSeeker': (id) => `/jobSeeker/${id}/`,
+    'put_jobSeeker': (id) => `/jobSeeker/${id}/`,
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
     'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,

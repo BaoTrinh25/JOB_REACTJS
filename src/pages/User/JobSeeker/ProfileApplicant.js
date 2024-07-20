@@ -33,8 +33,7 @@ const ProfileApplicant = () => {
 
         { id: 1, title: 'Cập nhật thông tin ứng viên', icon: <FaUpload /> },
         { id: 2, title: 'Cập nhật thông tin cá nhân', icon: <Update /> },
-        { id: 3, title: 'Quản lý tài khoản đăng nhập', icon: <ManageAccounts /> },
-        { id: 4, title: 'Xóa tài khoản', icon: <Delete /> },
+        { id: 3, title: 'Xóa tài khoản', icon: <Delete /> },
     ];
 
     const navigateToDetail = (item) => {
@@ -52,7 +51,7 @@ const ProfileApplicant = () => {
         if (item.id === 1) {
             navigate('/updateProfile-appplicant');
         } else if (item.id === 2) {
-            navigate('/updateProfile-user'); //xóa thông tin cá nhân
+            navigate('/updateProfile-user'); 
         }
         else if (item.id === 3) {
             navigate(''); //xóa tài khoản

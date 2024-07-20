@@ -18,6 +18,7 @@ const UpdateProfileUser = () => {
         gender: user.gender || 0,
         email: user.email || '',
         mobile: user.mobile || '',
+        // password: user.password || ''
     });
 
     const [avatarImage, setAvatarImage] = useState(null);
@@ -99,8 +100,8 @@ const UpdateProfileUser = () => {
     };
 
     return (
-        <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
-            <div className="bg-fuchsia-50 shadow-md rounded-lg p-6 w-full max-w-2xl">
+        <div className="flex flex-row items-start p-6 bg-gray-100 min-h-screen">
+            <div className="bg-fuchsia-50 shadow-md rounded-lg p-6 w-[60%] max-w-2xl mx-auto">
                 <h2 className="text-2xl font-bold mb-4 flex justify-center pb-5 text-red-700">Cập nhật thông tin cá nhân</h2>
                 <form className="space-y-4">
                     <div>
@@ -123,16 +124,6 @@ const UpdateProfileUser = () => {
                             className="mt-1 block w-full border rounded-md p-2"
                         />
                     </div>
-                    {/* <div>
-                        <label className="block text-sm font-medium text-gray-700">Username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            className="mt-1 block w-full border rounded-md p-2"
-                        />
-                    </div> */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Gender</label>
                         <select
@@ -198,7 +189,41 @@ const UpdateProfileUser = () => {
                         <button
                             type="button"
                             onClick={handleSave}
-                            className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                            className="bg-green-500 text-white py-2 rounded-lg px-10"
+                        >
+                            Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div className='mx-auto p-4 w-[30%] shadow-md my-10 rounded-lg max-w-2xl bg-fuchsia-50'>
+                <h2 className="text-2xl text-orange-700 flex justify-center ">ĐỔI USER NAME & MẬT KHẨU</h2>
+                <form className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mt-5">Username</label>
+                        <input
+                            type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            className="mt-1 block w-full border rounded-md p-2"
+                        />
+                    </div>
+                    {/* <div>
+                        <label className="block text-sm font-medium text-gray-700 mt-5">Mật khẩu mới</label>
+                        <input
+                            type="text"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="mt-1 block w-full border rounded-md p-2"
+                        />
+                    </div>   */}
+                    <div className="flex justify-end">
+                        <button
+                            type="button"
+                            onClick={handleSave}
+                            className="bg-green-500 text-white py-2 rounded-lg px-10"
                         >
                             Lưu
                         </button>

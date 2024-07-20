@@ -30,8 +30,7 @@ const ProfileEmployer = () => {
     const dataAccount = [
         
         { id: 1, title: 'Cập nhật thông tin NTD', icon: <FaUpload /> },
-        { id: 2, title: 'Cập nhật thông tin người dùng', icon: <Update /> },
-        { id: 3, title: 'Quản lý tài khoản',  icon: <ManageAccounts/> },
+        { id: 2, title: 'Cập nhật thông tin người cá nhân', icon: <Update /> },
         { id: 4, title: 'Xóa tài khoản', icon: <FaTrash /> },
 
     ];
