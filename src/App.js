@@ -19,6 +19,7 @@ import ProfileApplicant from './pages/User/JobSeeker/ProfileApplicant';
 import ProfileEmployer from './pages/User/Company/ProfileEmployer';
 import UpdateProfileUser from './pages/User/UpdateProfileUser';
 import UpdateInfoApplicant from './pages/User/JobSeeker/UpdateInfoApplicant';
+import JobApplication from './pages/User/JobSeeker/JobApplication';
 
 
 function MyTab() {
@@ -42,6 +43,7 @@ function MyTab() {
               <Route path='/applicant-profile' element={<ProfileApplicant />}/>
               <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />}/>
               <Route path='/updateProfile-user' element={<UpdateProfileUser />}/>
+              <Route path='/jobApplication/:jobId' element={<JobApplication />}/>
 
               <Route path="*" element={() => <div>404 Not Found</div>} />
             </Routes>

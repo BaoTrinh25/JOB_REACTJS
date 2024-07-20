@@ -91,7 +91,7 @@ const UpdateInfoApplicant = () => {
     };
 
     return (
-        <div className="container mx-auto p-4 w-[70%]">
+        <div className="container mx-auto p-4 w-[70%] shadow-md my-10  rounded-lg max-w-2xl bg-fuchsia-50">
             <h2 className="text-3xl text-orange-700 flex justify-center my-10 ">CẬP NHẬT THÔNG TIN</h2>
             <p className="mb-4">Bạn vui lòng hoàn thiện các thông tin dưới đây:</p>
 

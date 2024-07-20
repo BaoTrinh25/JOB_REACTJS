@@ -100,8 +100,8 @@ const UpdateProfileUser = () => {
 
     return (
         <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
-            <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-2xl">
-                <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
+            <div className="bg-fuchsia-50 shadow-md rounded-lg p-6 w-full max-w-2xl">
+                <h2 className="text-2xl font-bold mb-4 flex justify-center pb-5 text-red-700">Cập nhật thông tin cá nhân</h2>
                 <form className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">First Name</label>
@@ -123,7 +123,7 @@ const UpdateProfileUser = () => {
                             className="mt-1 block w-full border rounded-md p-2"
                         />
                     </div>
-                    <div>
+                    {/* <div>
                         <label className="block text-sm font-medium text-gray-700">Username</label>
                         <input
                             type="text"
@@ -132,7 +132,7 @@ const UpdateProfileUser = () => {
                             onChange={handleChange}
                             className="mt-1 block w-full border rounded-md p-2"
                         />
-                    </div>
+                    </div> */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Gender</label>
                         <select
@@ -198,9 +198,9 @@ const UpdateProfileUser = () => {
                         <button
                             type="button"
                             onClick={handleSave}
-                            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                            className="bg-green-500 text-white px-4 py-2 rounded-lg"
                         >
-                            Save Changes
+                            Lưu
                         </button>
                     </div>
                 </form>

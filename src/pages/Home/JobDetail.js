@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchJobDetail } from '../../configs/APIs';
 import { BiBookmark } from 'react-icons/bi';
 import { BsFillBookmarkFill } from 'react-icons/bs';
+import { useNavigate } from "react-router-dom";
+import { MyUserContext } from '../../configs/Context';
+
 
 const JobDetail = () => {
     const { jobId } = useParams();
@@ -12,6 +15,8 @@ const JobDetail = () => {
     const [isSubmittingFavorite, setIsSubmittingFavorite] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
+    const navigate = useNavigate();
+    const user = useContext(MyUserContext);
 
     useEffect(() => {
         const getJobDetails = async () => {
@@ -33,14 +38,13 @@ const JobDetail = () => {
     }, [jobId]);
 
 
-
-    const handleApplyJob = () => {
-        // if (user) {
-        //   history.push(`/apply-job/${jobId}`);
-        // } else {
-        //   alert('Bạn cần đăng nhập!');
-        //   history.push('/login');
-        // }
+    const handleApplyJob = async () => {
+        if (user?.jobSeeker) {
+          navigate(`/jobApplication/${jobId}`);
+        } else {
+          alert('Bạn cần đăng nhập!');
+          navigate('/login');
+        }
     };
 
     const handleToggleFavorite = async () => {

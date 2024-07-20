@@ -32,8 +32,8 @@ const ProfileApplicant = () => {
     const dataAccount = [
 
         { id: 1, title: 'Cập nhật thông tin ứng viên', icon: <FaUpload /> },
-        { id: 2, title: 'Cập nhật thông tin người dùng', icon: <Update /> },
-        { id: 3, title: 'Quản lý tài khoản', icon: <ManageAccounts /> },
+        { id: 2, title: 'Cập nhật thông tin cá nhân', icon: <Update /> },
+        { id: 3, title: 'Quản lý tài khoản đăng nhập', icon: <ManageAccounts /> },
         { id: 4, title: 'Xóa tài khoản', icon: <Delete /> },
     ];
 
@@ -195,7 +195,7 @@ const ProfileApplicant = () => {
                 </div>
             </div>
             <div className="mt-8 w-full max-w-4xl">
-                <h2 className="text-2xl font-bold mb-4">Quản lý nhà tuyển dụng</h2>
+                <h2 className="text-2xl font-bold mb-4">Quản lý tìm việc</h2>
                 <div className="grid grid-cols-2 gap-4">
                     {dataManage.map((item) => (
                         <div

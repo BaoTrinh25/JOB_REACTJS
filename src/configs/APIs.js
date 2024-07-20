@@ -4,20 +4,23 @@ const BASE_URL = 'https://baotrinh.pythonanywhere.com';
 // const BASE_URL = 'http://127.0.0.1:8000/';
 
 export const endpoints = {
-    'patch_user': `/users/patch-current-user/`,
     'current_user': `/users/current-user/`, 
     'users' : `/users/`,
     'register': `/users/`,
     'login': `/o/token/`, 
-
+    'patch_user': `/users/patch-current-user/`,
     'patch_jobSeeker': (id) => `/jobSeeker/${id}/`,
+
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
-    'jobs': `/jobs/`,
+    'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
     'job_detail': (id) => `/jobs/${id}/`,  
     'employmenttypes': `/employmenttypes/`,
-    'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
-    'company': (id) => `/companies/${id}/`,
-    'careers': `/careers/`,
+ 
+    // 'company': (id) => `/companies/${id}/`,
+    // 'careers': `/careers/`,
+    'job_application': (id) => `/jobs/${id}/apply/`,
+    //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
+    'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,
     
 };
 
