@@ -1,20 +1,22 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { MyUserContext } from '../../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInformationCircle } from 'react-icons/io5';
 import { FaUpload, FaBusinessTime, FaTrash, FaEdit } from 'react-icons/fa';
 import bannerImage from '../../../assets/banner_hiring.jpg';
-import defaultAvatar from '../../../assets/default_avatar.png';
+import defaultAvatar from '../../../assets/default_avatar1.png';
 import { PostAddSharp, EmailOutlined, ListAltOutlined, PhoneAndroid, TagOutlined, Update } from '@mui/icons-material';
 import { BsGenderFemale, BsGenderMale } from 'react-icons/bs';
+import { getToken } from '../../../utils/storage';
+import { authApi, endpoints } from '../../../configs/APIs';
 
 const ProfileEmployer = () => {
     const navigate = useNavigate();
     const user = useContext(MyUserContext);
-
-    //khởi tạo giá trị avatar mặc định
     const [profileImage, setProfileImage] = useState(defaultAvatar);
-    //nếu avatar kh null thì sẽ lấy giá trị để cập nhật.
+    const [selectedFile, setSelectedFile] = useState(null);
+    const fileInputRef = useRef(null);
+
     useEffect(() => {
         if (user && user.avatar) {
             setProfileImage(user.avatar);
@@ -64,20 +66,44 @@ const ProfileEmployer = () => {
             </div>
         );
     }
-
-    const handleChooseImage = async () => {
-        // Implement logic to choose image here
-        // For example, use a file input and update selected image to state
-        // try {
-        //     const selectedImage = await openImagePicker(); 
-        //     // Cập nhật trạng thái profileImage với hình ảnh đã chọn
-        //     if (selectedImage) {
-        //         setProfileImage(selectedImage);
-        //     }
-        // } catch (error) {
-        //     console.error('Error choosing image:', error);
-        // }
+ 
+    const handleChooseImage = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
     };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+            const imageUrl = URL.createObjectURL(file);
+            setProfileImage(imageUrl);
+            handleImageUpload(file);
+        }
+    };
+
+    const handleImageUpload = async (file) => {
+        const form = new FormData();
+        form.append('avatar', file);
+
+        try {
+            const token = getToken();
+            const response = await authApi(token).patch(endpoints['patch_user'], 
+                form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 200) {
+                alert("Cập nhật avatar thành công!");
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        }
+    };
+
 
     return (
         <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
@@ -100,6 +126,13 @@ const ProfileEmployer = () => {
                         >
                             <IoCameraOutline className="w-5 h-5" />
                         </button>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleFileChange}
+                        />
                     </div>
                     <div>
 
