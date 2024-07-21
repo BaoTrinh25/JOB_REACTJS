@@ -19,7 +19,7 @@ const UpdateInfoApplicant = () => {
     const [position, setPosition] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
 
-    const experienceOptions = ['0-1 năm', '1-2 năm', '2-3 năm', '3-5 năm', '5+ năm'];
+    const experienceOptions = [' Dưới 1 năm','1 năm', '2 năm', '3 năm', '4 năm', '5+ năm'];
     // const salaryOptions = ['<5 triệu', '5-10 triệu', '10-20 triệu', '20-30 triệu', '>30 triệu'];
     const salaryOptions = [
         { label: '1-5 triệu', value: 5000000 },

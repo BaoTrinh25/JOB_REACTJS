@@ -47,7 +47,7 @@ const JobApplication = () => {
         try {
             const token = getToken();
             let res = await authApi(token).post(
-                endpoints["job_application"](jobId),
+                endpoints["apply_job"](jobId),
                 form,
                 {
                     headers: {

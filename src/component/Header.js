@@ -77,7 +77,7 @@ const Header = () => {
               </Dropdown.Item>
               {user.role === 1 && (
                 <Dropdown.Item>
-                  <Link to="/post-job" className="flex items-center">
+                  <Link to="/post-recruitment" className="flex items-center">
                     <FaBriefcase className="mr-2" /> Đăng bài
                   </Link>
                 </Dropdown.Item>

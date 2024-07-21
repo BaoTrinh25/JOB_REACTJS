@@ -15,11 +15,14 @@ export const endpoints = {
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
     'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
     'job_detail': (id) => `/jobs/${id}/`,  
+    'post_recruitment': `/jobs/`,
+
     'employmenttypes': `/employmenttypes/`,
+    'careers': `/careers/`,
+    'areas': `/areas/`,
  
     // 'company': (id) => `/companies/${id}/`,
-    // 'careers': `/careers/`,
-    'job_application': (id) => `/jobs/${id}/apply/`,
+    'apply_job': (id) => `/jobs/${id}/apply/`,
     //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
     'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,
     

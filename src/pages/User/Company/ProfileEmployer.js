@@ -37,7 +37,7 @@ const ProfileEmployer = () => {
 
     const navigateToDetail = (item) => {
         if (item.id === 1) {
-            navigate('');
+            navigate('/post-recruitment');
         } else if (item.id === 2) {
             navigate('');
         }
@@ -148,7 +148,7 @@ const ProfileEmployer = () => {
                             <div className="flex items-center mb-3 px-5">
                                 <TagOutlined className="mr-2 w-6 h-6" />
                                 <span>Tên: </span>
-                                <span className="font-sans text-red-800 pl-2">
+                                <span className="font-sans pl-2">
                                     {user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : <span className="text-red-800">Bạn chưa cập nhật</span>}
                                 </span>
                             </div>
