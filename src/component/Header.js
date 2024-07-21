@@ -1,22 +1,17 @@
-
 import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import logo from '../assets/job-seeker.png'
-import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown } from 'react-icons/fa';
+import logo from '../assets/job-seeker.png';
+import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
+import { Dropdown } from 'flowbite-react';
 
 const Header = () => {
   const user = useContext(MyUserContext);
-  const dispatch = useContext(MyDispatchContext)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const nav = useNavigate()
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  const dispatch = useContext(MyDispatchContext);
+  const nav = useNavigate();
 
   const handleLogout = () => {
-    dispatch({ "type": "logout" })
+    dispatch({ "type": "logout" });
     nav('/');
   };
 
@@ -62,44 +57,35 @@ const Header = () => {
 
         <div>
           {user && user.role !== null ? (
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="text-white hover:text-yellow-400 mx-5 flex flex-col items-center"
-              >
-                <FaUser className="inline mr-2 my-1" />
-                <div className="flex items-center">
-                  <span className="text-sm">
+            <Dropdown
+              arrowIcon={false}
+              inline
+              label={<div className="text-white flex group m-3">
+                <div className='flex flex-col items-center'>
+                  <FaUser className="mr-2 my-1 group-hover:text-yellow-400" />
+                  <span className="text-sm group-hover:text-yellow-400">
                     {user.role === 1 ? "Employer Profile" : "Applicant Profile"}
                   </span>
-                  <FaCaretDown className="ml-1" />
                 </div>
-              </button>
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1">
-                  <Link
-                    to={user.role === 1 ? "/employer-profile" : "/applicant-profile"}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    My Profile
+                <FaCaretDown className="ml-1 group-hover:text-yellow-400 mt-auto" />
+              </div>}
+            >
+              <Dropdown.Item>
+                <Link to={user.role === 1 ? "/employer-profile" : "/applicant-profile"} className="flex items-center">
+                  <FaUserEdit className="mr-2" /> My Profile
+                </Link>
+              </Dropdown.Item>
+              {user.role === 1 && (
+                <Dropdown.Item>
+                  <Link to="/post-job" className="flex items-center">
+                    <FaBriefcase className="mr-2" /> Đăng bài
                   </Link>
-                  {user.role === 1 && (
-                    <Link
-                      to="/post-job"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Đăng bài
-                    </Link>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Đăng xuất
-                  </button>
-                </div>
+                </Dropdown.Item>
               )}
-            </div>
+              <Dropdown.Item onClick={handleLogout}>
+                <FaSignInAlt className="mr-2" /> Đăng xuất
+              </Dropdown.Item>
+            </Dropdown>
           ) : (
             <>
               <Link to="/login" className="text-white hover:text-yellow-400">
