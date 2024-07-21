@@ -20,6 +20,7 @@ import ProfileEmployer from './pages/User/Company/ProfileEmployer';
 import UpdateProfileUser from './pages/User/UpdateProfileUser';
 import UpdateInfoApplicant from './pages/User/JobSeeker/UpdateInfoApplicant';
 import JobApplication from './pages/User/JobSeeker/JobApplication';
+import UpdateInfoProfileEmployer from './pages/User/Company/UpdateInfoEmployer';
 
 
 function MyTab() {
@@ -40,6 +41,7 @@ function MyTab() {
               <Route path="/about" element={<About />} />
               <Route path="/job-detail/:jobId" element={<JobDetail />} />
               <Route path='/employer-profile' element={<ProfileEmployer />}/>
+              <Route path='/updateProfile-employer' element={<UpdateInfoProfileEmployer />}/>
               <Route path='/applicant-profile' element={<ProfileApplicant />}/>
               <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />}/>
               <Route path='/updateProfile-user' element={<UpdateProfileUser />}/>

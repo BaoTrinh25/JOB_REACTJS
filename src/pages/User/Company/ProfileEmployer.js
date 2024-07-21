@@ -48,7 +48,7 @@ const ProfileEmployer = () => {
 
     const navigateToDetailAcc = (item) => {
         if (item.id === 1) {
-            navigate('');
+            navigate('/updateProfile-employer');
         } else if (item.id === 2) {
             navigate('/updateProfile-user'); //xóa thông tin cá nhân
         }
