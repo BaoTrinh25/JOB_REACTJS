@@ -3,7 +3,7 @@ import { MyUserContext } from '../../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInformationCircle } from 'react-icons/io5';
 import { FaEdit, FaUpload } from 'react-icons/fa';
-import bannerImage from '../../../assets/banner_hiring.jpg';
+import bannerImage from '../../../assets/banner_hiring.jpg'
 import defaultAvatar from '../../../assets/default_avatar.png';
 import { BookmarkBorderOutlined, Delete, EmailOutlined, ListAltOutlined, ManageAccounts, PhoneAndroid, SearchSharp, TagFacesOutlined, TagOutlined, Update } from '@mui/icons-material';
 import { BiDollarCircle } from 'react-icons/bi';

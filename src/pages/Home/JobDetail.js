@@ -39,6 +39,14 @@ const JobDetail = () => {
 
 
     const handleApplyJob = async () => {
+        if (user?.company) {
+            setNotificationMessage('Tính năng này không phù hợp với vai trò của bạn');
+            setShowNotification(true);
+            setTimeout(() => {
+                setShowNotification(false);
+            }, 3000);
+            return;
+        }
         if (user?.jobSeeker) {
           navigate(`/jobApplication/${jobId}`);
         } else {
@@ -126,7 +134,7 @@ const JobDetail = () => {
                         </button>
                         <button onClick={handleApplyJob} className="bg-green-500 text-white py-2 px-10 rounded hover:bg-yellow-500">Ứng tuyển</button>
                     </div>
-                    {showNotification && <div className="mt-4 text-green-500">{notificationMessage}</div>}
+                    {showNotification && <div className="mt-4 text-red-500">{notificationMessage}</div>}
                 </div>
 
             </div>
