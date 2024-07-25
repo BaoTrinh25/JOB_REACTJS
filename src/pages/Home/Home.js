@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
+import { FaBriefcase, FaUser } from 'react-icons/fa';
 import APIs, {endpoints} from "../../configs/APIs";
 import moment from "moment";
 import TopLatestJob from "./TopLatestJob";
 import TopPopular from "./TopPopular";
+import { MyUserContext } from "../../configs/Context";
 
 const Home = () => {
   const navigate = useNavigate();
   const [employmentTypes, setEmploymentTypes] = useState([]);
   const [post, setPost] = useState([]);
   const [page, setPage] = useState(1);
+  const user = useContext(MyUserContext);
 
   const loadTypes = async () => {
     try {
@@ -32,6 +34,7 @@ const Home = () => {
 
   return (
     <div>
+      {!user ? (
       <div className="flex flex-col md:flex-row h-screen items-center justify-between p-8">
         <div className="flex-1 max-w-md ">
           <h1 className="text-5xl text-orange-800 mb-6">Welcome to your professional community</h1>
@@ -57,6 +60,37 @@ const Home = () => {
           <img src={"https://static.licdn.com/aero-v1/sc/h/dxf91zhqd2z6b0bwg85ktm5s4"} alt="Background" className="max-w-full h-auto" />
         </div>
       </div>
+      ) : user.role === 0 ? (
+        <div className="flex flex-col md:flex-row h-screen items-center justify-between p-8">
+          <div className="flex-1 max-w-md ">
+            <h1 className="text-5xl text-orange-800 mb-10">Welcome JobSeeker</h1>
+            <h2 className="text-3xl mb-6"> Start looking for jobs that match your criteria!</h2>
+            <Link to="/jobs">
+              <button className="w-[90%] p-4 mb-4 border rounded-full bg-slate-300 hover:bg-slate-500 flex items-center justify-center hover:border-2 hover:border-yellow-500">
+                <FaUser className="mr-2" /> FIND JOBS
+              </button>
+            </Link>
+          </div>
+          <div className="flex-1 flex items-center justify-center">
+            <img src={"https://static.licdn.com/aero-v1/sc/h/dxf91zhqd2z6b0bwg85ktm5s4"} alt="Background" className="max-w-full h-auto" />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col md:flex-row h-screen items-center justify-between p-8">
+          <div className="flex-1 max-w-md ">
+            <h1 className="text-5xl text-orange-800 mb-10">Welcome Employer</h1>
+            <h2 className="text-3xl mb-6"> Let's start creating recruitment posts to find suitable candidates for you!</h2>
+            <Link to="/post-recruitment">
+              <button className="w-[90%] p-4 mb-4 border rounded-full bg-slate-300 hover:bg-slate-500 flex items-center justify-center hover:border-2 hover:border-yellow-500">
+                <FaBriefcase className="mr-2 " /> POST JOBS
+              </button>
+            </Link>
+          </div>
+          <div className="flex-1 flex items-center justify-center">
+            <img src={"https://static.licdn.com/aero-v1/sc/h/dxf91zhqd2z6b0bwg85ktm5s4"} alt="Background" className="max-w-full h-auto" />
+          </div>
+        </div>
+      )}
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">

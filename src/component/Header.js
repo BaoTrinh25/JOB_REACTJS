@@ -71,19 +71,28 @@ const Header = () => {
               </div>}
             >
               <Dropdown.Item>
-                <Link to={user.role === 1 ? "/employer-profile" : "/applicant-profile"} className="flex items-center">
+                <Link to={user.role === 1 ? "/employer-profile" : "/applicant-profile"} className="flex items-center ">
                   <FaUserEdit className="mr-2" /> My Profile
                 </Link>
               </Dropdown.Item>
               {user.role === 1 && (
                 <Dropdown.Item>
-                  <Link to="/post-recruitment" className="flex items-center">
-                    <FaBriefcase className="mr-2" /> Đăng bài
-                  </Link>
+                  <div className='flex flex-col'>
+                    <Link to="/post-recruitment" className="flex items-center">
+                      <FaBriefcase className="mr-2" /> Đăng bài
+                    </Link>
+                    <Link to="/job-posted" className="flex items-center mt-5 ">
+                      <FaBriefcase className="mr-2" /> Danh sách bài tuyển dụng
+                    </Link>
+                  </div>
                 </Dropdown.Item>
               )}
               <Dropdown.Item onClick={handleLogout}>
-                <FaSignInAlt className="mr-2" /> Đăng xuất
+                <div className='group flex'>
+                  <FaSignInAlt className="mr-2  mt-1" />
+                  <span>Đăng xuất</span>
+                </div>
+
               </Dropdown.Item>
             </Dropdown>
           ) : (

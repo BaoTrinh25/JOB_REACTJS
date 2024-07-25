@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link,  useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { MyDispatchContext } from '../../configs/Context';
 import APIs, { authApi, endpoints } from '../../configs/APIs';
@@ -14,9 +14,6 @@ const Login = () => {
   const nav = useNavigate();
   const dispatch = useContext(MyDispatchContext);
 
-  // const token = getToken();
-  // console.log(token);
-
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -25,23 +22,18 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     alert('Đăng nhập thành công');
-    
   };
 
   const handleGoogleLoginSuccess = (response) => {
     console.log(response);
-    // Xử lý đăng nhập Google thành công ở đây
     alert('Đăng nhập với Google thành công');
   };
 
   const handleGoogleLoginFailure = (response) => {
     console.log(response);
-    // Xử lý đăng nhập Google thất bại ở đây
     alert('Đăng nhập với Google thất bại');
   };
 
@@ -50,35 +42,28 @@ const Login = () => {
     { label: "Password", icon: "lock", field: "password", secureTextEntry: true },
   ];
 
-
   const change = (value, field) => {
     setUser((current) => {
       return { ...current, [field]: value };
     });
   };
+
   const login = async () => {
     setLoading(true);
-    // console.log("Client ID: ", Config.process.env.CLIENT_ID); // Kiểm tra giá trị
-    // console.log("Client Secret: ", Config.process.env.CLIENT_SECRET); // Kiểm tra giá trị
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
-        // "client_id": CLIENT_ID,
-        // "client_secret": CLIENT_SECRET,
         "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
         "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
         "grant_type": "password",
       });
 
-      // Lưu token vào localStorage bằng hàm setToken
       setToken(res.data.access_token);
-      
+
       setTimeout(async () => {
         let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
         console.info(user.data);
-        dispatch({ "type": "login", 
-                  "payload": user.data 
-        });
+        dispatch({ "type": "login", "payload": user.data });
         nav("/");
       }, 100);
     } catch (ex) {
@@ -93,41 +78,38 @@ const Login = () => {
         ],
         { cancelable: false }
       );
-
     } finally {
       setLoading(false);
     }
   };
+
   return (
-    <div className="flex justify-center items-center h-screen">
-      <form className="bg-slate-200 p-8 rounded shadow-md w-80" onSubmit={handleSubmit}>
-        <h2 className="text-2xl font-bold mb-4 text-center">SIGN IN</h2>
+    <div className="flex justify-center items-center h-screen bg-cover bg-center" style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/007/164/537/original/fingerprint-identity-sensor-data-protection-system-podium-hologram-blue-light-and-concept-free-vector.jpg')" }}>
+      <form className="bg-white p-8 rounded-xl shadow-xl w-80" onSubmit={handleSubmit}>
+        <h2 className="text-2xl font-bold mb-4 text-center">User Login</h2>
         <div className="mb-4">
-          
           {fields.map((f) => (
-          <div key={f.field} className="mb-5">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={f.field}>{f.label}</label>
-            <input
-              type={f.secureTextEntry ? "password" : "text"}
-              id={f.field}
-              className="w-full px-3 py-2 border rounded"
-              value={user[f.field] || ""} // Thêm || "" để tránh hiển thị undefined khi giá trị chưa được định nghĩa
-              onChange={(event) => change(event.target.value, f.field)} // Chỉ truyền giá trị event.target.value
-              required
-            />
-          </div>
-        ))}
-          
+            <div key={f.field} className="mb-5">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={f.field}>{f.label}</label>
+              <input
+                type={f.secureTextEntry ? "password" : "text"}
+                id={f.field}
+                className="w-full px-3 py-2 border rounded"
+                value={user[f.field] || ""}
+                onChange={(event) => change(event.target.value, f.field)}
+                required
+              />
+            </div>
+          ))}
         </div>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <button type="submit" className="w-full bg-teal-700 text-white py-2 rounded hover:bg-teal-900"
-         onClick={login}>
-          Sign in
+        <button type="submit" className="w-full bg-green-700 text-white py-2 rounded hover:bg-teal-900" onClick={login}>
+          Login
         </button>
         <div className="mt-4 text-center">
           <span className="text-sm">Don't have an account?</span>{' '}
           <Link to="/register" className="text-blue-950 underline">
-          Sign Up
+            Create Your Account
           </Link>
         </div>
         <div className="flex items-center mt-4">

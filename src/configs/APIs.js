@@ -1,25 +1,31 @@
 import axios from 'axios';
 
 const BASE_URL = 'https://baotrinh.pythonanywhere.com';
-// const BASE_URL = 'http://127.0.0.1:8000/';
+// const BASE_URL = 'http://127.0.0.1:8000';
 
 export const endpoints = {
     'current_user': `/users/current-user/`, 
     'users' : `/users/`,
-    'register': `/users/`,
+    'register_user': `/users/`,
+    'register_jobseeker': (userId) => `/users/${userId}/create_applicant/`,
+    'register_company': (userId) => `/users/${userId}/create_employer/`,
     'login': `/o/token/`, 
     'patch_user': `/users/patch-current-user/`,
     'put_jobSeeker': (id) => `/jobSeeker/${id}/`,
     'patch_company': (id) => `/companies/${id}/`,
+    
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
     'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
     'job_detail': (id) => `/jobs/${id}/`,  
     'post_recruitment': `/jobs/`,
+    'job_posted': `/companies/list_job/`,
+    'job_applied': `/jobSeeker/list_job_apply/`,
 
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,
     'areas': `/areas/`,
+    'skills': `/skills/`,
  
     // 'company': (id) => `/companies/${id}/`,
     'apply_job': (id) => `/jobs/${id}/apply/`,
@@ -45,6 +51,7 @@ export const fetchAllJob = async (pageNum = 1) => {
         throw error;
     }
 };
+
 
 //ds công việc phổ biến giảm dần theo số lượt apply
 export const fetchPopularJob = async (pageNum = 1) => {

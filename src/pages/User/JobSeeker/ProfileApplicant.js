@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInformationCircle } from 'react-icons/io5';
 import { FaEdit, FaUpload } from 'react-icons/fa';
 import bannerImage from '../../../assets/banner_hiring.jpg'
-import defaultAvatar from '../../../assets/default_avatar1.png';
+import defaultAvatar from '../../../assets/default_avatar.png';
 import { BookmarkBorderOutlined, Delete, EmailOutlined, ListAltOutlined, PhoneAndroid, SearchSharp, TagOutlined, Update } from '@mui/icons-material';
 import { BiDollarCircle } from 'react-icons/bi';
 import { BsGenderFemale, BsGenderMale } from 'react-icons/bs';
@@ -46,7 +46,7 @@ const ProfileApplicant = () => {
             navigate('/jobs');
         }
         else if (item.id === 3) {
-            navigate('');
+            navigate('/job-applied');
         }
     };
 
@@ -196,7 +196,7 @@ const ProfileApplicant = () => {
                             <div className="flex items-center mb-3 px-5">
                                 <TagOutlined className="mr-2 w-6 h-6" />
                                 <span>Tên: </span>
-                                <span className="font-sans text-red-800 pl-2">
+                                <span className="font-sans pl-2">
                                     {user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : <span className="text-red-800">Bạn chưa cập nhật</span>}
                                 </span>
                             </div>

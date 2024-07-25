@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInformationCircle } from 'react-icons/io5';
 import { FaUpload, FaBusinessTime, FaTrash, FaEdit } from 'react-icons/fa';
 import bannerImage from '../../../assets/banner_hiring.jpg';
-import defaultAvatar from '../../../assets/default_avatar1.png';
+import defaultAvatar from '../../../assets/default_avatar.png';
 import { PostAddSharp, EmailOutlined, ListAltOutlined, PhoneAndroid, TagOutlined, Update } from '@mui/icons-material';
 import { BsGenderFemale, BsGenderMale } from 'react-icons/bs';
 import { getToken } from '../../../utils/storage';
@@ -44,7 +44,7 @@ const ProfileEmployer = () => {
             navigate('');
         }
         else if (item.id === 3) {
-            navigate('');
+            navigate('/job-posted');
         }
     };
 
@@ -139,7 +139,7 @@ const ProfileEmployer = () => {
                     </div>
                     <button
                         className="absolute -bottom-12 right-0 bg-gray-200 text-gray-600 hover:bg-orange-200 rounded-full p-2"
-                        onClick={() => navigate('/edit-infoHiring')}
+                        onClick={() => navigate('/updateProfile-user')}
                     >
                         <div className='flex'>
                             <FaEdit className="w-5 h-5" />
