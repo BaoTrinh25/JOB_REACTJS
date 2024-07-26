@@ -61,7 +61,7 @@ const Home = () => {
         </div>
       </div>
       ) : user.role === 0 ? (
-        <div className="flex flex-col md:flex-row h-screen items-center justify-between p-8">
+        <div className="flex flex-col md:flex-row h-[70vh] items-center justify-between p-8">
           <div className="flex-1 max-w-md ">
             <h1 className="text-5xl text-orange-800 mb-10">Welcome JobSeeker</h1>
             <h2 className="text-3xl mb-6"> Start looking for jobs that match your criteria!</h2>
@@ -72,11 +72,11 @@ const Home = () => {
             </Link>
           </div>
           <div className="flex-1 flex items-center justify-center">
-            <img src={"https://static.licdn.com/aero-v1/sc/h/dxf91zhqd2z6b0bwg85ktm5s4"} alt="Background" className="max-w-full h-auto" />
+            <img src={"https://th.bing.com/th/id/OIP.PPfKbaw5Q3qTk6URIM983AHaEW?rs=1&pid=ImgDetMain"} alt="Background" className="max-w-full h-auto" />
           </div>
         </div>
       ) : (
-        <div className="flex flex-col md:flex-row h-screen items-center justify-between p-8">
+        <div className="flex flex-col md:flex-row h-[75vh] items-center justify-between p-10">
           <div className="flex-1 max-w-md ">
             <h1 className="text-5xl text-orange-800 mb-10">Welcome Employer</h1>
             <h2 className="text-3xl mb-6"> Let's start creating recruitment posts to find suitable candidates for you!</h2>
@@ -87,42 +87,25 @@ const Home = () => {
             </Link>
           </div>
           <div className="flex-1 flex items-center justify-center">
-            <img src={"https://static.licdn.com/aero-v1/sc/h/dxf91zhqd2z6b0bwg85ktm5s4"} alt="Background" className="max-w-full h-auto" />
+            <img src={"https://cdni.iconscout.com/illustration/premium/thumb/we-are-hiring-2645886-2218311.png"} alt="Background" className="max-w-full h-auto" />
           </div>
         </div>
       )}
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-10">
             <h2 className="text-2xl font-bold text-orange-700">Công việc mới nhất</h2>
             <button onClick={() => navigate("/jobs")} className="bg-lime-500 font-semibold">
               Xem tất cả
             </button>
-          </div>
-          <div className="flex overflow-x-auto space-x-4">
-            {post.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-80 bg-white rounded-lg shadow-md p-4">
-                <img src={item.image} alt={item.title} className="w-20 h-20 rounded-full mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-red-600 mb-2">Deadline: {moment(item.deadline).format('DD/MM/YYYY')}</p>
-                <p className="text-gray-600 mb-1">{item.experience}</p>
-                <p className="text-gray-600">{item.area.name}</p>
-                <button
-                  onClick={() => navigate(`/job-detail/${item.id}`)}
-                  className="mt-4 w-full bg-green-500 text-white py-2 rounded-full hover:bg-green-600 transition duration-300"
-                >
-                  Xem chi tiết
-                </button>
-              </div>
-            ))}
           </div>
           <TopLatestJob />
          
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-10">
             <h2 className="text-2xl font-bold text-orange-700">Công việc phổ biến</h2>
             <button onClick={() => navigate("/jobs-popular")} className="bg-lime-500 font-semibold">
               Xem tất cả

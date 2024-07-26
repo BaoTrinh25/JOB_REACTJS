@@ -48,7 +48,7 @@ const TopLatestJob = () => {
   const renderJobItem = (job) => (
     <div
       key={job.id}
-      className="flex flex-col items-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-7 border-2 border-lime-600 rounded-lg p-6 bg-yellow-50 mx-4 cursor-pointer h-[300px]"
+      className="flex flex-col items-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-7 border-2 border-lime-600 rounded-lg p-6 bg-yellow-50 mx-4 my-5 cursor-pointer h-[300px]"
       onClick={() => navigate(`/job-detail/${job.id}`)}
     >
       <img src={job.image} alt={job.title} className="w-32 h-24 rounded-sm border-2 border-cyan-900 mb-4" />
