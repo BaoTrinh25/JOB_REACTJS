@@ -53,6 +53,7 @@ export const fetchAllJob = async (pageNum = 1) => {
 };
 
 
+
 //ds công việc phổ biến giảm dần theo số lượt apply
 export const fetchPopularJob = async (pageNum = 1) => {
     try {
