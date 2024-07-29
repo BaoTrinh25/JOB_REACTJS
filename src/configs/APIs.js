@@ -14,7 +14,6 @@ export const endpoints = {
     'put_jobSeeker': (id) => `/jobSeeker/${id}/`,
     'patch_company': (id) => `/companies/${id}/`,
     'delete_user': (id) => `/users/${id}/delete-account/`,
-    
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
     'alljobs': `/jobs/`,
@@ -26,7 +25,7 @@ export const endpoints = {
     'post_cmt': (id) => `/jobs/${id}/comments/`,
     'list_cmt': (id) => `/jobs/${id}/comments/`,
     'delete_job':(id) => `/jobs/${id}/`,
-    'rating': (id) => `/jobs/${id}/ratings/`,
+    'rating' : (id) => `/jobs/${id}/ratings/`,
 
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,

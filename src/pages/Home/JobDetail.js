@@ -178,50 +178,7 @@ const JobDetail = () => {
                     {showNotification && <div className="mt-4 text-red-500">{notificationMessage}</div>}
                 </div>
             </div>
-            <div className="mt-10">
-                <h2 className="text-xl font-bold">Bình luận</h2>
-                <div className="border-t mt-4 pt-4 flex flex-col">
-                    <textarea
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Nhập bình luận của bạn..."
-                        className="w-[60%] p-2 border rounded"
-                    />
-                    <button
-                        onClick={handleSubmitComment}
-                        disabled={isSubmittingComment}
-                        className="mt-2 bg-green-600 text-white py-2 my-4 px-4 rounded hover:bg-green-500 w-[60px]"
-                    >
-                        {isSubmittingComment ? 'Đang gửi...' : 'Gửi'}
-                    </button>
-                </div>
-                <div className="mt-4">
-                    {comments.length === 0 ? (
-                        <p>Chưa có bình luận nào.</p>
-                    ) : (
-                        comments.map((comment) => (
-                            <div key={comment.id} className="flex items-start mb-4">
-                                <img
-                                    src={comment.user.avatar}
-                                    alt="avatar"
-                                    className="w-10 h-10 rounded-full mr-4 border-2"
-                                />
-                                <div className="bg-gray-100 p-4 rounded-lg">
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        By: {comment.user.username}
-                                    </p>
-                                    <p className="text-xs text-gray-500 mb-1">
-                                        {comment.created_date}
-                                    </p>
-                                    <p>{comment.content}</p>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-                <h1 className="text-2xl font-bold mb-4">Rating</h1>
-                <Ratings jobId={jobId}/>
-            </div>
+            <Ratings jobId={jobId} />
         </div>
     );
 };
