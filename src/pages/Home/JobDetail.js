@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchJobDetail } from '../../configs/APIs';
+import APIs, { authApi, endpoints, fetchJobDetail } from '../../configs/APIs';
 import { BiBookmark } from 'react-icons/bi';
 import { BsFillBookmarkFill } from 'react-icons/bs';
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from '../../configs/Context';
-
+import { getToken } from '../../utils/storage';
 
 const JobDetail = () => {
     const { jobId } = useParams();
@@ -15,6 +15,10 @@ const JobDetail = () => {
     const [isSubmittingFavorite, setIsSubmittingFavorite] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState('');
+    const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+
     const navigate = useNavigate();
     const user = useContext(MyUserContext);
 
@@ -34,9 +38,19 @@ const JobDetail = () => {
             }
         };
 
-        getJobDetails();
-    }, [jobId]);
+        const fetchComments = async () => {
+            try {
+                const response = await APIs.get(endpoints['list_cmt'](jobId));
+                setComments(Array.isArray(response.data.results) ? response.data.results : []);
+                console.log(response.data.results);
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        };
 
+        getJobDetails();
+        fetchComments();
+    }, [jobId]);
 
     const handleApplyJob = async () => {
         if (user?.company) {
@@ -48,19 +62,47 @@ const JobDetail = () => {
             return;
         }
         if (user?.jobSeeker) {
-          navigate(`/jobApplication/${jobId}`);
+            navigate(`/jobApplication/${jobId}`);
         } else {
-          alert('Bạn cần đăng nhập!');
-          navigate('/login');
+            alert('Bạn cần đăng nhập!');
+            navigate('/login');
+        }
+    };
+
+    const handleSubmitComment = async () => {
+        if (!newComment.trim()) return;
+
+        setIsSubmittingComment(true);
+        try {
+            const token = getToken();
+            const form = new FormData();
+            form.append('content', newComment);
+
+            const res = await authApi(token).post(endpoints['post_cmt'](jobId), form, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            });
+
+            if (res.status === 201) {
+                setComments([...comments, res.data]);
+                setNewComment('');
+            } else {
+                console.error('Error posting comment:', res.data);
+            }
+        } catch (error) {
+            console.error('Error posting comment:', error);
+        } finally {
+            setIsSubmittingComment(false);
         }
     };
 
     const handleToggleFavorite = async () => {
-        // if (!user) {
-        //   alert('Bạn cần đăng nhập để lưu công việc yêu thích!');
-        //   history.push('/login');
-        //   return;
-        // }
+        if (!user) {
+            alert('Bạn cần đăng nhập để lưu công việc yêu thích!');
+            navigate('/login');
+            return;
+        }
 
         setIsSubmittingFavorite(true);
         setTimeout(async () => {
@@ -99,10 +141,8 @@ const JobDetail = () => {
         return <div>Không tìm thấy công việc</div>;
     }
 
-
-
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto my-10">
             <img src={job.image} alt={job.title} className="w-full h-80 object-cover mb-4" />
             <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
             <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">
@@ -136,7 +176,48 @@ const JobDetail = () => {
                     </div>
                     {showNotification && <div className="mt-4 text-red-500">{notificationMessage}</div>}
                 </div>
-
+            </div>
+            <div className="mt-10">
+                <h2 className="text-xl font-bold">Bình luận</h2>
+                <div className="border-t mt-4 pt-4 flex flex-col">
+                    <textarea
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Nhập bình luận của bạn..."
+                        className="w-[60%] p-2 border rounded"
+                    />
+                    <button
+                        onClick={handleSubmitComment}
+                        disabled={isSubmittingComment}
+                        className="mt-2 bg-green-600 text-white py-2 my-4 px-4 rounded hover:bg-green-500 w-[60px]"
+                    >
+                        {isSubmittingComment ? 'Đang gửi...' : 'Gửi'}
+                    </button>
+                </div>
+                <div className="mt-4">
+                    {comments.length === 0 ? (
+                        <p>Chưa có bình luận nào.</p>
+                    ) : (
+                        comments.map((comment) => (
+                            <div key={comment.id} className="flex items-start mb-4">
+                                <img
+                                    src={comment.user.avatar}
+                                    alt="avatar"
+                                    className="w-10 h-10 rounded-full mr-4 border-2"
+                                />
+                                <div className="bg-gray-100 p-4 rounded-lg">
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        By: {comment.user.username}
+                                    </p>
+                                    <p className="text-xs text-gray-500 mb-1">
+                                        {comment.created_date}
+                                    </p>
+                                    <p>{comment.content}</p>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MyDispatchContext } from "../../../configs/Context";
 import APIs, { endpoints } from "../../../configs/APIs";
-// import image from "../../../path/to/your/image.png"; // Cập nhật đường dẫn hình ảnh
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
-
+    const [alertShown, setAlertShown] = useState(false); // New state to track alert
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -28,10 +29,8 @@ const Register = () => {
 
     const handleRoleChange = (e) => {
         const value = e.target.value;
-
         const rolevalue = value === "applicant" ? 0 : 1;
-
-        setRole(rolevalue)
+        setRole(rolevalue);
     };
 
     const handleSubmit = async (e) => {
@@ -47,7 +46,7 @@ const Register = () => {
                 for (let f in user) {
                     form.append(f, user[f]);
                 }
-                form.append("role", role)
+                form.append("role", role);
                 let res = await APIs.post(endpoints["register_user"], form, {
                     headers: {
                         "Content-Type": "multipart/form-data",
@@ -55,18 +54,22 @@ const Register = () => {
                 });
             
                 if (res.status === 201) {
-                    const userId = res.data.id; // Lưu userId từ response
-                    alert("Đăng ký thành công");
-                    if (role === 0) {
-                        navigate(`/register-applicant/${userId}`);
-                    } else if (role === 1) {
-                        navigate(`/register-employer/${userId}`);
-                    }
+                    const userId = res.data.id;
+                    toast.success('Đăng kí thành công');
+                    setTimeout(() => {
+                        if (role === 0) {
+                            navigate(`/register-applicant/${userId}`);
+                        } else if (role === 1) {
+                            navigate(`/register-employer/${userId}`);
+                        }
+                    }, 2000); // Chờ 2 giây để người dùng có thể thấy thông báo trước khi chuyển trang
                 }
-                const userId = res.data.id; 
-                console.log(userId);
             } catch (error) {
                 console.error(error);
+                if (!alertShown) {
+                    toast.error('Đăng kí thất bại. Vui lòng thử lại!');
+                    setAlertShown(true); // Update state to prevent multiple alerts
+                }
             } finally {
                 setLoading(false);
             }
@@ -140,6 +143,7 @@ const Register = () => {
                         type="submit"
                         className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-800"
                         loading={loading}
+                        onClick={handleSubmit}
                     >
                         Register
                     </button>
@@ -151,6 +155,7 @@ const Register = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

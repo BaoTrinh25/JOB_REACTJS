@@ -4,6 +4,8 @@ import { GoogleLogin } from '@react-oauth/google';
 import { MyDispatchContext } from '../../configs/Context';
 import APIs, { authApi, endpoints } from '../../configs/APIs';
 import { setToken } from '../../utils/storage';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,6 +13,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [alertShown, setAlertShown] = useState(false); // New state to track alert
   const nav = useNavigate();
   const dispatch = useContext(MyDispatchContext);
 
@@ -24,17 +27,23 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('Đăng nhập thành công');
+    login();
   };
 
   const handleGoogleLoginSuccess = (response) => {
     console.log(response);
-    alert('Đăng nhập với Google thành công');
+    if (!alertShown) {
+      toast.success('Đăng nhập với Google thành công');
+      setAlertShown(true); // Update state to prevent multiple alerts
+    }
   };
 
   const handleGoogleLoginFailure = (response) => {
     console.log(response);
-    alert('Đăng nhập với Google thất bại');
+    if (!alertShown) {
+      toast.error('Đăng nhập với Google thất bại');
+      setAlertShown(true); // Update state to prevent multiple alerts
+    }
   };
 
   const fields = [
@@ -53,35 +62,26 @@ const Login = () => {
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
-        // "client_id": "7rrgMPM5ZyDftLLyYE8O1iM4z9lr9QhqvbF7rNWO",
-        // "client_secret": "nW8B2KcbUPxLFPCkL1iSqadDymHJrwJwN7oYZnuQzyC6TfPY3O1bMgoVtnxznyoWLwN3eDuJZPBTaPLlVICMl5qHalTKo9zeAeTXMYWBO5wTWdJuZGtE72YjFF5siGq8",
-
         "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
         "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
-        
         "grant_type": "password",
       });
 
       setToken(res.data.access_token);
-
       setTimeout(async () => {
         let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
-        console.info(user.data);
         dispatch({ "type": "login", "payload": user.data });
-        nav("/");
+        setTimeout(() => nav("/"), 500); // Redirect after 1.5 seconds
+        if (!alertShown) {
+          toast.success('Đăng nhập thành công');
+          setAlertShown(true); // Update state to prevent multiple alerts
+        }
       }, 100);
     } catch (ex) {
-      alert(
-        'Lỗi đăng nhập',
-        'Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!',
-        [
-          {
-            text: 'Đóng',
-            style: 'cancel',
-          },
-        ],
-        { cancelable: false }
-      );
+      if (!alertShown) {
+        toast.error('Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!');
+        setAlertShown(true); // Update state to prevent multiple alerts
+      }
     } finally {
       setLoading(false);
     }
@@ -107,7 +107,7 @@ const Login = () => {
           ))}
         </div>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <button type="submit" className="w-full bg-green-700 text-white py-2 rounded hover:bg-teal-900" onClick={login}>
+        <button type="submit" className="w-full bg-green-700 text-white py-2 rounded hover:bg-teal-900">
           Login
         </button>
         <div className="mt-4 text-center">
@@ -136,6 +136,7 @@ const Login = () => {
           )}
         />
       </form>
+      <ToastContainer />
     </div>
   );
 };

@@ -5,11 +5,12 @@ import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInf
 import { FaEdit, FaUpload } from 'react-icons/fa';
 import bannerImage from '../../../assets/banner_hiring.jpg'
 import defaultAvatar from '../../../assets/default_avatar.png';
-import { BookmarkBorderOutlined, Delete, EmailOutlined, ListAltOutlined, PhoneAndroid, SearchSharp, TagOutlined, Update } from '@mui/icons-material';
+import { BookmarkBorderOutlined, Delete, EmailOutlined, ListAltOutlined, PhoneAndroid, SearchSharp, Settings, TagOutlined, Update } from '@mui/icons-material';
 import { BiDollarCircle } from 'react-icons/bi';
 import { BsGenderFemale, BsGenderMale } from 'react-icons/bs';
-import { getToken } from '../../../utils/storage';
+import { getToken, removeToken } from '../../../utils/storage';
 import { authApi, endpoints } from '../../../configs/APIs';
+import Modal from 'react-modal';
 
 const ProfileApplicant = () => {
     const navigate = useNavigate();
@@ -19,6 +20,8 @@ const ProfileApplicant = () => {
     const [profileImage, setProfileImage] = useState(defaultAvatar);
     const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null);
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [SuccessModalOpen, setSuccessModalOpen] = useState(false);
 
     useEffect(() => {
         if (user && user.avatar) {
@@ -33,7 +36,6 @@ const ProfileApplicant = () => {
     ];
 
     const dataAccount = [
-
         { id: 1, title: 'Cập nhật thông tin ứng viên', icon: <FaUpload /> },
         { id: 2, title: 'Cập nhật thông tin cá nhân', icon: <Update /> },
         { id: 3, title: 'Xóa tài khoản', icon: <Delete /> },
@@ -44,8 +46,7 @@ const ProfileApplicant = () => {
             navigate('');
         } else if (item.id === 2) {
             navigate('/jobs');
-        }
-        else if (item.id === 3) {
+        } else if (item.id === 3) {
             navigate('/job-applied');
         }
     };
@@ -54,10 +55,9 @@ const ProfileApplicant = () => {
         if (item.id === 1) {
             navigate('/updateProfile-appplicant');
         } else if (item.id === 2) {
-            navigate('/updateProfile-user'); 
-        }
-        else if (item.id === 3) {
-            navigate(''); //xóa tài khoản
+            navigate('/updateProfile-user');
+        } else if (item.id === 3) {
+            setDeleteModalOpen(true);
         }
     };
 
@@ -91,8 +91,7 @@ const ProfileApplicant = () => {
 
         try {
             const token = getToken();
-            const response = await authApi(token).patch(endpoints['patch_user'], 
-                form, {
+            const response = await authApi(token).patch(endpoints['patch_user'], form, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -104,6 +103,30 @@ const ProfileApplicant = () => {
         } catch (error) {
             console.error('Error uploading image:', error);
         }
+    };
+
+    const handleDeleteAccount = async () => {
+        try {
+            const token = getToken();
+            const response = await authApi(token).delete(endpoints['delete_user'](user.id));
+
+            if (response.status === 204) {
+                removeToken(); // Xóa token khỏi localStorage hoặc sessionStorage
+                setDeleteModalOpen(false);
+                setSuccessModalOpen(true);
+                setTimeout(() => {
+                    navigate('/');
+                    setSuccessModalOpen(false);
+                    window.location.reload(); // Refresh lại trang web
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error);
+        }
+    };
+
+    const closeSuccessModal = () => {
+        setSuccessModalOpen(false);
     };
 
     return (
@@ -150,14 +173,14 @@ const ProfileApplicant = () => {
                 </div>
                 <div className='container mt-5 pt-10'>
                     <div className="mb-3 px-10 flex flex-col">
-                        <span>Ứng viên: <span  className="font-bold">{user.username}</span></span>
+                        <span>Ứng viên: <span className="font-bold">{user.username}</span></span>
                         <span>Mã ứng viên: <span className="font-bold">{user.id}</span></span>
                     </div>
                     <div className='flex flex-row w-full mt-7'>
                         <div className="mb-3 w-[45%] mx-4 pt-3 border-2 border-red-200 border-dashed bg-yellow-50">
                             <div className="flex items-center mb-3 px-5">
                                 <IoBriefcase className="mr-2 w-6 h-6" />
-                                <span className="font-sans">Lĩnh vực: {user?.jobSeeker?.career.name}</span>
+                                <span className="font-sans">Lĩnh vực: {user?.jobSeeker?.career.name ? `${user.jobSeeker.career.name}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
                             <div className="flex items-center mb-3 px-5">
                                 <IoBusiness className="mr-2 w-6 h-6" />
@@ -171,7 +194,7 @@ const ProfileApplicant = () => {
                             </div>
                             <div className="flex items-center mb-3 px-5">
                                 <IoLocation className="mr-2 w-6 h-6" />
-                                <span className="font-sans">Kinh nghiệm: {user?.jobSeeker?.experience}</span>
+                                <span className="font-sans">Kinh nghiệm: {user?.jobSeeker?.experience ? `${user.jobSeeker.experience}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
                             <div className="flex items-center mb-3 px-5">
                                 <IoContract className="mr-2 w-6 h-6" />
@@ -184,80 +207,113 @@ const ProfileApplicant = () => {
                                 ))}
                             </div>
                             <div className="flex items-center mb-3 px-5">
-                                <IoInformationCircle className="mr-2 w-6 h-6" />
-                                <span className="font-sans">Vị trí : {user?.jobSeeker?.position}</span>
+                                <BiDollarCircle className="mr-2 w-6 h-6" />
+                                <span className="font-sans">Mức lương mong muốn: {user?.jobSeeker?.salary_expectation ? `${user.jobSeeker.salary_expectation}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
                             <div className="flex items-center mb-3 px-5">
-                                <BiDollarCircle className="mr-2 w-6 h-6" />
-                                <span className="font-sans">Mức lương mong muốn: {user?.jobSeeker?.salary_expectation} VNĐ</span>
+                                <IoInformationCircle className="mr-2 w-6 h-6" />
+                                <span className="font-sans">Vị trí mong muốn: {user?.jobSeeker?.position ? `${user.jobSeeker.position}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
                         </div>
-                        <div className='mb-3 w-[45%] mx-4 border-2 p-3 border-red-200 border-dashed bg-yellow-50'>
+                        <div className="mb-3 w-[45%] mx-4 pt-3 border-2 border-red-200 border-dashed bg-yellow-50">
                             <div className="flex items-center mb-3 px-5">
                                 <TagOutlined className="mr-2 w-6 h-6" />
-                                <span>Tên: </span>
-                                <span className="font-sans pl-2">
-                                    {user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : <span className="text-red-800">Bạn chưa cập nhật</span>}
-                                </span>
-                            </div>
-                            <div className="flex items-center mb-3 px-5">
-                                {user?.gender === 1 ? <BsGenderFemale className="mr-2 w-6 h-6" /> : <BsGenderMale className="mr-2 w-6 h-6" />}
-                                <span className="font-sans">
-                                    Giới tính: {user?.gender === 1 ? 'Nữ' : user?.gender === 2 ? 'Nam' : <span className="text-red-800">Bạn chưa cập nhật</span>}
-                                </span>
+                                <span className="font-sans">Họ và tên: {user.first_name ? `${user.first_name} ${user.last_name}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
                             <div className="flex items-center mb-3 px-5">
                                 <EmailOutlined className="mr-2 w-6 h-6" />
-                                <span className="font-sans">
-                                    Email: {user?.email ? user.email : <span className="text-red-800">Bạn chưa cập nhật</span>}
-                                </span>
+                                <span className="font-sans">Email: {user.email ? `${user.email}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
                             <div className="flex items-center mb-3 px-5">
                                 <PhoneAndroid className="mr-2 w-6 h-6" />
-                                <span>Liên hệ: </span>
-                                <span className="font-sans pl-2">
-                                    {user?.mobile ? `${user.mobile}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}
-                                </span>
+                                <span className="font-sans">Điện thoại: {user.mobile ? `${user.mobile}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
+                            </div>
+                            <div className="flex items-center mb-3 px-5">
+                                {user.gender === 'female' ? (
+                                    <BsGenderFemale className="mr-2 w-6 h-6" />
+                                ) : (
+                                    <BsGenderMale className="mr-2 w-6 h-6" />
+                                )}
+                                <span className="font-sans">Giới tính: {user.gender === 'female' ? 'Nữ' : 'Nam'}</span>
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center mb-3 px-5">
-                        <span className="font-sans">CV của bạn: {user?.jobSeeker?.cv ? user?.jobSeeker?.cv : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
+                </div>
+                <div className="border-t border-gray-200 border-dashed mt-10">
+                    <h2 className="mt-5 text-lg font-bold flex items-center mb-3">
+                        <Settings className="mr-2 w-5 h-5" />Quản lý tìm việc
+                    </h2>
+    
+                    <div className="grid grid-cols-3 gap-3 mt-3 mx-3">
+                        {dataManage.map((item) => (
+                            <div
+                                key={item.id}
+                                className="bg-gray-100 text-blue-800 px-4 py-3 rounded-md shadow hover:bg-red-100 flex items-center cursor-pointer"
+                                onClick={() => navigateToDetail(item)}
+                            >
+                                {item.icon}
+                                <span className="ml-2">{item.title}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="border-t border-gray-200 border-dashed mt-10">
+                <h2 className="mt-5 text-lg font-bold flex items-center mb-3">
+                            <Settings className="mr-2 w-5 h-5" />Quản lý tài khoản
+                        </h2>
+                    <div className="grid grid-cols-3 gap-3 mt-3 mx-3">
+                        {dataAccount.map((item) => (
+                            <div
+                                key={item.id}
+                                className="bg-gray-100 text-blue-900 px-4 py-3 rounded-md shadow hover:bg-red-100 flex items-center cursor-pointer"
+                                onClick={() => navigateToDetailAcc(item)}
+                            >
+                                {item.icon}
+                                <span className="ml-2">{item.title}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
-            <div className="mt-8 w-full max-w-4xl">
-                <h2 className="text-2xl font-bold mb-4">Quản lý tìm việc</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    {dataManage.map((item) => (
-                        <div
-                            key={item.id}
-                            className="bg-white shadow-md rounded-lg p-4 flex items-center cursor-pointer hover:bg-yellow-50"
-                            onClick={() => navigateToDetail(item)}
+
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onRequestClose={() => setDeleteModalOpen(false)}
+                contentLabel="Delete Account Confirmation"
+                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50"
+            >
+                <div className="bg-white rounded-lg p-8 max-w-lg mx-auto">
+                    <h2 className="text-xl font-semibold mb-4">Xác nhận xóa tài khoản</h2>
+                    <p className="mb-4">Bạn có chắc chắn muốn xóa tài khoản của mình không? Hành động này không thể hoàn tác.</p>
+                    <div className="flex justify-end">
+                        <button
+                            onClick={() => setDeleteModalOpen(false)}
+                            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md mr-2"
                         >
-                            {item.icon}
-                            <span className="ml-2">{item.title}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="mt-8 w-full max-w-4xl">
-                <h2 className="text-2xl font-bold mb-4">Quản lý tài khoản</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    {dataAccount.map((item) => (
-                        <div
-                            key={item.id}
-                            className="bg-white shadow-md rounded-lg p-4 flex items-center cursor-pointer hover:bg-yellow-50"
-                            onClick={() => navigateToDetailAcc(item)}
+                            Hủy bỏ
+                        </button>
+                        <button
+                            onClick={handleDeleteAccount}
+                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
                         >
-                            {item.icon}
-                            <span className="ml-2">{item.title}</span>
-                        </div>
-                    ))}
+                            Xóa tài khoản
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </Modal>
+
+            <Modal
+                isOpen={SuccessModalOpen}
+                onRequestClose={closeSuccessModal}
+                contentLabel="Delete Success"
+                className="bg-white rounded-lg p-8 max-w-md mx-auto mt-20 shadow-lg"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+            >
+                <h2 className="text-lg font-bold mb-4">Xóa tài khoản thành công!</h2>
+            </Modal>
         </div>
     );
-}
+};
 
 export default ProfileApplicant;

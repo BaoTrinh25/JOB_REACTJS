@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import APIs, { endpoints } from '../../../configs/APIs';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterEmployer = () => {
     const [step, setStep] = useState(1);
@@ -10,6 +12,7 @@ const RegisterEmployer = () => {
     const [information, setInfomation] = useState('');
     const [address, setAddress] = useState('');
     const [company_type, setCompanyType] = useState(null); 
+    const [alertShown, setAlertShown] = useState(false); // New state to track alert
     const navigate = useNavigate(); 
     const { userId } = useParams();
 
@@ -79,7 +82,10 @@ const RegisterEmployer = () => {
                 }
             });
             console.log('Server response:', res.data); // Log dữ liệu trả về từ server
-            alert('Thông tin đã được cập nhật thành công!');
+            if (!alertShown) {
+                toast.success('Đăng kí thành công');
+                setAlertShown(true); // Update state to prevent multiple alerts
+              }
             navigate('/login'); // Chuyển hướng người dùng sau khi đăng ký thành công
         } catch (err) {
             console.error(err);

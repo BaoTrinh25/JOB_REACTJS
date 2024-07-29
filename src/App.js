@@ -26,7 +26,7 @@ import ListPosted from './pages/User/Company/ListPosted';
 import JobApplied from './pages/User/JobSeeker/JobApplied';
 import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
 
-const noHeaderFooterRoutes = ['/login', '/register'];
+const noHeaderFooterRoutes = ['/login', '/register', '/job-posted'];
 
 function AppLayout() {
   const location = useLocation();

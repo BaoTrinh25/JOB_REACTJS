@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchJobDetail } from '../../../configs/APIs';
-import { BiBookmark } from 'react-icons/bi';
-import { BsFillBookmarkFill } from 'react-icons/bs';
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from '../../../configs/Context';
 

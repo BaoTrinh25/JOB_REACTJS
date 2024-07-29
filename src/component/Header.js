@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/job-seeker.png';
 import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit } from 'react-icons/fa';
@@ -8,11 +8,15 @@ import { Dropdown } from 'flowbite-react';
 const Header = () => {
   const user = useContext(MyUserContext);
   const dispatch = useContext(MyDispatchContext);
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch({ "type": "logout" });
-    nav('/');
+    navigate('/');
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
   return (
@@ -70,29 +74,30 @@ const Header = () => {
                 <FaCaretDown className="ml-1 group-hover:text-yellow-400 mt-auto" />
               </div>}
             >
-              <Dropdown.Item>
-                <Link to={user.role === 1 ? "/employer-profile" : "/applicant-profile"} className="flex items-center ">
+              <Dropdown.Item onClick={() => handleNavigation(user.role === 1 ? "/employer-profile" : "/applicant-profile")}>
+                <div className="flex items-center">
                   <FaUserEdit className="mr-2" /> My Profile
-                </Link>
+                </div>
               </Dropdown.Item>
               {user.role === 1 && (
-                <Dropdown.Item>
-                  <div className='flex flex-col'>
-                    <Link to="/post-recruitment" className="flex items-center">
+                <>
+                  <Dropdown.Item onClick={() => handleNavigation("/post-recruitment")}>
+                    <div className="flex items-center">
                       <FaBriefcase className="mr-2" /> Đăng bài
-                    </Link>
-                    <Link to="/job-posted" className="flex items-center mt-5 ">
+                    </div>
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => handleNavigation("/job-posted")}>
+                    <div className="flex items-center">
                       <FaBriefcase className="mr-2" /> Danh sách bài tuyển dụng
-                    </Link>
-                  </div>
-                </Dropdown.Item>
+                    </div>
+                  </Dropdown.Item>
+                </>
               )}
               <Dropdown.Item onClick={handleLogout}>
                 <div className='group flex'>
-                  <FaSignInAlt className="mr-2  mt-1" />
+                  <FaSignInAlt className="mr-2 mt-1" />
                   <span>Đăng xuất</span>
                 </div>
-
               </Dropdown.Item>
             </Dropdown>
           ) : (

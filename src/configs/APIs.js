@@ -13,6 +13,7 @@ export const endpoints = {
     'patch_user': `/users/patch-current-user/`,
     'put_jobSeeker': (id) => `/jobSeeker/${id}/`,
     'patch_company': (id) => `/companies/${id}/`,
+    'delete_user': (id) => `/users/${id}/delete-account/`,
     
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
@@ -21,6 +22,9 @@ export const endpoints = {
     'post_recruitment': `/jobs/`,
     'job_posted': `/companies/list_job/`,
     'job_applied': `/jobSeeker/list_job_apply/`,
+    'post_cmt': (id) => `/jobs/${id}/comments/`,
+    'list_cmt': (id) => `/jobs/${id}/comments/`,
+    'delete_job':(id) => `/jobs/${id}/`,
 
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,
