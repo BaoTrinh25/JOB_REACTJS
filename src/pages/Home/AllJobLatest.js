@@ -8,14 +8,15 @@ const AllJobLatest = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(false);
+  const [searchParams, setSearchParams] = useState({ keyword: '', location: '' });
   const navigate = useNavigate();
 
-  const fetchJobs = async (pageNum = 1) => {
+  const fetchJobs = async (pageNum = 1, keyword = '', location = '') => {
     if (loading) return;
     setLoading(true);
 
     try {
-      const data = await fetchAllJob(pageNum);
+      const data = await fetchAllJob(pageNum, keyword, location);
       if (data && Array.isArray(data.results)) {
         setJobs(data.results);
         setPage(pageNum);
@@ -36,14 +37,19 @@ const AllJobLatest = () => {
 
   const handleNextPage = () => {
     if (hasNextPage) {
-      fetchJobs(page + 1);
+      fetchJobs(page + 1, searchParams.keyword, searchParams.location);
     }
   };
 
   const handlePrevPage = () => {
     if (page > 1) {
-      fetchJobs(page - 1);
+      fetchJobs(page - 1, searchParams.keyword, searchParams.location);
     }
+  };
+
+  const handleSearch = (keyword, location) => {
+    setSearchParams({ keyword, location });
+    fetchJobs(1, keyword, location); // Tìm kiếm từ trang đầu tiên
   };
 
   const renderJobItem = (job) => (
@@ -65,7 +71,7 @@ const AllJobLatest = () => {
 
   return (
     <div className="container mx-auto my-20">
-      <SearchJobs />
+      <SearchJobs onSearch={handleSearch} />
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-400"></div>

@@ -6,6 +6,7 @@ import { BsFillBookmarkFill } from 'react-icons/bs';
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from '../../configs/Context';
 import { getToken } from '../../utils/storage';
+import Ratings from '../User/JobSeeker/Ratings';
 
 const JobDetail = () => {
     const { jobId } = useParams();
@@ -218,6 +219,8 @@ const JobDetail = () => {
                         ))
                     )}
                 </div>
+                <h1 className="text-2xl font-bold mb-4">Rating</h1>
+                <Ratings jobId={jobId}/>
             </div>
         </div>
     );

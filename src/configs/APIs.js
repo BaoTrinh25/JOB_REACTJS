@@ -17,6 +17,7 @@ export const endpoints = {
     
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
+    'alljobs': `/jobs/`,
     'jobs_popular': (pageNum) => `/jobs/popular/?page=${pageNum}`,
     'job_detail': (id) => `/jobs/${id}/`,  
     'post_recruitment': `/jobs/`,
@@ -25,6 +26,7 @@ export const endpoints = {
     'post_cmt': (id) => `/jobs/${id}/comments/`,
     'list_cmt': (id) => `/jobs/${id}/comments/`,
     'delete_job':(id) => `/jobs/${id}/`,
+    'rating': (id) => `/jobs/${id}/ratings/`,
 
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,
@@ -46,15 +48,30 @@ const APIs = axios.create({
 });
 
 //ds công việc mới nhất giảm dần theo ngày tạo(or id)
-export const fetchAllJob = async (pageNum = 1) => {
+// export const fetchAllJob = async (pageNum = 1) => {
+//     try {
+//         const response = await APIs.get(endpoints['alljob'](pageNum));
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching all job:', error);
+//         throw error;
+//     }
+// };
+export const fetchAllJob = async (pageNum = 1, keyword = '', location = '') => {
     try {
-        const response = await APIs.get(endpoints['alljob'](pageNum));
+        const response = await APIs.get(endpoints['alljob'](pageNum), {
+            params: {
+                title: keyword,
+                location: location,
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching all job:', error);
         throw error;
     }
 };
+
 
 
 
