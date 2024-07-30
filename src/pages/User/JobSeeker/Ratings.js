@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import APIs, { endpoints } from '../../../configs/APIs';
+import APIs, { authApi, endpoints } from '../../../configs/APIs';
 import defaultAvatar from '../../../assets/default_avatar.png';
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from "../../../configs/Context";
 import Modal from 'react-modal';
+import { getToken } from '../../../utils/storage';
 
 // Cấu hình CSS cho Modal
 const customStyles = {
@@ -60,9 +61,13 @@ const Ratings = ({ jobId }) => {
         }
         setIsSubmittingComment(true);
         try {
-            const response = await APIs.post(endpoints['rating'](jobId), {
+            const token = getToken();
+            const response = await authApi(token).post(endpoints['rating'](jobId), {
                 rating: newRating,
-                content: newComment,
+                comment: newComment,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             });
             setRatings([...ratings, response.data]);
             setNewComment('');
@@ -122,15 +127,15 @@ const Ratings = ({ jobId }) => {
                     <p>Chưa có bình luận nào.</p>
                 ) : (
                     ratings.map((rating) => (
-                        <div key={rating.id} className="flex items-start mb-4 w-[40%]">
+                        <div key={rating.id} className="flex items-start mb-4 w-[40%] ">
                             <img
                                 src={rating.user.avatar ? rating.user.avatar : defaultAvatar}
                                 alt="avatar"
                                 className="w-14 h-14 rounded-full mr-4 border-2 border-orange-200"
                             />
-                            <div className="bg-gray-100 p-4 rounded-lg w-full">
-                                <div className="flex justify-between">
-                                    <p className="text-sm text-gray-600 mb-1">
+                            <div className="bg-gray-100 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div className="flex flex-col">
+                                    <p className="text-base text-black-600 mb-1">
                                         By: {rating.user.username}
                                     </p>
                                     <p className="text-xs text-gray-500 mb-1">
