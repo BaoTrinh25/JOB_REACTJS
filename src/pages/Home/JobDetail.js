@@ -22,13 +22,14 @@ const JobDetail = () => {
 
     const navigate = useNavigate();
     const user = useContext(MyUserContext);
+    console.log(user);
 
     useEffect(() => {
         const getJobDetails = async () => {
             try {
                 const response = await fetchJobDetail(jobId);
                 setJob(response.data);
-                console.log(response.data);
+                // console.log(response.data);
                 const favoriteJobs = JSON.parse(localStorage.getItem('favoriteJobs')) || [];
                 const isFav = favoriteJobs.some(item => item.id === jobId);
                 setIsFavorite(isFav);
@@ -43,7 +44,7 @@ const JobDetail = () => {
             try {
                 const response = await APIs.get(endpoints['list_cmt'](jobId));
                 setComments(Array.isArray(response.data.results) ? response.data.results : []);
-                console.log(response.data.results);
+                // console.log(response.data.results);
             } catch (error) {
                 console.error('Error fetching comments:', error);
             }
@@ -54,7 +55,7 @@ const JobDetail = () => {
     }, [jobId]);
 
     const handleApplyJob = async () => {
-        if (user?.company) {
+        if (user?.role === 1) {
             setNotificationMessage('Tính năng này không phù hợp với vai trò của bạn');
             setShowNotification(true);
             setTimeout(() => {
@@ -62,7 +63,7 @@ const JobDetail = () => {
             }, 3000);
             return;
         }
-        if (user?.jobSeeker) {
+        if (user?.role === 0) {
             navigate(`/jobApplication/${jobId}`);
         } else {
             alert('Bạn cần đăng nhập!');
@@ -70,33 +71,6 @@ const JobDetail = () => {
         }
     };
 
-    const handleSubmitComment = async () => {
-        if (!newComment.trim()) return;
-
-        setIsSubmittingComment(true);
-        try {
-            const token = getToken();
-            const form = new FormData();
-            form.append('content', newComment);
-
-            const res = await authApi(token).post(endpoints['post_cmt'](jobId), form, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            });
-
-            if (res.status === 201) {
-                setComments([...comments, res.data]);
-                setNewComment('');
-            } else {
-                console.error('Error posting comment:', res.data);
-            }
-        } catch (error) {
-            console.error('Error posting comment:', error);
-        } finally {
-            setIsSubmittingComment(false);
-        }
-    };
 
     const handleToggleFavorite = async () => {
         if (!user) {
@@ -153,7 +127,7 @@ const JobDetail = () => {
                     <p>Lĩnh vực: {job?.career.name}</p>
                     <p>Mức lương: {job?.salary} VNĐ</p>
                     <p>Giới tính: {job?.gender === 1 ? 'Nữ' : 'Nam'}</p>
-                    <p>Loại hình công việc: {job?.employmenttype.type}</p>
+                    <p>Loại hình công việc: {job?.employmenttype?.type}</p>
                     <p>Số lượng tuyển: {job?.quantity}</p>
                     <p>Địa điểm: {job?.location}</p>
                     <p className="text-red-500">Hạn nộp hồ sơ: {job?.deadline}</p>
