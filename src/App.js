@@ -23,10 +23,10 @@ import JobApplication from './pages/User/JobSeeker/JobApplication';
 import UpdateInfoProfileEmployer from './pages/User/Company/UpdateInfoEmployer';
 import PostRecruitment from './pages/User/Company/PostRecruitment';
 import ListPosted from './pages/User/Company/ListPosted';
-import JobApplied from './pages/User/JobSeeker/JobApplied';
 import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
+import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
 
-const noHeaderFooterRoutes = ['/login', '/register', '/job-posted'];
+const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied'];
 
 function AppLayout() {
   const location = useLocation();
@@ -49,7 +49,7 @@ function AppLayout() {
           <Route path="/about" element={<About />} />
           <Route path="/job-detail/:jobId" element={<JobDetail />} />
           <Route path='/job-posted' element={<ListPosted />} /> 
-          <Route path='/job-applied' element={<JobApplied />} /> 
+          <Route path='/job-applied' element={<ListJobApplied />} /> 
           <Route path='/application-detail' element={<ApplicationDetail />} /> 
 
           <Route path='/employer-profile' element={<ProfileEmployer />} />

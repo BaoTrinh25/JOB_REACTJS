@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/job-seeker.png';
-import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
+import { BiLike } from 'react-icons/bi';
+import { AiFillLike } from 'react-icons/ai';
 
 const Header = () => {
   const user = useContext(MyUserContext);
@@ -11,7 +13,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch({ "type": "logout" });
+    dispatch({ type: 'logout' });
     navigate('/');
   };
 
@@ -44,17 +46,52 @@ const Header = () => {
                 Jobs
               </Link>
             </li>
-            <li className="text-center group">
-              <Link to="/about" className="text-white group-hover:text-yellow-400">
-                <FaInfoCircle className="text-white group-hover:text-yellow-400 mx-auto" />
-                About
-              </Link>
-            </li>
-            <li className="text-center group">
-              <Link to="/contact" className="text-white group-hover:text-yellow-400">
-                <FaEnvelope className="text-white mx-auto group-hover:text-yellow-400" /> Contact
-              </Link>
-            </li>
+            {user && user.role === 0 ? (
+              <>
+                <li className="text-center group">
+                  <Link to="/job-applied" className="text-white group-hover:text-yellow-400">
+                    <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Applied Job
+                  </Link>
+                </li>
+                <li className="text-center group">
+                  <Link to="/liked-jobs" className="text-white group-hover:text-yellow-400">
+                    <AiFillLike className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Liked Job
+                  </Link>
+                </li>
+              </>
+            ) : user && user.role === 1 ? (
+              <>
+                <li className="text-center group">
+                  <Link to="/post-job" className="text-white group-hover:text-yellow-400">
+                    <FaInfoCircle className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Post a Job
+                  </Link>
+                </li>
+                <li className="text-center group">
+                  <Link to="/posted-jobs" className="text-white group-hover:text-yellow-400">
+                    <FaEnvelope className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Job Posted 
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="text-center group">
+                  <Link to="/about" className="text-white group-hover:text-yellow-400">
+                    <FaInfoCircle className="text-white group-hover:text-yellow-400 mx-auto" />
+                    About
+                  </Link>
+                </li>
+                <li className="text-center group">
+                  <Link to="/contact" className="text-white group-hover:text-yellow-400">
+                    <FaEnvelope className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Contact
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
         <div className="h-10 w-px bg-gray-300 mx-2"></div>
@@ -79,24 +116,11 @@ const Header = () => {
                   <FaUserEdit className="mr-2" /> My Profile
                 </div>
               </Dropdown.Item>
-              {user.role === 1 && (
-                <>
-                  <Dropdown.Item onClick={() => handleNavigation("/post-recruitment")}>
-                    <div className="flex items-center">
-                      <FaBriefcase className="mr-2" /> Đăng bài
-                    </div>
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleNavigation("/job-posted")}>
-                    <div className="flex items-center">
-                      <FaBriefcase className="mr-2" /> Danh sách bài tuyển dụng
-                    </div>
-                  </Dropdown.Item>
-                </>
-              )}
+
               <Dropdown.Item onClick={handleLogout}>
                 <div className='group flex'>
                   <FaSignInAlt className="mr-2 mt-1" />
-                  <span>Đăng xuất</span>
+                  <span>Log out</span>
                 </div>
               </Dropdown.Item>
             </Dropdown>

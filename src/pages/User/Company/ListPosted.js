@@ -4,7 +4,7 @@ import APIs, { endpoints } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
 import Modal from 'react-modal';
 import { BiPencil, BiTrash } from 'react-icons/bi';
-import Sidebar from '../../../component/Sidebar';
+import SidebarEmployer from '../../../component/SidebarEmployer';
 
 const ListPosted = () => {
   const [jobs, setJobs] = useState([]);
@@ -79,7 +79,7 @@ const ListPosted = () => {
 
   return (
     <div className="flex h-screen">
-      <Sidebar />
+      <SidebarEmployer />
       <div className="container mx-auto bg-slate-200 p-10">
         {loading ? (
           <div className="flex justify-center items-center h-64">

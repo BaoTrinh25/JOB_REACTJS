@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaLock, FaInbox, FaChartBar } from 'react-icons/fa';
-import { Sidebar as FlowbiteSidebar, Dropdown } from 'flowbite-react';
+import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaInbox } from 'react-icons/fa';
+import { Sidebar as FlowbiteSidebar } from 'flowbite-react';
 
-const Sidebar = () => {
+const SidebarEmployer = () => {
     const navigate = useNavigate();
     const [isEcommerceOpen, setIsEcommerceOpen] = useState(false);
 
@@ -38,7 +38,7 @@ const Sidebar = () => {
                     onClick={() => navigate('/post-recruitment')}
                     className="hover:bg-gray-700 rounded"
                 >
-                    Đăng bài
+                    Post a Job
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaCog}
@@ -56,13 +56,13 @@ const Sidebar = () => {
                             onClick={() => navigate('/updateProfile-user')}
                             className="hover:bg-gray-700 rounded cursor-pointer"
                         >
-                            Cập nhật thông tin cá nhân
+                            Update Info User
                         </FlowbiteSidebar.Item>
                         <FlowbiteSidebar.Item
                             onClick={() => navigate('/updateProfile-employer')}
                             className="hover:bg-gray-700 rounded cursor-pointer"
                         >
-                            Cập nhật thông tin NTD
+                            Update Info employer
                         </FlowbiteSidebar.Item>
                     </div>
                 )}
@@ -75,14 +75,14 @@ const Sidebar = () => {
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaSignOutAlt}
-                    onClick={() => navigate('/logout')}
+                    onClick={() => navigate('')}
                     className="hover:bg-gray-700 rounded cursor-pointer"
                 >
-                    Đăng xuất
+                    Log out
                 </FlowbiteSidebar.Item>
             </FlowbiteSidebar.ItemGroup>
         </FlowbiteSidebar>
     );
 };
 
-export default Sidebar;
+export default SidebarEmployer;

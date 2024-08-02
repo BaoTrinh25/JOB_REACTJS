@@ -101,7 +101,7 @@ const RegisterEmployer = () => {
                 className="bg-yellow-50 p-8 rounded shadow-md w-full max-w-2xl relative"
                 onSubmit={handleSubmit}
             >
-                <h2 className="text-2xl text-red-900 font-bold mb-10 text-center">ĐĂNG KÝ THÔNG TIN ỨNG VIÊN</h2>
+                <h2 className="text-2xl text-red-900 font-bold mb-10 text-center">ĐĂNG KÝ THÔNG TIN NHÀ TUYỂN DỤNG</h2>
 
                 <div className="mb-7">
                     {step > 1 && (

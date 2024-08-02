@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import APIs, { authApi, endpoints, fetchJobDetail } from '../../configs/APIs';
 import { BiBookmark } from 'react-icons/bi';
 import { BsFillBookmarkFill } from 'react-icons/bs';
-import { useNavigate } from "react-router-dom";
 import { MyUserContext } from '../../configs/Context';
-import { getToken } from '../../utils/storage';
 import Ratings from '../User/JobSeeker/Ratings';
+import { getToken } from '../../utils/storage';
 
 const JobDetail = () => {
     const { jobId } = useParams();
@@ -16,23 +15,23 @@ const JobDetail = () => {
     const [isSubmittingFavorite, setIsSubmittingFavorite] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
-    const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
     const user = useContext(MyUserContext);
-    console.log(user);
 
     useEffect(() => {
         const getJobDetails = async () => {
             try {
                 const response = await fetchJobDetail(jobId);
                 setJob(response.data);
-                // console.log(response.data);
-                const favoriteJobs = JSON.parse(localStorage.getItem('favoriteJobs')) || [];
-                const isFav = favoriteJobs.some(item => item.id === jobId);
-                setIsFavorite(isFav);
+
+                // Kiểm tra trạng thái lưu bài viết
+                if (user) {
+                    const token = getToken();
+                    const likeResponse = await authApi(token).get(endpoints['check_liked'](jobId));
+                    setIsFavorite(likeResponse.data.liked);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
@@ -40,19 +39,8 @@ const JobDetail = () => {
             }
         };
 
-        const fetchComments = async () => {
-            try {
-                const response = await APIs.get(endpoints['list_cmt'](jobId));
-                setComments(Array.isArray(response.data.results) ? response.data.results : []);
-                // console.log(response.data.results);
-            } catch (error) {
-                console.error('Error fetching comments:', error);
-            }
-        };
-
         getJobDetails();
-        fetchComments();
-    }, [jobId]);
+    }, [jobId, user]);
 
     const handleApplyJob = async () => {
         if (user?.role === 1) {
@@ -66,42 +54,35 @@ const JobDetail = () => {
         if (user?.role === 0) {
             navigate(`/jobApplication/${jobId}`);
         } else {
-            alert('Bạn cần đăng nhập!');
-            navigate('/login');
+            setNotificationMessage('Bạn cần đăng nhập!');
+            setShowModal(true);
         }
     };
 
-
     const handleToggleFavorite = async () => {
         if (!user) {
-            alert('Bạn cần đăng nhập để lưu công việc yêu thích!');
-            navigate('/login');
+            setNotificationMessage('Bạn cần đăng nhập để lưu công việc yêu thích!');
+            setShowModal(true);
             return;
         }
 
         setIsSubmittingFavorite(true);
-        setTimeout(async () => {
-            const newFavoriteStatus = !isFavorite;
-            setIsFavorite(newFavoriteStatus);
-            setIsSubmittingFavorite(false);
+        try {
+            const token = getToken();
+            const response = await authApi(token).post(endpoints['like'](jobId));
+            setIsFavorite(response.data.liked);
 
-            const message = newFavoriteStatus ? 'Lưu việc làm thành công' : 'Đã bỏ lưu việc làm';
+            const message = response.data.liked ? 'Lưu việc làm thành công' : 'Đã bỏ lưu việc làm';
             setNotificationMessage(message);
             setShowNotification(true);
             setTimeout(() => {
                 setShowNotification(false);
             }, 3000);
-
-            try {
-                const favoriteJobs = JSON.parse(localStorage.getItem('favoriteJobs')) || [];
-                const updatedFavoriteJobs = newFavoriteStatus
-                    ? [...favoriteJobs, job]
-                    : favoriteJobs.filter(item => item.id !== jobId);
-                localStorage.setItem('favoriteJobs', JSON.stringify(updatedFavoriteJobs));
-            } catch (error) {
-                console.error('Error handling favorite job: ', error);
-            }
-        }, 2000);
+        } catch (error) {
+            console.error('Error handling favorite job: ', error);
+        } finally {
+            setIsSubmittingFavorite(false);
+        }
     };
 
     if (loading) {
@@ -153,6 +134,31 @@ const JobDetail = () => {
                 </div>
             </div>
             <Ratings jobId={jobId} />
+
+            {/* Modal */}
+            {showModal && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-black opacity-70"></div>
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-96 z-50">
+                        <h2 className="text-xl font-bold mb-4">Thông báo</h2>
+                        <p>{notificationMessage}</p>
+                        <div className="flex justify-end space-x-4 mt-6">
+                            <button
+                                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-gray-700"
+                                onClick={() => navigate('/login')}
+                            >
+                                Đăng nhập
+                            </button>
+                            <button
+                                className="bg-red-700 text-white py-2 px-4 rounded hover:bg-gray-700"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Đóng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -133,7 +133,7 @@ const Ratings = ({ jobId }) => {
                                 alt="avatar"
                                 className="w-14 h-14 rounded-full mr-4 border-2 border-orange-200"
                             />
-                            <div className="bg-gray-100 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <div className="bg-red-50 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300">
                                 <div className="flex flex-col">
                                     <p className="text-base text-black-600 mb-1">
                                         By: {rating.user.username}
@@ -181,7 +181,7 @@ const Ratings = ({ jobId }) => {
                     </button>
                     <button
                         onClick={closeModal}
-                        className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-gray-600"
                     >
                         Đóng
                     </button>
