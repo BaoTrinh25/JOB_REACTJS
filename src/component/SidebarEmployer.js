@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaInbox } from 'react-icons/fa';
 import { Sidebar as FlowbiteSidebar } from 'flowbite-react';
+import { MyDispatchContext } from '../configs/Context';
 
 const SidebarEmployer = () => {
     const navigate = useNavigate();
     const [isEcommerceOpen, setIsEcommerceOpen] = useState(false);
+    const dispatch = useContext(MyDispatchContext);
 
     const toggleEcommerceDropdown = () => {
         setIsEcommerceOpen(!isEcommerceOpen);
+    };
+
+    const handleLogout = () => {
+        dispatch({ type: 'logout' });
+        navigate('/');
     };
 
     return (
@@ -75,7 +82,7 @@ const SidebarEmployer = () => {
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaSignOutAlt}
-                    onClick={() => navigate('')}
+                    onClick={handleLogout}
                     className="hover:bg-gray-700 rounded cursor-pointer"
                 >
                     Log out

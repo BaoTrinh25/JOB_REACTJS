@@ -1,14 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaInbox, FaSearch, FaHeart } from 'react-icons/fa';
+import { MyDispatchContext } from '../configs/Context';
 import { Sidebar as FlowbiteSidebar } from 'flowbite-react';
 
 const SidebarApplicant = () => {
     const navigate = useNavigate();
     const [isEcommerceOpen, setIsEcommerceOpen] = useState(false);
+    const dispatch = useContext(MyDispatchContext);
 
     const toggleEcommerceDropdown = () => {
         setIsEcommerceOpen(!isEcommerceOpen);
+    };
+
+    const handleLogout = () => {
+        dispatch({ type: 'logout' });
+        navigate('/');
     };
 
     return (
@@ -44,7 +51,7 @@ const SidebarApplicant = () => {
 
                 <FlowbiteSidebar.Item
                     icon={FaHeart}
-                    onClick={() => navigate('')}
+                    onClick={() => navigate('/liked-job')}
                     className="hover:bg-gray-700 rounded cursor-pointer"
                 >
                     Liked Job
@@ -52,7 +59,7 @@ const SidebarApplicant = () => {
 
                 <FlowbiteSidebar.Item
                     icon={FaPlus}
-                    onClick={() => navigate('/job-applied')}
+                    onClick={() => navigate('/applied-job')}
                     className="hover:bg-gray-700 rounded cursor-pointer"
                 >
                     Applied Job
@@ -93,7 +100,7 @@ const SidebarApplicant = () => {
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaSignOutAlt}
-                    onClick={() => navigate('')}
+                    onClick={handleLogout}
                     className="hover:bg-gray-700 rounded cursor-pointer"
                 >
                     Log out

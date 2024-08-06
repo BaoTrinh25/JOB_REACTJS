@@ -22,6 +22,8 @@ const ProfileApplicant = () => {
     const fileInputRef = useRef(null);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [SuccessModalOpen, setSuccessModalOpen] = useState(false);
+    console.log(user.avatar);
+    
 
     useEffect(() => {
         if (user && user.avatar) {
@@ -43,7 +45,7 @@ const ProfileApplicant = () => {
 
     const navigateToDetail = (item) => {
         if (item.id === 1) {
-            navigate('');
+            navigate('liked-job');
         } else if (item.id === 2) {
             navigate('/jobs');
         } else if (item.id === 3) {

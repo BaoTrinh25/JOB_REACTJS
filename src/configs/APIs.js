@@ -21,13 +21,14 @@ export const endpoints = {
     'job_detail': (id) => `/jobs/${id}/`,  
     'post_recruitment': `/jobs/`,
     'job_posted': `/companies/list_job/`,
-    'job_applied': (pageNum) => `/jobseeker/list_job_apply/?page=${pageNum}`, ///////
+    'job_applied': (pageNum) => `/jobseeker/list_job_apply/?page=${pageNum}`, 
     'post_cmt': (id) => `/jobs/${id}/comments/`,
     'list_cmt': (id) => `/jobs/${id}/comments/`,
     'delete_job':(id) => `/jobs/${id}/`,
     'rating' : (id) => `/jobs/${id}/ratings/`,
     'like': (id) => `/jobs/${id}/like/`,
     'check_liked': (id) => `/jobs/${id}/check_liked/`,
+    'liked_job': (pageNum) => `/jobs/get_liked_job/?page=${pageNum}`, /////
 
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,

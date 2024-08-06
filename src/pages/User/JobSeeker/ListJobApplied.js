@@ -86,11 +86,13 @@ const ListJobApplied = () => {
             ))}
           </div>
         )}
-        <div className="flex justify-center mt-4">
-          <button onClick={() => handlePageChange(pageNum - 1)} disabled={pageNum === 1} className="px-4 py-2 mx-2 bg-gray-300 rounded-lg">Previous</button>
-          <span className="px-4 py-2">{pageNum}</span>
-          <button onClick={() => handlePageChange(pageNum + 1)} disabled={pageNum === pageCount} className="px-4 py-2 mx-2 bg-gray-300 rounded-lg">Next</button>
-        </div>
+        {pageCount > 1 && (
+          <div className="flex justify-center mt-4">
+            <button onClick={() => handlePageChange(pageNum - 1)} disabled={pageNum === 1} className="px-4 py-2 mx-2 bg-gray-300 rounded-lg">Previous</button>
+            <span className="px-4 py-2">{pageNum}</span>
+            <button onClick={() => handlePageChange(pageNum + 1)} disabled={pageNum === pageCount} className="px-4 py-2 mx-2 bg-gray-300 rounded-lg">Next</button>
+          </div>
+        )}
       </div>
     </div>
   );

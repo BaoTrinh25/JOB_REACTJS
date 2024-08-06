@@ -55,7 +55,7 @@ const Header = () => {
                   </Link>
                 </li>
                 <li className="text-center group">
-                  <Link to="/liked-jobs" className="text-white group-hover:text-yellow-400">
+                  <Link to="/liked-job" className="text-white group-hover:text-yellow-400">
                     <AiFillLike className="text-white group-hover:text-yellow-400 mx-auto" />
                     Liked Job
                   </Link>

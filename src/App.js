@@ -25,6 +25,7 @@ import PostRecruitment from './pages/User/Company/PostRecruitment';
 import ListPosted from './pages/User/Company/ListPosted';
 import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
 import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
+import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
 
 const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied'];
 
@@ -59,6 +60,8 @@ function AppLayout() {
           <Route path='/applicant-profile' element={<ProfileApplicant />} />
           <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
           <Route path='/jobApplication/:jobId' element={<JobApplication />} />
+          <Route path='/liked-job' element={<ListJobLiked />} />
+          <Route path='/job-applied' element={<ListJobApplied />} />
 
           <Route path="*" element={() => <div>404 Not Found</div>} />
         </Routes>
