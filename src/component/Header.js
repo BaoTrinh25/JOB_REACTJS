@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/job-seeker.png';
-import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical, FaPencilAlt, FaHistory } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
 import { BiLike } from 'react-icons/bi';
@@ -64,34 +64,19 @@ const Header = () => {
             ) : user && user.role === 1 ? (
               <>
                 <li className="text-center group">
-                  <Link to="/post-job" className="text-white group-hover:text-yellow-400">
-                    <FaInfoCircle className="text-white group-hover:text-yellow-400 mx-auto" />
+                  <Link to="/post-recruitment" className="text-white group-hover:text-yellow-400">
+                    <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
                     Post a Job
                   </Link>
                 </li>
                 <li className="text-center group">
-                  <Link to="/posted-jobs" className="text-white group-hover:text-yellow-400">
-                    <FaEnvelope className="text-white group-hover:text-yellow-400 mx-auto" />
+                  <Link to="/job-posted" className="text-white group-hover:text-yellow-400">
+                    <FaHistory className="text-white group-hover:text-yellow-400 mx-auto" />
                     Job Posted 
                   </Link>
                 </li>
               </>
-            ) : (
-              <>
-                <li className="text-center group">
-                  <Link to="/about" className="text-white group-hover:text-yellow-400">
-                    <FaInfoCircle className="text-white group-hover:text-yellow-400 mx-auto" />
-                    About
-                  </Link>
-                </li>
-                <li className="text-center group">
-                  <Link to="/contact" className="text-white group-hover:text-yellow-400">
-                    <FaEnvelope className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Contact
-                  </Link>
-                </li>
-              </>
-            )}
+            ): null}
           </ul>
         </nav>
         <div className="h-10 w-px bg-gray-300 mx-2"></div>

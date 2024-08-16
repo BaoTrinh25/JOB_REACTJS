@@ -1,8 +1,9 @@
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import React, { useContext, useReducer } from "react";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
 import { MyDispatchContext, MyUserContext } from './configs/Context';
-import MyUserReducer from './configs/Reducers';
-import { useReducer } from 'react';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import './index.css'; 
 import Header from "./component/Header";
 import Footer from "./component/Footer";
@@ -26,6 +27,8 @@ import ListPosted from './pages/User/Company/ListPosted';
 import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
 import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
 import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
+import { endpoints } from './configs/APIs';
+import MyUserReducer from './configs/Reducers';
 
 const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied'];
 
@@ -49,13 +52,13 @@ function AppLayout() {
           <Route path="/jobs-popular" element={<AllJobPopular />} />
           <Route path="/about" element={<About />} />
           <Route path="/job-detail/:jobId" element={<JobDetail />} />
-          <Route path='/job-posted' element={<ListPosted />} /> 
           <Route path='/job-applied' element={<ListJobApplied />} /> 
           <Route path='/application-detail' element={<ApplicationDetail />} /> 
 
           <Route path='/employer-profile' element={<ProfileEmployer />} />
           <Route path='/updateProfile-employer' element={<UpdateInfoProfileEmployer />} />
           <Route path='/post-recruitment' element={<PostRecruitment />} />
+          <Route path='/job-posted' element={<ListPosted />} /> 
 
           <Route path='/applicant-profile' element={<ProfileApplicant />} />
           <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
@@ -71,10 +74,46 @@ function AppLayout() {
   );
 }
 
+const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
+
+function GoogleLoginButton() {
+  const dispatch = useContext(MyDispatchContext);
+  const navigate = useNavigate();
+
+  const handleLoginSuccess = async (credentialResponse) => {
+    try {
+      const { credential } = credentialResponse;
+      const details = jwtDecode(credential);
+      const result = await axios.post(endpoints['auth_google'], { token: credential });
+
+      const { access, refresh } = result.data;
+      
+      // Lưu token vào localStorage hoặc context
+      localStorage.setItem('access', access);
+      localStorage.setItem('refresh', refresh);
+      
+      // Cập nhật trạng thái người dùng
+      dispatch({ type: 'login', payload: result.data.user });
+
+      // Chuyển hướng tới trang chủ hoặc trang mong muốn
+      navigate('/');
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  return (
+    <GoogleLogin
+      onSuccess={handleLoginSuccess}
+      onError={() => console.log('Login Failed')}
+    />
+  );
+}
+
 function MyTab() {
   return (
     <Router>
-      <GoogleOAuthProvider clientId="19411555949-o6cesuh7bg7rl8u06v5679ldjssbeg59.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={clientId}>
         <AppLayout />
       </GoogleOAuthProvider>
     </Router>

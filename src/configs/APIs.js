@@ -28,7 +28,7 @@ export const endpoints = {
     'rating' : (id) => `/jobs/${id}/ratings/`,
     'like': (id) => `/jobs/${id}/like/`,
     'check_liked': (id) => `/jobs/${id}/check_liked/`,
-    'liked_job': (pageNum) => `/jobs/get_liked_job/?page=${pageNum}`, /////
+    'liked_job': (pageNum) => `/jobs/get_liked_job/?page=${pageNum}`,
 
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,
@@ -39,7 +39,7 @@ export const endpoints = {
     'apply_job': (id) => `/jobs/${id}/apply/`,
     //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
     'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,
-    
+    'refresh' : `/refresh_token/`,
 };
 
 const APIs = axios.create({

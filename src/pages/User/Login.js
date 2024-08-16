@@ -8,33 +8,40 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
-  const [alertShown, setAlertShown] = useState(false); // New state to track alert
+  const [alertShown, setAlertShown] = useState(false);
   const nav = useNavigate();
   const dispatch = useContext(MyDispatchContext);
-
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     login();
   };
 
-  const handleGoogleLoginSuccess = (response) => {
+  const handleGoogleLoginSuccess = async (response) => {
+    setIsLoggingIn(true);
     console.log(response);
-    if (!alertShown) {
-      toast.success('Đăng nhập với Google thành công');
-      setAlertShown(true); // Update state to prevent multiple alerts
+    try {
+      const res = await APIs.post(endpoints["auth_google"], { token: response.credential });
+      setToken(res.data.access_token);
+      const user = await authApi(res.data.access_token).get(endpoints["current_user"]);
+      dispatch({ type: "login", payload: user.data });
+      setTimeout(() => nav("/"), 500);
+      if (!alertShown) {
+        toast.success('Đăng nhập với Google thành công');
+        setAlertShown(true);
+      }
+    } catch (error) {
+      console.error('Google login failed:', error);
+      if (!alertShown) {
+        toast.error('Đăng nhập với Google thất bại');
+        setAlertShown(true);
+      }
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -42,7 +49,7 @@ const Login = () => {
     console.log(response);
     if (!alertShown) {
       toast.error('Đăng nhập với Google thất bại');
-      setAlertShown(true); // Update state to prevent multiple alerts
+      setAlertShown(true);
     }
   };
 
@@ -58,36 +65,35 @@ const Login = () => {
   };
 
   const login = async () => {
-    setLoading(true);
+    setIsLoggingIn(true);
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
         // "client_id": "7rrgMPM5ZyDftLLyYE8O1iM4z9lr9QhqvbF7rNWO",
         // "client_secret": "nW8B2KcbUPxLFPCkL1iSqadDymHJrwJwN7oYZnuQzyC6TfPY3O1bMgoVtnxznyoWLwN3eDuJZPBTaPLlVICMl5qHalTKo9zeAeTXMYWBO5wTWdJuZGtE72YjFF5siGq8",
+        "grant_type": "password",
 
         "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
         "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
-
-        "grant_type": "password",
       });
 
       setToken(res.data.access_token);
       setTimeout(async () => {
         let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
         dispatch({ "type": "login", "payload": user.data });
-        setTimeout(() => nav("/"), 500); // Redirect after 1.5 seconds
+        setTimeout(() => nav("/"), 500);
         if (!alertShown) {
           toast.success('Đăng nhập thành công');
-          setAlertShown(true); // Update state to prevent multiple alerts
+          setAlertShown(true);
         }
       }, 100);
     } catch (ex) {
       if (!alertShown) {
         toast.error('Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại !!');
-        setAlertShown(true); // Update state to prevent multiple alerts
+        setAlertShown(true);
       }
     } finally {
-      setLoading(false);
+      setIsLoggingIn(false);
     }
   };
 
@@ -111,8 +117,12 @@ const Login = () => {
           ))}
         </div>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        <button type="submit" className="w-full bg-green-700 text-white py-2 rounded hover:bg-teal-900">
-          Login
+        <button
+          type="submit"
+          className="w-full bg-green-700 text-white py-2 rounded hover:bg-teal-900"
+          disabled={isLoggingIn}
+        >
+          {isLoggingIn ? 'Logging...' : 'Login'}
         </button>
         <div className="mt-4 text-center">
           <span className="text-sm">Don't have an account?</span>{' '}
@@ -132,13 +142,19 @@ const Login = () => {
             <button
               className="flex items-center justify-center mt-4 p-2 border rounded bg-white shadow hover:bg-gray-100 w-full"
               onClick={renderProps.onClick}
-              disabled={renderProps.disabled}
+              disabled={renderProps.disabled || isLoggingIn}
             >
               <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google logo" className="w-5 h-5 mr-2" />
               Continue with Google
             </button>
           )}
         />
+        <div className='mt-5'>
+          <Link to="/" className="text-green-700 text-sm justify-center">
+            Trải nghiệm ngay không cần đăng nhập!
+          </Link>
+        </div>
+        
       </form>
       <ToastContainer />
     </div>
