@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { fetchAllJob } from '../../configs/APIs';
 import SearchJobs from './SearchJobs';
 
@@ -8,15 +8,16 @@ const AllJobLatest = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [searchParams, setSearchParams] = useState({ keyword: '', location: '' });
+  const [searchParams, setSearchParams] = useState({ keyword: '', location: '', career: '' });
   const navigate = useNavigate();
+  const routerLocation = useRouterLocation(); // Rename location to routerLocation
 
-  const fetchJobs = async (pageNum = 1, keyword = '', location = '') => {
+  const fetchJobs = async (pageNum = 1, keyword = '', location = '', career = '') => {
     if (loading) return;
     setLoading(true);
 
     try {
-      const data = await fetchAllJob(pageNum, keyword, location);
+      const data = await fetchAllJob(pageNum, keyword, location, career);
       if (data && Array.isArray(data.results)) {
         setJobs(data.results);
         setPage(pageNum);
@@ -32,24 +33,28 @@ const AllJobLatest = () => {
   };
 
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    const queryParams = new URLSearchParams(routerLocation.search); // Use routerLocation
+    const keyword = queryParams.get('keyword') || '';
+    const locationValue = queryParams.get('location') || ''; // Rename location to locationValue
+    const career = queryParams.get('career') || '';
+    setSearchParams({ keyword, location: locationValue, career });
+    fetchJobs(1, keyword, locationValue, career); // Tìm kiếm từ trang đầu tiên
+  }, [routerLocation.search]); // Use routerLocation
 
   const handleNextPage = () => {
     if (hasNextPage) {
-      fetchJobs(page + 1, searchParams.keyword, searchParams.location);
+      fetchJobs(page + 1, searchParams.keyword, searchParams.location, searchParams.career);
     }
   };
 
   const handlePrevPage = () => {
     if (page > 1) {
-      fetchJobs(page - 1, searchParams.keyword, searchParams.location);
+      fetchJobs(page - 1, searchParams.keyword, searchParams.location, searchParams.career);
     }
   };
 
-  const handleSearch = (keyword, location) => {
-    setSearchParams({ keyword, location });
-    fetchJobs(1, keyword, location); // Tìm kiếm từ trang đầu tiên
+  const handleSearch = (keyword, location, career) => {
+    navigate(`/jobs?keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}&career=${encodeURIComponent(career)}`);
   };
 
   const renderJobItem = (job) => (
@@ -60,8 +65,8 @@ const AllJobLatest = () => {
     >
       <img src={job.image} alt={job.title} className="w-28 h-28 rounded-sm border-2 border-cyan-900 mr-4" />
       <div className="flex-1 flex flex-col justify-center">
-        <h2 className="text-base font-bold">{job.title}</h2>
-        <p className="text-gray-600">Ngày đăng: {job.created_date}</p>
+        <h2 className="text-base font-bold line-clamp-1">{job.title}</h2> {/* Cắt sau 1 dòng và thêm dấu ba chấm */}
+        <p className="text-gray-600 line-clamp-1">{job.company.companyName}</p> {/* Cắt sau 1 dòng và thêm dấu ba chấm */}
         <p className="text-red-800">Deadline: {job.deadline}</p>
         <p>Kinh nghiệm: {job.experience}</p>
         <p>Khu vực: {job.area.name}</p>

@@ -59,12 +59,13 @@ const APIs = axios.create({
 //         throw error;
 //     }
 // };
-export const fetchAllJob = async (pageNum = 1, keyword = '', location = '') => {
+export const fetchAllJob = async (pageNum = 1, keyword = '', location = '', career='') => {
     try {
         const response = await APIs.get(endpoints['alljob'](pageNum), {
             params: {
                 title: keyword,
                 location: location,
+                career: career,
             }
         });
         return response.data;

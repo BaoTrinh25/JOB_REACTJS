@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+
 import { MyDispatchContext } from '../../configs/Context';
 import APIs, { authApi, endpoints } from '../../configs/APIs';
 import { setToken } from '../../utils/storage';
@@ -10,47 +11,23 @@ import 'react-toastify/dist/ReactToastify.css';
 const Login = () => {
   const [error, setError] = useState('');
   const [user, setUser] = useState({});
-  const [loading, setLoading] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
   const nav = useNavigate();
   const dispatch = useContext(MyDispatchContext);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
   const handleSubmit = (e) => {
     e.preventDefault();
     login();
   };
 
-  const handleGoogleLoginSuccess = async (response) => {
-    setIsLoggingIn(true);
-    console.log(response);
-    try {
-      const res = await APIs.post(endpoints["auth_google"], { token: response.credential });
-      setToken(res.data.access_token);
-      const user = await authApi(res.data.access_token).get(endpoints["current_user"]);
-      dispatch({ type: "login", payload: user.data });
-      setTimeout(() => nav("/"), 500);
-      if (!alertShown) {
-        toast.success('Đăng nhập với Google thành công');
-        setAlertShown(true);
-      }
-    } catch (error) {
-      console.error('Google login failed:', error);
-      if (!alertShown) {
-        toast.error('Đăng nhập với Google thất bại');
-        setAlertShown(true);
-      }
-    } finally {
-      setIsLoggingIn(false);
-    }
+  const handleGoogleLoginSuccess = (res) => {
+    console.log("LOGIN SUCCESS! Current user: ", res);
   };
 
-  const handleGoogleLoginFailure = (response) => {
-    console.log(response);
-    if (!alertShown) {
-      toast.error('Đăng nhập với Google thất bại');
-      setAlertShown(true);
-    }
+  const handleGoogleLoginFailure = (res) => {
+    console.log("LOGIN FAILED! res: ", res);
   };
 
   const fields = [
@@ -71,10 +48,11 @@ const Login = () => {
         ...user,
         // "client_id": "7rrgMPM5ZyDftLLyYE8O1iM4z9lr9QhqvbF7rNWO",
         // "client_secret": "nW8B2KcbUPxLFPCkL1iSqadDymHJrwJwN7oYZnuQzyC6TfPY3O1bMgoVtnxznyoWLwN3eDuJZPBTaPLlVICMl5qHalTKo9zeAeTXMYWBO5wTWdJuZGtE72YjFF5siGq8",
-        "grant_type": "password",
-
+        
         "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
         "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
+      
+        "grant_type": "password",
       });
 
       setToken(res.data.access_token);
@@ -138,6 +116,7 @@ const Login = () => {
         <GoogleLogin
           onSuccess={handleGoogleLoginSuccess}
           onFailure={handleGoogleLoginFailure}
+        
           render={renderProps => (
             <button
               className="flex items-center justify-center mt-4 p-2 border rounded bg-white shadow hover:bg-gray-100 w-full"

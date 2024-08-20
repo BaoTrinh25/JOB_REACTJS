@@ -4,7 +4,6 @@ import logo from '../assets/job-seeker.png';
 import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical, FaPencilAlt, FaHistory } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
-import { BiLike } from 'react-icons/bi';
 import { AiFillLike } from 'react-icons/ai';
 
 const Header = () => {
@@ -37,13 +36,13 @@ const Header = () => {
             <li className="text-center group">
               <Link to="/" className="text-white group-hover:text-yellow-400">
                 <FaHome className="text-white group-hover:text-yellow-400 mx-auto" />
-                Home
+                Trang chủ
               </Link>
             </li>
             <li className="text-center group">
               <Link to="/jobs" className="text-white group-hover:text-yellow-400">
                 <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
-                Jobs
+                Việc làm
               </Link>
             </li>
             {user && user.role === 0 ? (
@@ -51,13 +50,13 @@ const Header = () => {
                 <li className="text-center group">
                   <Link to="/job-applied" className="text-white group-hover:text-yellow-400">
                     <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Applied Job
+                    Việc làm đã ứng tuyển
                   </Link>
                 </li>
                 <li className="text-center group">
                   <Link to="/liked-job" className="text-white group-hover:text-yellow-400">
                     <AiFillLike className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Liked Job
+                    Việc làm đã lưu
                   </Link>
                 </li>
               </>
@@ -66,13 +65,13 @@ const Header = () => {
                 <li className="text-center group">
                   <Link to="/post-recruitment" className="text-white group-hover:text-yellow-400">
                     <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Post a Job
+                    Đăng bài tuyển dụng
                   </Link>
                 </li>
                 <li className="text-center group">
                   <Link to="/job-posted" className="text-white group-hover:text-yellow-400">
                     <FaHistory className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Job Posted 
+                    Bài tuyển dụng đã đăng 
                   </Link>
                 </li>
               </>
@@ -105,17 +104,17 @@ const Header = () => {
               <Dropdown.Item onClick={handleLogout}>
                 <div className='group flex'>
                   <FaSignInAlt className="mr-2 mt-1" />
-                  <span>Log out</span>
+                  <span>Đăng xuất</span>
                 </div>
               </Dropdown.Item>
             </Dropdown>
           ) : (
             <>
               <Link to="/login" className="text-white hover:text-yellow-400">
-                <FaSignInAlt className="inline mr-1" /> Sign in
+                <FaSignInAlt className="inline mr-1" /> Đăng nhập
               </Link>
               <Link to="/register" className="text-white hover:text-yellow-400 mx-3 mr-7">
-                <FaUserPlus className="inline mr-1" /> Register
+                <FaUserPlus className="inline mr-1" /> Đăng ký
               </Link>
             </>
           )}

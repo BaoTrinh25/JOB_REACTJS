@@ -1,7 +1,6 @@
-import React, { useContext, useReducer } from "react";
+import React, { useRef, useEffect, useReducer } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
-import axios from 'axios';
+import { gapi } from 'gapi-script';
 import { MyDispatchContext, MyUserContext } from './configs/Context';
 import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import './index.css'; 
@@ -27,17 +26,30 @@ import ListPosted from './pages/User/Company/ListPosted';
 import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
 import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
 import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
-import { endpoints } from './configs/APIs';
 import MyUserReducer from './configs/Reducers';
 
 const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied'];
+const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
 function AppLayout() {
   const location = useLocation();
   const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
 
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: clientId,
+        scope: "profile email"
+      })
+    };
+
+    gapi.load('client:auth2', start);
+  })
+
+ 
+
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {showHeaderFooter && <Header />}
       <main className={`flex-grow ${showHeaderFooter ? 'mt-16' : ''}`}>
         <Routes>
@@ -74,41 +86,7 @@ function AppLayout() {
   );
 }
 
-const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
-function GoogleLoginButton() {
-  const dispatch = useContext(MyDispatchContext);
-  const navigate = useNavigate();
-
-  const handleLoginSuccess = async (credentialResponse) => {
-    try {
-      const { credential } = credentialResponse;
-      const details = jwtDecode(credential);
-      const result = await axios.post(endpoints['auth_google'], { token: credential });
-
-      const { access, refresh } = result.data;
-      
-      // Lưu token vào localStorage hoặc context
-      localStorage.setItem('access', access);
-      localStorage.setItem('refresh', refresh);
-      
-      // Cập nhật trạng thái người dùng
-      dispatch({ type: 'login', payload: result.data.user });
-
-      // Chuyển hướng tới trang chủ hoặc trang mong muốn
-      navigate('/');
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
-  };
-
-  return (
-    <GoogleLogin
-      onSuccess={handleLoginSuccess}
-      onError={() => console.log('Login Failed')}
-    />
-  );
-}
 
 function MyTab() {
   return (
