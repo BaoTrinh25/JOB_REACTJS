@@ -53,7 +53,7 @@ const TopPopular = () => {
     >
       <img src={job.image} alt={job.title} className="w-32 h-24 rounded-sm border-2 border-cyan-900 mb-4" />
       <div className="flex-1 flex flex-col">
-        <h2 className="font-bold">{job.title}</h2>
+        <h2 className="font-bold line-clamp-1">{job.title}</h2>
         <p className="text-red-800 text-sm">Deadline: {job.deadline}</p>
         <p className="text-sm">Kinh nghiệm: {job.experience}</p>
         <p className="text-sm">Khu vực: {job.area.name}</p>
@@ -70,21 +70,29 @@ const TopPopular = () => {
   }
 
   return (
-    <div className="container mx-auto px-4">
-      <Swiper
-        spaceBetween={30}
-        slidesPerView={4}
-        pagination={{ clickable: true, dynamicBullets: true }}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        modules={[Pagination, Autoplay]} 
-      >
-        {jobs.map((job) => (
-          <SwiperSlide key={job.id}>
-            {renderJobItem(job)}
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    </div>
+    <div className="p-8 bg-gray-100 rounded-lg shadow-lg">
+      <div className="flex justify-between items-center mb-1">
+        <h2 className="text-2xl font-bold text-orange-700">Công việc phổ biến</h2>
+        <button onClick={() => navigate("/jobs-popular")} className="bg-lime-500 font-semibold">
+          Xem tất cả
+        </button>
+      </div>
+      <div className="container mx-auto px-4">
+        <Swiper
+          spaceBetween={30}
+          slidesPerView={4}
+          pagination={{ clickable: true, dynamicBullets: true }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          modules={[Pagination, Autoplay]}
+        >
+          {jobs.map((job) => (
+            <SwiperSlide key={job.id}>
+              {renderJobItem(job)}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </div >
   );
 };
 

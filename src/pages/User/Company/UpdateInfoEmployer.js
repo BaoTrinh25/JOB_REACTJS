@@ -11,7 +11,6 @@ const UpdateInfoProfileEmployer = () => {
 
     const [formData, setFormData] = useState({
         companyName: user.company.companyName || '',
-        position: user.company.position || '',
         information: user.company.information || '',
         address: user.company.address || '',
         company_type: user.company.company_type || 0,
@@ -79,16 +78,6 @@ const UpdateInfoProfileEmployer = () => {
                             type="text"
                             name="companyName"
                             value={formData.companyName}
-                            onChange={handleChange}
-                            className="mt-1 block w-full border rounded-md p-2"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Position</label>
-                        <input
-                            type="text"
-                            name="position"
-                            value={formData.position}
                             onChange={handleChange}
                             className="mt-1 block w-full border rounded-md p-2"
                         />

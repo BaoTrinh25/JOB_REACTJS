@@ -35,11 +35,12 @@ export const endpoints = {
     'areas': `/areas/`,
     'skills': `/skills/`,
  
+    'companies': `/companies/`,
     // 'company': (id) => `/companies/${id}/`,
     'apply_job': (id) => `/jobs/${id}/apply/`,
     //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
     'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,
-    'refresh' : `/refresh_token/`,
+
 };
 
 const APIs = axios.create({
@@ -49,16 +50,7 @@ const APIs = axios.create({
   },
 });
 
-//ds công việc mới nhất giảm dần theo ngày tạo(or id)
-// export const fetchAllJob = async (pageNum = 1) => {
-//     try {
-//         const response = await APIs.get(endpoints['alljob'](pageNum));
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching all job:', error);
-//         throw error;
-//     }
-// };
+
 export const fetchAllJob = async (pageNum = 1, keyword = '', location = '', career='') => {
     try {
         const response = await APIs.get(endpoints['alljob'](pageNum), {

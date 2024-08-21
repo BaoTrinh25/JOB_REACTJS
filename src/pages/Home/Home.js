@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBriefcase, FaChevronLeft, FaChevronRight, FaUser } from 'react-icons/fa';
-import APIs, { endpoints } from "../../configs/APIs";
 import TopLatestJob from "./TopLatestJob";
 import TopPopular from "./TopPopular";
 import { MyUserContext } from "../../configs/Context";
 import SearchJobs from "./SearchJobs";
+import CompanyList from "./CompanyList";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="bg-slate-100">
       {!user ? (
         <div 
           className="min-h-screen p-4 bg-cover bg-center relative"
@@ -93,24 +93,16 @@ const Home = () => {
       )}
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-10">
-            <h2 className="text-2xl font-bold text-orange-700">Công việc mới nhất</h2>
-            <button onClick={() => navigate("/jobs")} className="bg-lime-500 font-semibold">
-              Xem tất cả
-            </button>
-          </div>
+        <div className="mb-10">
           <TopLatestJob />
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-10">
-            <h2 className="text-2xl font-bold text-orange-700">Công việc phổ biến</h2>
-            <button onClick={() => navigate("/jobs-popular")} className="bg-lime-500 font-semibold">
-              Xem tất cả
-            </button>
-          </div>
           <TopPopular />
+        </div>
+
+        <div className="mt-10">
+          <CompanyList />
         </div>
       </div>
     </div>

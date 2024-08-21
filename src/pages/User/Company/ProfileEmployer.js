@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { MyUserContext } from '../../../configs/Context';
 import { useNavigate } from 'react-router-dom';
-import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract } from 'react-icons/io5';
+import { IoCameraOutline, IoBusiness, IoLocation, IoContract } from 'react-icons/io5';
 import { FaUpload, FaBusinessTime, FaTrash, FaEdit } from 'react-icons/fa';
 import bannerImage from '../../../assets/banner_hiring.jpg';
 import defaultAvatar from '../../../assets/default_avatar.png';
@@ -179,10 +179,6 @@ const ProfileEmployer = () => {
                     </div>
                     <div className='flex flex-row w-full mt-7'>
                         <div className="mb-3 w-[55%] mx-4 pt-3 border-2 border-red-200 border-dashed bg-yellow-50">
-                            <div className="flex items-center mb-3 px-5">
-                                <IoBriefcase className="mr-2 w-6 h-6" />
-                                <span className="font-sans">Vị trí: {user?.company?.position}</span>
-                            </div>
                             <div className="flex items-center mb-3 px-5">
                                 <IoBusiness className="mr-2 w-6 h-6" />
                                 <span className="font-sans">Công ty: {user?.company?.companyName}</span>

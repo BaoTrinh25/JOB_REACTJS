@@ -9,6 +9,8 @@ const SearchJobs = ({ onSearch }) => {
   const [career, setCareer] = useState('');
   const { locations, careers } = useFetchOptions(); // Sử dụng useFetchOptions
 
+  console.log(location);
+
   const clearInput = () => {
     setKeyword('');
   };
@@ -31,7 +33,7 @@ const SearchJobs = ({ onSearch }) => {
           />
           {keyword && (
             <button
-              className="absolute left-96 text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="absolute left-80 text-gray-500 hover:text-gray-700 focus:outline-none"
               onClick={clearInput}
             >
               &#x2715;
