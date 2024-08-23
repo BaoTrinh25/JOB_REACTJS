@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import useFetchOptions from '../../configs/useEffects';
 
 const CompanyList = () => {
-  const { companies } = useFetchOptions(); // Lấy danh sách công ty từ useFetchOptions
+  const { companies } = useFetchOptions(); 
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log(companies);
 
 
   // Function to handle next button click
+  //Kiểm tra vị trí hiện tại có đang ở vị trí cuối cùng của mảng hay không, nếu chưa thì thực hiện khối lệnh trong if
   const handleNext = () => {
     if (currentIndex < companies.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -15,6 +15,7 @@ const CompanyList = () => {
   };
 
   // Function to handle previous button click
+  //Kiểm tra vị trí hiện tại lớn hơn 0 thì thực hiện giảm vị trí hiện tại đi 1 và cập nhật trạng thái thông qua setCurrentIndex
   const handlePrevious = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);

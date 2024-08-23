@@ -70,7 +70,7 @@ const TopLatestJob = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-200 rounded-lg shadow-lg">
+    <div className="p-8 bg-gray-100 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-1">
         <h2 className="text-2xl font-bold text-orange-700">Công việc mới nhất</h2>
         <button onClick={() => navigate("/jobs")} className="bg-lime-500 font-semibold">

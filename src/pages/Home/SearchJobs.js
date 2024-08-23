@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import APIs, { endpoints } from '../../configs/APIs';
+import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import useFetchOptions from '../../configs/useEffects';
 
@@ -9,7 +8,7 @@ const SearchJobs = ({ onSearch }) => {
   const [career, setCareer] = useState('');
   const { locations, careers } = useFetchOptions(); // Sử dụng useFetchOptions
 
-  console.log(location);
+  console.log(careers);
 
   const clearInput = () => {
     setKeyword('');

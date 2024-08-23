@@ -6,6 +6,7 @@ import TopPopular from "./TopPopular";
 import { MyUserContext } from "../../configs/Context";
 import SearchJobs from "./SearchJobs";
 import CompanyList from "./CompanyList";
+import HotlineConsultation from "./HotLineConsulation";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -103,6 +104,9 @@ const Home = () => {
 
         <div className="mt-10">
           <CompanyList />
+        </div>
+        <div className="mt-10">
+          <HotlineConsultation />
         </div>
       </div>
     </div>
