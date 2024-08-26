@@ -26,6 +26,8 @@ export const endpoints = {
     'list_cmt': (id) => `/jobs/${id}/comments/`,
     'delete_job':(id) => `/jobs/${id}/`,
     'rating' : (id) => `/jobs/${id}/ratings/`,
+    'delete_rating': (id, rating_id) => `/jobs/${id}/rating/${rating_id}/delete/`,
+    'patch_rating':(id, rating_id) => `/jobs/${id}/ratings/${rating_id}/partial-update/`,
     'like': (id) => `/jobs/${id}/like/`,
     'check_liked': (id) => `/jobs/${id}/check_liked/`,
     'liked_job': (pageNum) => `/jobs/get_liked_job/?page=${pageNum}`,

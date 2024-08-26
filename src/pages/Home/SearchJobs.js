@@ -6,21 +6,26 @@ const SearchJobs = ({ onSearch }) => {
   const [keyword, setKeyword] = useState('');
   const [location, setLocation] = useState('');
   const [career, setCareer] = useState('');
-  const { locations, careers } = useFetchOptions(); // Sử dụng useFetchOptions
-
-  console.log(careers);
+  const { locations, careers } = useFetchOptions();
 
   const clearInput = () => {
     setKeyword('');
   };
 
+  const clearSearch = () => {
+    setKeyword('');
+    setLocation('');
+    setCareer('');
+    onSearch('', '', ''); // Gọi hàm tìm kiếm với giá trị trống để quay về danh sách ban đầu
+  };
+
   const handleSearch = () => {
-    onSearch(keyword, location, career);  // Gọi hàm tìm kiếm với tất cả các tham số
+    onSearch(keyword, location, career);
   };
 
   return (
     <div className="container mx-auto my-8 flex justify-center">
-      <div className="flex items-center bg-white rounded-full shadow-lg px-4 py-2 w-full max-w-4xl relative">
+      <div className="flex items-center bg-white rounded-full shadow-lg px-4 py-2 w-full max-w-6xl relative">
         <div className="flex flex-1 items-center">
           <FaSearch className='text-gray-500 absolute left-4 top-1/2 transform -translate-y-1/2 ' />
           <input
@@ -56,8 +61,8 @@ const SearchJobs = ({ onSearch }) => {
         <div className="flex items-center mx-2">
           <select
             value={career}
-            onChange={(e) => setCareer(e.target.value)} // Sử dụng setCareer để cập nhật giá trị ngành nghề
-            className="bg-transparent focus:outline-none text-gray-700 px-3 py-1 border-l border-gray-300 flex  items-center"
+            onChange={(e) => setCareer(e.target.value)}
+            className="bg-transparent focus:outline-none text-gray-700 px-3 py-1 border-l border-gray-300 flex items-center"
           >
             <option value="">Tất cả ngành nghề</option>
             {careers.map((care) => (
@@ -72,6 +77,12 @@ const SearchJobs = ({ onSearch }) => {
           className="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300"
         >
           Tìm kiếm
+        </button>
+        <button
+          onClick={clearSearch}
+          className="bg-gray-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition duration-300 ml-4"
+        >
+          Xóa tìm kiếm
         </button>
       </div>
     </div>

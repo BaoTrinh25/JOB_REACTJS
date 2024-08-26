@@ -98,7 +98,7 @@ const JobDetail = () => {
     }
 
     return (
-        <div className="container mx-auto my-10">
+        <div className="container mx-auto my-2">
             <img src={job.image} alt={job.title} className="w-full h-80 object-cover mb-4" />
             <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
             <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">

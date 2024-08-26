@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import APIs, { authApi, endpoints } from '../../../configs/APIs';
 import defaultAvatar from '../../../assets/default_avatar.png';
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from "../../../configs/Context";
 import Modal from 'react-modal';
 import { getToken } from '../../../utils/storage';
+import { FaEllipsisV, FaEdit, FaTrash } from 'react-icons/fa';
 
-// Cấu hình CSS cho Modal
 const customStyles = {
     content: {
         top: '50%',
@@ -32,8 +32,15 @@ const Ratings = ({ jobId }) => {
     const [loading, setLoading] = useState(true);
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [confirmationModalIsOpen, setConfirmationModalIsOpen] = useState(false);
+    const [successModalIsOpen, setSuccessModalIsOpen] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(null);
+    const [selectedRatingId, setSelectedRatingId] = useState(null);
     const user = useContext(MyUserContext);
-    const navigate = useNavigate();
+    const menuRef = useRef(null);
+    const [editingRatingId, setEditingRatingId] = useState(null);
+    const [editRating, setEditRating] = useState(0);
+    const [editComment, setEditComment] = useState('');
 
     useEffect(() => {
         const fetchRatings = async () => {
@@ -49,6 +56,17 @@ const Ratings = ({ jobId }) => {
 
         fetchRatings();
     }, [jobId]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setMenuOpen(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleRatingChange = (rating) => {
         setNewRating(rating);
@@ -79,8 +97,57 @@ const Ratings = ({ jobId }) => {
         }
     };
 
-    const closeModal = () => {
-        setModalIsOpen(false);
+    const handleDeleteRating = async () => {
+        try {
+            const token = getToken();
+            await authApi(token).delete(endpoints['delete_rating'](jobId, selectedRatingId));
+            setRatings(ratings.filter((rating) => rating.id !== selectedRatingId));
+            setSuccessModalIsOpen(true);
+        } catch (error) {
+            console.error('Error deleting rating:', error);
+        } finally {
+            setConfirmationModalIsOpen(false);
+        }
+    };
+
+    const handleUpdateRating = async () => {
+        try {
+            const token = getToken();
+            const response = await authApi(token).patch(endpoints['patch_rating'](jobId, editingRatingId), {
+                rating: editRating,
+                comment: editComment,
+            });
+            setRatings(ratings.map(r => r.id === editingRatingId ? response.data : r));
+            setEditingRatingId(null);
+            setSuccessModalIsOpen(true);
+        } catch (error) {
+            console.error('Error updating rating:', error);
+        }
+    };
+
+    const handleEditComment = (rating) => {
+        setEditingRatingId(rating.id);
+        setEditRating(rating.rating);
+        setEditComment(rating.comment);
+        setMenuOpen(null);
+    };
+
+    const openConfirmationModal = (ratingId) => {
+        setSelectedRatingId(ratingId);
+        setConfirmationModalIsOpen(true);
+        setMenuOpen(null);
+    };
+
+    const closeConfirmationModal = () => {
+        setConfirmationModalIsOpen(false);
+    };
+
+    const closeSuccessModal = () => {
+        setSuccessModalIsOpen(false);
+    };
+
+    const handleMenuToggle = (ratingId) => {
+        setMenuOpen((prev) => (prev === ratingId ? null : ratingId));
     };
 
     if (loading) {
@@ -96,7 +163,7 @@ const Ratings = ({ jobId }) => {
                         <svg
                             key={index}
                             onClick={() => handleRatingChange(index + 1)}
-                            className={`w-8 h-8 cursor-pointer ${index < newRating ? 'text-yellow-500' : 'text-gray-300'}`}
+                            className={`w-8 h-8 cursor-pointer transition-transform duration-200 transform hover:scale-110 ${index < newRating ? 'text-yellow-500' : 'text-gray-300'}`}
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 20 20"
                             fill="currentColor"
@@ -127,13 +194,13 @@ const Ratings = ({ jobId }) => {
                     <p>Chưa có bình luận nào.</p>
                 ) : (
                     ratings.map((rating) => (
-                        <div key={rating.id} className="flex items-start mb-4 w-[40%] ">
+                        <div key={rating.id} className="flex items-start mb-4 w-[40%] relative">
                             <img
                                 src={rating.user.avatar ? rating.user.avatar : defaultAvatar}
                                 alt="avatar"
                                 className="w-14 h-14 rounded-full mr-4 border-2 border-orange-200"
                             />
-                            <div className="bg-red-50 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300">
+                            <div className="bg-red-50 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300 relative">
                                 <div className="flex flex-col">
                                     <p className="text-base text-black-600 mb-1">
                                         By: {rating.user.username}
@@ -146,7 +213,7 @@ const Ratings = ({ jobId }) => {
                                     {[...Array(5)].map((_, index) => (
                                         <svg
                                             key={index}
-                                            className={`w-5 h-5 ${index < rating.rating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                            className={`w-4 h-4 ${index < rating.rating ? 'text-yellow-500' : 'text-gray-300'}`}
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 20 20"
                                             fill="currentColor"
@@ -158,35 +225,126 @@ const Ratings = ({ jobId }) => {
                                         </svg>
                                     ))}
                                 </div>
-                                <p className="text-gray-700">{rating.comment}</p>
+                                <p>{rating.comment}</p>
+                                {user && rating.user.username === user.username && (
+                                    <div className="absolute top-2 right-2">
+                                        <button
+                                            className="focus:outline-none"
+                                            onClick={() => handleMenuToggle(rating.id)}
+                                        >
+                                            <FaEllipsisV className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+                                        </button>
+                                        {menuOpen === rating.id && (
+                                            <div ref={menuRef} className="absolute right-0 mt-2 py-2 w-32 bg-white rounded-lg shadow-xl border z-10">
+                                                <button
+                                                    onClick={() => handleEditComment(rating)}
+                                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                                                >
+                                                    <FaEdit className="mr-2" /> Sửa
+                                                </button>
+                                                <button
+                                                    onClick={() => openConfirmationModal(rating.id)}
+                                                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
+                                                >
+                                                    <FaTrash className="mr-2" /> Xóa
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
             <Modal
                 isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="Thông báo"
+                onRequestClose={() => setModalIsOpen(false)}
                 style={customStyles}
+                contentLabel="Thông báo đăng nhập"
             >
-                <h2 className="text-lg font-bold mb-4">Bạn cần đăng nhập!</h2>
-                <p className="mb-4">Vui lòng đăng nhập để gửi bình luận và đánh giá.</p>
-                <div className="flex justify-end space-x-4">
-                    <button
-                        onClick={() => navigate('/login')}
-                        className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-800"
-                    >
-                        Đăng nhập
-                    </button>
-                    <button
-                        onClick={closeModal}
-                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-gray-600"
-                    >
-                        Đóng
-                    </button>
-                </div>
+                <h2>Bạn cần đăng nhập để thực hiện chức năng này.</h2>
+                <button onClick={() => setModalIsOpen(false)} className="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500">
+                    Đóng
+                </button>
             </Modal>
+
+            <Modal
+                isOpen={confirmationModalIsOpen}
+                onRequestClose={closeConfirmationModal}
+                style={customStyles}
+                contentLabel="Xác nhận xóa"
+            >
+                <h2>Bạn có chắc chắn muốn xóa đánh giá này?</h2>
+                <button onClick={handleDeleteRating} className="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500">
+                    Xóa
+                </button>
+                <button onClick={closeConfirmationModal} className="mt-4 ml-2 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-500">
+                    Hủy
+                </button>
+            </Modal>
+
+            <Modal
+                isOpen={successModalIsOpen}
+                onRequestClose={closeSuccessModal}
+                style={customStyles}
+                contentLabel="Thông báo thành công"
+            >
+                <h2>Thao tác thành công!</h2>
+                <button onClick={closeSuccessModal} className="mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500">
+                    Đóng
+                </button>
+            </Modal>
+
+            {editingRatingId && (
+                <Modal
+                    isOpen={!!editingRatingId}
+                    onRequestClose={() => setEditingRatingId(null)}
+                    style={customStyles}
+                    contentLabel="Sửa đánh giá"
+                >
+                    <h2 className='font-bold'>SỬA ĐÁNH GIÁ VÀ BÌNH LUẬN</h2>
+                    <div className="flex flex-col mt-4">
+                        <div className="flex space-x-1 mb-2">
+                            {[...Array(5)].map((_, index) => (
+                                <svg
+                                    key={index}
+                                    onClick={() => setEditRating(index + 1)}
+                                    className={`w-6 h-6 cursor-pointer transition-transform duration-200 transform hover:scale-110 ${index < editRating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M9.049 2.927c.3-.92 1.603-.92 1.903 0l1.482 4.564a1 1 0 00.95.69h4.771c.967 0 1.371 1.24.588 1.81l-3.838 2.787a1 1 0 00-.362 1.118l1.482 4.564c.3.92-.755 1.688-1.54 1.118l-3.838-2.787a1 1 0 00-1.176 0l-3.838 2.787c-.785.57-1.84-.198-1.54-1.118l1.482-4.564a1 1 0 00-.362-1.118L1.207 9.991c-.783-.57-.379-1.81.588-1.81h4.771a1 1 0 00.95-.69l1.482-4.564z"
+                                    />
+                                </svg>
+                            ))}
+                        </div>
+                        <textarea
+                            value={editComment}
+                            onChange={(e) => setEditComment(e.target.value)}
+                            className="p-2 border rounded mb-4"
+                        />
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                onClick={() => setEditingRatingId(null)}
+                                className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-500"
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                onClick={handleUpdateRating}
+                                className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500"
+                            >
+                                Hoàn tất
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };
