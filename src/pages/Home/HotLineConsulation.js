@@ -11,12 +11,12 @@ const HotlineConsultation = () => {
           </div>
         </div>
         <div className="mt-4 md:mt-0">
-          <p className="text-2xl font-bold text-gray-900">Tìm việc khó đã có TopCV</p>
+          <p className="text-2xl font-bold text-gray-900">Tìm việc khó đã có Nako</p>
           <p className="text-green-600">(024) 6680 ****</p>
           <button className="mt-2 px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">
             GỌI NGAY
           </button>
-          <p className="mt-2 text-gray-600">Email hỗ trợ Ứng viên: <a href="mailto:hotro@nako.vn" className="text-green-600">hotro@jobsg.vn</a></p>
+          <p className="mt-2 text-gray-600">Email hỗ trợ Ứng viên: <a href="mailto:hotro@nako.vn" className="text-green-600">hotro@nako.vn</a></p>
         </div>
         <div className="flex items-center mt-4 md:mt-0">
           <img src="https://th.bing.com/th/id/OIP.jEUZdWs0u_yTeNsI6xynCAAAAA?rs=1&pid=ImgDetMain" alt="Support" className="w-24 h-24 rounded-full object-cover mr-4" />

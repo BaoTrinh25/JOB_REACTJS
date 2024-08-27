@@ -26,7 +26,7 @@ const Header = () => {
         <Link to='/'>
           <div className="flex items-center ml-7">
             <img src={logo} alt="Logo" className="h-12 w-12 mr-5" />
-            <h1 className="text-white text-3xl font-bold font-serif">DTT JOB</h1>
+            <h1 className="text-white text-3xl font-bold font-serif">Nako JOB</h1>
           </div>
         </Link>
       </div>
