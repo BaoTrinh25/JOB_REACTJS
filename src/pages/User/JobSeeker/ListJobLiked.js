@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getToken } from '../../../utils/storage';
-import APIs, { authApi, endpoints } from '../../../configs/APIs';
+import { authApi, endpoints } from '../../../configs/APIs';
 import { useNavigate } from 'react-router-dom';
+import SidebarApplicant from '../../../component/SidebarApplicant';
 
 const ListJobLiked = () => {
     const [loading, setLoading] = useState(false);
@@ -48,35 +49,44 @@ const ListJobLiked = () => {
 
     return (
         <div className="flex h-screen bg-cover bg-center" style={{ backgroundImage: `url(https://thumbs.dreamstime.com/z/vector-seamless-pattern-background-gold-wavy-line-modern-waves-texture-intricate-pipple-curly-stripe-repeating-contemporary-go-198527890.jpg)` }}>
+            <SidebarApplicant className="flex-shrink-0" />
             <div className="flex-grow p-8 bg-white bg-opacity-90 rounded-lg shadow-lg overflow-y-auto">
                 {loading ? (
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-400"></div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-6 mt-6">
-                        {jobs.map((like) => (
-                            <div key={like.id} className="flex bg-purple-100 p-6 shadow-md rounded-lg group relative">
-                                <div className="w-1/3 bg-white p-4 rounded-lg shadow-md">
-                                    <div className="w-full h-32 flex items-center justify-center mb-4">
-                                        <img src={like.job.image} alt="Job" className="h-full object-cover rounded-md" />
+                    <div className='border-2 shadow-lg bg-gray-50 bg-opacity-90 rounded-lg p-4'>
+                        <div className='text-3xl pl-4'> Việc làm đã lưu</div>
+                        <div class="border-t border-gray-300 my-4"></div>
+                        <div className="grid grid-cols-1 gap-6 mt-6">
+                            {jobs.map((like) => (
+                                <div key={like.id} className="flex bg-purple-100 p-6 shadow-md rounded-lg group relative">
+                                    <div className="w-1/3 bg-white p-4 rounded-lg shadow-md">
+                                        <div className="w-full h-32 flex items-center justify-center mb-4">
+                                            <img src={like.job.image} alt="Job" className="h-full object-cover rounded-md" />
+                                        </div>
+                                        <p className="mb-2 font-bold text-xl text-red-800">{like.job.title}</p>
+                                        <p className="mb-2 text-lg text-gray-700">{like.job.company.companyName}</p>
                                     </div>
-                                    <p className="mb-2 font-bold text-xl text-red-800">{like.job.title}</p>
-                                    <p className="mb-2 text-lg text-gray-700">{like.job.company.companyName}</p>
+                                    <div className="w-2/3 bg-white p-6 ml-4 rounded-lg shadow-md">
+                                        <h2 className="font-bold text-2xl mb-4 text-center">Thông tin công việc</h2>
+                                        <p className="mb-4 text-lg">Địa chỉ: <span className='text-gray-500'>{like.job.company.address}</span></p>
+                                        <p className="mb-4 text-lg">Nghề nghiệp: <span className='text-gray-500'>{like.job.career.name}</span></p>
+                                        <p className="mb-4 text-lg">Mức lương: <span className='text-gray-500'>{like.job.salary}</span></p>
+                                        <p className="mb-4 text-lg">Loại công việc: <span className='text-gray-500'>{like.job.employmenttype.type}</span></p>
+                                        <p className="mb-4 text-lg">Ngày tạo: <span className='text-orange-400'> {like.job.created_date}</span></p>
+
+                                    </div>
+                                    <button
+                                        onClick={() => handleViewDetails(like.job.id)}
+                                        className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300"
+                                    >
+                                        Xem chi tiết
+                                    </button>
                                 </div>
-                                <div className="w-2/3 bg-white p-6 ml-4 rounded-lg shadow-md">
-                                    <h2 className="font-bold text-2xl mb-4 text-center">Thông tin công việc</h2>
-                                    <p className="mb-4 text-lg">Địa chỉ: <span className='text-gray-500'>{like.job.company.address}</span></p>
-                                    <p className="mb-4 text-lg">Ngày tạo: <span className='text-orange-400'> {like.job.created_date}</span></p>
-                                </div>
-                                <button
-                                    onClick={() => handleViewDetails(like.job.id)}
-                                    className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300"
-                                >
-                                    Xem chi tiết
-                                </button>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 )}
                 {pageCount > 1 && (

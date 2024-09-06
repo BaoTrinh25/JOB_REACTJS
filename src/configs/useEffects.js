@@ -5,10 +5,7 @@ const useFetchOptions = () => {
   const [locations, setLocations] = useState([]);
   const [careers, setCareers] = useState([]);
   const [companies, setCompanies] = useState([]);
-  console.log(careers);
   
-  
-
   useEffect(() => {
     const fetchLocation = async () => {
       try {

@@ -129,7 +129,7 @@ const JobApplication = () => {
                 className={`mt-4 bg-green-500 text-white px-4 py-2 rounded ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 disabled={loading}
             >
-                {loading ? "Đang xử lý..." : "Ứng tuyển"}
+                {loading ? "Đang xử lý..." : "Nộp đơn"}
             </button>
 
             {snackbarVisible && (

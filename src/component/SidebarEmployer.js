@@ -19,7 +19,7 @@ const SidebarEmployer = () => {
     };
 
     return (
-        <FlowbiteSidebar className="h-full bg-gray-900 text-white w-80 flex flex-col">
+        <FlowbiteSidebar className="h-full !bg-gray-900 text-white w-80 flex flex-col">
             <FlowbiteSidebar.ItemGroup>
                 <FlowbiteSidebar.Item
                     className="hover:bg-gray-700 rounded text-2xl font-semibold text-white"

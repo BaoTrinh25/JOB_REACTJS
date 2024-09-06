@@ -74,7 +74,7 @@ const ListJobApplied = () => {
                   <p className="mb-4 text-lg">Là sinh viên: <span className='text-gray-500'>{jobApplication.is_student ? 'Yes' : 'No'}</span></p>
                   <p className="mb-4 text-lg">Nội dung ứng tuyển: <span className='text-gray-500' dangerouslySetInnerHTML={{ __html: jobApplication.content }} /></p>
                   <p className="mb-4 text-lg">Trạng thái: <span className='text-orange-400'> {jobApplication.status.role}</span></p>
-                  <p className="mb-4 text-lg">Ngày ứng tuyển: <span className='text-orange-400'> {jobApplication.created_date}</span></p>
+                  <p className="mb-4 text-lg">Ngày ứng tuyển: <span className='text-orange-400'> {jobApplication.date}</span></p>
                 </div>
                 <button
                   onClick={() => handleViewDetails(jobApplication.job.id)}

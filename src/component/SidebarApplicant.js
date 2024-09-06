@@ -24,21 +24,21 @@ const SidebarApplicant = () => {
                 <FlowbiteSidebar.Item
                     className="hover:bg-gray-700 rounded text-2xl text-white"
                 >
-                    Dashboard
+                    Bảng điều khiển
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaHome}
                     onClick={() => navigate('/')}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    Home
+                    Trang chủ
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaUser}
                     onClick={() => navigate('/applicant-profile')}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    My Profile
+                    Hồ sơ của bạn
                 </FlowbiteSidebar.Item>
 
                 <FlowbiteSidebar.Item
@@ -46,7 +46,7 @@ const SidebarApplicant = () => {
                     onClick={() => navigate('/jobs')}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    Search Job
+                    Tìm việc làm
                 </FlowbiteSidebar.Item>
 
                 <FlowbiteSidebar.Item
@@ -54,15 +54,15 @@ const SidebarApplicant = () => {
                     onClick={() => navigate('/liked-job')}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    Liked Job
+                    Việc làm đã lưu
                 </FlowbiteSidebar.Item>
 
                 <FlowbiteSidebar.Item
                     icon={FaPlus}
-                    onClick={() => navigate('/applied-job')}
+                    onClick={() => navigate('/job-applied')}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    Applied Job
+                    Việc làm đã ứng tuyển
                 </FlowbiteSidebar.Item>
 
                 <FlowbiteSidebar.Item
@@ -70,7 +70,7 @@ const SidebarApplicant = () => {
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                     onClick={toggleEcommerceDropdown}
                 >
-                    Setting
+                    Cài đặt
                     <span className="ml-auto">
                         {isEcommerceOpen ? '▲' : '▼'}
                     </span>
@@ -81,13 +81,13 @@ const SidebarApplicant = () => {
                             onClick={() => navigate('/updateProfile-user')}
                             className="hover:bg-gray-700 rounded cursor-pointer text-white"
                         >
-                            Update Info User
+                            Cập nhật thông tin tài khoản
                         </FlowbiteSidebar.Item>
                         <FlowbiteSidebar.Item
                             onClick={() => navigate('/updateProfile-applicant')}
                             className="hover:bg-gray-700 rounded cursor-pointer text-white"
                         >
-                            Update Info Applicant
+                            Cập nhật thông tin ứng viên
                         </FlowbiteSidebar.Item>
                     </div>
                 )}
@@ -96,14 +96,14 @@ const SidebarApplicant = () => {
                     onClick={() => navigate('')}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    Inbox
+                    Nhắn tin
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaSignOutAlt}
                     onClick={handleLogout}
                     className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
-                    Log out
+                    Đăng xuất
                 </FlowbiteSidebar.Item>
             </FlowbiteSidebar.ItemGroup>
         </FlowbiteSidebar>
