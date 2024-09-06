@@ -184,30 +184,12 @@ const ProfileApplicant = () => {
                                 <IoBriefcase className="mr-2 w-6 h-6" />
                                 <span className="font-sans">Lĩnh vực: {user?.jobSeeker?.career.name ? `${user.jobSeeker.career.name}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
-                            <div className="flex items-center mb-3 px-5">
-                                <IoBusiness className="mr-2 w-6 h-6" />
-                                Kỹ năng:
-                                {skills.map((skill, index) => (
-                                    <React.Fragment key={skill.id}>
-                                        <span className="font-sans p-1">{skill.name}</span>
-                                        {index < skills.length - 1 && <span>,</span>}
-                                    </React.Fragment>
-                                ))}
-                            </div>
+                
                             <div className="flex items-center mb-3 px-5">
                                 <IoLocation className="mr-2 w-6 h-6" />
                                 <span className="font-sans">Kinh nghiệm: {user?.jobSeeker?.experience ? `${user.jobSeeker.experience}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>
                             </div>
-                            <div className="flex items-center mb-3 px-5">
-                                <IoContract className="mr-2 w-6 h-6" />
-                                Khu vực:
-                                {areas.map((area, index) => (
-                                    <React.Fragment key={area.id}>
-                                        <span className="font-sans p-1">{area.name}</span>
-                                        {index < areas.length - 1 && <span>,</span>}
-                                    </React.Fragment>
-                                ))}
-                            </div>
+                            
                             <div className="flex items-center mb-3 px-5">
                                 <BiDollarCircle className="mr-2 w-6 h-6" />
                                 <span className="font-sans">Mức lương mong muốn: {user?.jobSeeker?.salary_expectation ? `${user.jobSeeker.salary_expectation}` : <span className='text-red-800'>Bạn chưa cập nhật</span>}</span>

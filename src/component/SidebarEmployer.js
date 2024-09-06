@@ -24,35 +24,35 @@ const SidebarEmployer = () => {
                 <FlowbiteSidebar.Item
                     className="hover:bg-gray-700 rounded text-2xl font-semibold text-white"
                 >
-                    Dashboard
+                    Bảng điều khiển
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaHome}
                     onClick={() => navigate('/')}
                     className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                 >
-                    Home
+                    Trang chủ
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaUser}
                     onClick={() => navigate('/profile')}
                     className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                 >
-                    My Profile
+                    Hồ sơ của bạn
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaPlus}
                     onClick={() => navigate('/post-recruitment')}
                     className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                 >
-                    Post a Job
+                    Đăng bài
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaCog}
                     className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                     onClick={toggleEcommerceDropdown}
                 >
-                    Setting
+                    Cài đặt
                     <span className="ml-auto">
                         {isEcommerceOpen ? '▲' : '▼'}
                     </span>
@@ -63,13 +63,13 @@ const SidebarEmployer = () => {
                             onClick={() => navigate('/updateProfile-user')}
                             className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                         >
-                            Update Info User
+                            Cập nhật thông tin tài khoản
                         </FlowbiteSidebar.Item>
                         <FlowbiteSidebar.Item
                             onClick={() => navigate('/updateProfile-employer')}
                             className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                         >
-                            Update Info Employer
+                            Cập nhật thông tin nhà tuyển dụng
                         </FlowbiteSidebar.Item>
                     </div>
                 )}
@@ -78,14 +78,14 @@ const SidebarEmployer = () => {
                     onClick={() => navigate('/inbox')}
                     className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
                 >
-                    Inbox
+                    Nhắn tin
                 </FlowbiteSidebar.Item>
                 <FlowbiteSidebar.Item
                     icon={FaSignOutAlt}
                     onClick={handleLogout}
                     className="hover:bg-red-600 hover:text-white rounded cursor-pointer text-white"
                 >
-                    Log out
+                    Đăng xuất
                 </FlowbiteSidebar.Item>
             </FlowbiteSidebar.ItemGroup>
         </FlowbiteSidebar>

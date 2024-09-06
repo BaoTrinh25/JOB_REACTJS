@@ -28,7 +28,7 @@ import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
 import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
 import MyUserReducer from './configs/Reducers';
 
-const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied'];
+const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job'];
 const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
 function AppLayout() {
