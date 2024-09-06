@@ -63,13 +63,14 @@ const ListJobLiked = () => {
                             {jobs.map((like) => (
                                 <div key={like.id} className="flex bg-purple-100 p-3 shadow-md rounded-lg group relative">
                                     <div className="w-1/4 bg-white p-2 rounded-lg shadow-md">
-                                        <div className="w-full h-20 flex items-center justify-center mb-4">
+                                        <div className="w-full h-32 flex items-center justify-center mb-4">
                                             <img src={like.job.image} alt="Job" className="h-full object-cover rounded-md" />
                                         </div>
-                                        <p className="mb-2 font-bold text-xs text-red-800">{like.job.title}</p>
-                                        <p className="mb-2 text-xs text-gray-700">{like.job.company.companyName}</p>
+                                        
+                                        <p className="mb-2 text-xl text-center text-gray-700">{like.job.company.companyName}</p>
                                     </div>
                                     <div className="w-3/4 bg-white p-6 ml-4 rounded-lg shadow-md">
+                                        <p className="mb-2 font-bold text-xs text-red-800">{like.job.title}</p>
                                         <p className="mb-4 text-xs">Địa chỉ: <span className='text-gray-500'>{like.job.company.address}</span></p>
                                         <p className="mb-4 text-xs">Nghề nghiệp: <span className='text-gray-500'>{like.job.career.name}</span></p>
                                         <p className="mb-4 text-xs">Loại công việc: <span className='text-gray-500'>{like.job.employmenttype.type}</span></p>

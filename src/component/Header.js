@@ -5,6 +5,7 @@ import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus,
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
 import { AiFillLike } from 'react-icons/ai';
+import { BsFillBookmarkFill } from 'react-icons/bs';
 
 const Header = () => {
   const user = useContext(MyUserContext);
@@ -55,7 +56,7 @@ const Header = () => {
                 </li>
                 <li className="text-center group">
                   <Link to="/liked-job" className="text-white group-hover:text-yellow-400">
-                    <AiFillLike className="text-white group-hover:text-yellow-400 mx-auto" />
+                    <BsFillBookmarkFill className="text-white group-hover:text-yellow-400 mx-auto" />
                     Việc làm đã lưu
                   </Link>
                 </li>

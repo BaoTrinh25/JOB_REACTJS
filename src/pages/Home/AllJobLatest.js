@@ -8,7 +8,9 @@ const AllJobLatest = () => {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPrevPage, setHasPrevPage] = useState(false);
   const [searchParams, setSearchParams] = useState({ keyword: '', location: '', career: '' });
   const navigate = useNavigate();
   const routerLocation = useRouterLocation();
@@ -23,6 +25,13 @@ const AllJobLatest = () => {
         setJobs(data.results);
         setPage(pageNum);
         setHasNextPage(!!data.next);
+        setHasPrevPage(!!data.previous);
+        // Sử dụng giá trị count để tính tổng số trang
+        if (data.count > 0) {
+          setTotalPages(Math.ceil(data.count / data.results.length)); // Total pages based on count and current result size
+        } else {
+          setTotalPages(0);
+        }
       } else {
         console.error('API response does not contain a results array');
       }
@@ -69,7 +78,7 @@ const AllJobLatest = () => {
         <h2 className="text-base font-bold line-clamp-1">{job.title}</h2>
         <p className="text-gray-600 line-clamp-1">{job.company.companyName}</p>
         <p className="text-red-800">Deadline: {job.deadline}</p>
-        <p>Kinh nghiệm: {job.experience}</p>
+        <p className='line-clamp-1'>Kinh nghiệm: {job.experience}</p>
         <p>Khu vực: {job.area.name}</p>
       </div>
     </div>
@@ -96,23 +105,38 @@ const AllJobLatest = () => {
           </div>
         )}
         {jobs.length > 0 && (
-          <div className="flex justify-between items-center py-4">
+          <div className="flex justify-center items-center py-4">
             <button
-              className={`bg-green-600 text-white py-2 px-4 rounded ${page === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`text-gray-500 py-2 px-4 rounded ${page === 1 ? 'cursor-not-allowed' : ''}`}
               onClick={handlePrevPage}
               disabled={page === 1}
             >
-              Trang trước
+              ← Previous
             </button>
-            <span className="text-lg">Trang {page}</span>
+            <div className="flex mx-4 space-x-2">
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => fetchJobs(index + 1, searchParams.keyword, searchParams.location, searchParams.career)}
+                  className={`${
+                    page === index + 1
+                      ? 'text-blue-600 border-b-2 border-blue-600'
+                      : 'text-gray-500'
+                    } px-3 py-2`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
             <button
-              className={`bg-green-600 text-white py-2 px-4 rounded ${!hasNextPage ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`text-gray-500 py-2 px-4 rounded ${!hasNextPage ? 'cursor-not-allowed' : ''}`}
               onClick={handleNextPage}
               disabled={!hasNextPage}
             >
-              Trang tiếp theo
+              Next →
             </button>
           </div>
+
         )}
       </div>
     </div>
