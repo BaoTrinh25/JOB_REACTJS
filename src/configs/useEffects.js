@@ -5,6 +5,7 @@ const useFetchOptions = () => {
   const [locations, setLocations] = useState([]);
   const [careers, setCareers] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const [employmenttypes, setEmploymenttypes] = useState([]);
   
   useEffect(() => {
     const fetchLocation = async () => {
@@ -28,7 +29,7 @@ const useFetchOptions = () => {
     const fetchEmploymenttype = async () => {
       try {
         const res = await APIs.get(endpoints['employmenttypes']);
-        setLocations(res.data);
+        setEmploymenttypes(res.data);
       } catch (err) {
         console.error(err);
       }
@@ -50,7 +51,7 @@ const useFetchOptions = () => {
     fetchCompanies();
   }, []);
 
-  return { locations, careers, companies };
+  return { locations, careers, companies, employmenttypes };
 };
 
 export default useFetchOptions;

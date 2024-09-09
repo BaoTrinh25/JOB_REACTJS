@@ -24,18 +24,6 @@ const UpdateInfoProfileEmployer = () => {
         });
     };
 
-    // const handleSave = async () => {
-    //     try {
-    //         let form = new FormData();
-    //         Object.keys(formData).forEach((key) => {
-    //             form.append(key, formData[key]);
-    //         });
-    //         updateEmployer(form); 
-    //     } catch (ex) {
-    //         console.error(ex);
-    //     }
-    // };
-
     const updateEmployer = async () => {
         let form = new FormData();
         Object.keys(formData).forEach((key) => {
@@ -43,8 +31,6 @@ const UpdateInfoProfileEmployer = () => {
         });
         try {
             const token = getToken();
-            console.log('Data sending to server:', form); // Log form data before sending
-
             const res = await authApi(token).patch(endpoints["patch_company"]
                 (user.company.id), 
                 form, 
@@ -53,9 +39,6 @@ const UpdateInfoProfileEmployer = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
-            console.log('Response from server:', res.data); // Log response from server
-
             if (res.status === 200) {
                 alert('Cập nhật thông tin thành công!');
                 navigate('/employer-profile');

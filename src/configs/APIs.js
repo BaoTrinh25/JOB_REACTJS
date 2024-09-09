@@ -21,7 +21,6 @@ export const endpoints = {
     'job_detail': (id) => `/jobs/${id}/`,  
     'post_recruitment': `/jobs/`,
     'job_posted': `/companies/list_job/`,
-    'job_applied': (pageNum) => `/jobseeker/list_job_apply/?page=${pageNum}`, 
     'post_cmt': (id) => `/jobs/${id}/comments/`,
     'list_cmt': (id) => `/jobs/${id}/comments/`,
     'delete_job':(id) => `/jobs/${id}/`,
@@ -31,7 +30,7 @@ export const endpoints = {
     'like': (id) => `/jobs/${id}/like/`,
     'check_liked': (id) => `/jobs/${id}/check_liked/`,
     'liked_job': (pageNum) => `/jobs/get_liked_job/?page=${pageNum}`,
-
+    
     'employmenttypes': `/employmenttypes/`,
     'careers': `/careers/`,
     'areas': `/areas/`,
@@ -40,9 +39,10 @@ export const endpoints = {
     'companies': `/companies/`,
     // 'company': (id) => `/companies/${id}/`,
     'apply_job': (id) => `/jobs/${id}/apply/`,
-    //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
-    'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,
-
+    'job_applied': (pageNum) => `/jobseeker/list_job_apply/?page=${pageNum}`, //danh sách việc làm đã apply của ứng viên
+    'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,   //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
+    'num_application': (id) => `/jobs/${id}/num_applications/`, 
+    'update_info_job': (id) => `/jobs/${id}/`,
 };
 
 const APIs = axios.create({

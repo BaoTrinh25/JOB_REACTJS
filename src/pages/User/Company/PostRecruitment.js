@@ -6,6 +6,8 @@ import APIs, { authApi, endpoints } from "../../../configs/APIs";
 import { MyUserContext } from "../../../configs/Context";
 import { getToken } from "../../../utils/storage";
 import { AiOutlineDelete } from "react-icons/ai";
+import SidebarEmployer from "../../../component/SidebarEmployer";
+import useFetchOptions from "../../../configs/useEffects";
 
 const PostRecruitment = () => {
     const [job, setJob] = useState({});
@@ -17,9 +19,7 @@ const PostRecruitment = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
 
-    const [areas, setAreas] = useState([]);
-    const [employmentTypes, setEmploymentTypes] = useState([]);
-    const [careers, setCareers] = useState([]);
+    const { locations: areas, careers, employmenttypes } = useFetchOptions();
 
     const [gender, setGender] = useState("");
     const [genderError, setGenderError] = useState(false);
@@ -29,57 +29,15 @@ const PostRecruitment = () => {
     const fileInputRef = useRef(null);
 
     const fields = [
-        {
-            label: "Tiêu đề",
-            name: "title",
-            type: "text",
-        },
-        {
-            label: "Hình ảnh",
-            name: "image",
-            type: "file",
-        },
-        {
-            label: "Địa điểm",
-            name: "location",
-            type: "text",
-        },
-        {
-            label: "Số lượng",
-            name: "quantity",
-            type: "number",
-        },
-        {
-            label: "Mức lương",
-            name: "salary",
-            type: "number",
-        },
-        {
-            label: "Vị trí",
-            name: "position",
-            type: "text",
-        },
-        {
-            label: "Mô tả công việc",
-            name: "description",
-            type: "textarea",
-        },
-        {
-            label: "Kinh nghiệm",
-            name: "experience",
-            type: "text",
-        },
-        {
-            label: "Hạn chót",
-            name: "deadline",
-            type: "date",
-        },
+        { label: "Tiêu đề", name: "title", type: "text" },
+        { label: "Hình ảnh", name: "image", type: "file" },
+        { label: "Địa điểm", name: "location", type: "text" },
+        { label: "Vị trí", name: "position", type: "text" },
+        { label: "Mô tả công việc", name: "description", type: "textarea" },
     ];
 
     const updateState = (field, value) => {
-        setJob((current) => {
-            return { ...current, [field]: value };
-        });
+        setJob((current) => ({ ...current, [field]: value }));
     };
 
     const handleDateChange = (date) => {
@@ -121,39 +79,6 @@ const PostRecruitment = () => {
         return true;
     };
 
-    useEffect(() => {
-        const fetchAreas = async () => {
-            try {
-                const res = await APIs.get(endpoints["areas"]);
-                setAreas(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        const fetchEmploymentTypes = async () => {
-            try {
-                const res = await APIs.get(endpoints["employmenttypes"]);
-                setEmploymentTypes(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        const fetchCareers = async () => {
-            try {
-                const res = await APIs.get(endpoints["careers"]);
-                setCareers(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        fetchAreas();
-        fetchEmploymentTypes();
-        fetchCareers();
-    }, []);
-
     const postJob = async () => {
         setErr(false);
 
@@ -165,7 +90,7 @@ const PostRecruitment = () => {
         for (let key in job) {
             form.append(key, job[key]);
         }
-        form.append("reported", "False");
+        // form.append("reported", "False");
         form.append("active", "True");
         form.append("company", user.company.id);
         setLoading(true);
@@ -188,7 +113,7 @@ const PostRecruitment = () => {
                 setDate(new Date());
                 setSelectedImage(null);
                 setSelectedFile(null);
-                navigate("/list-posted");
+                navigate("/job-posted");
             }
             console.log(res.data);
         } catch (ex) {
@@ -200,18 +125,19 @@ const PostRecruitment = () => {
     };
 
     return (
-        <div className="container mx-auto p-4 w-[70%] bg-red-200">
-            <div className="bg-fuchsia-50 p-7 my-2 shadow rounded-xl">
-                <h1 className="flex justify-center text-3xl my-5 pb-5 text-red-700 font-semibold">BÀI TUYỂN DỤNG</h1>
-                <form className="space-y-4">
+        <div className="flex h-auto min-h-screen bg-gray-100">
+            <SidebarEmployer />
+            <div className="container mx-auto p-5 w-[70%] bg-white shadow-lg rounded-lg my-7">
+                <h1 className="text-center text-3xl mb-6 text-green-700 font-semibold">BÀI TUYỂN DỤNG</h1>
+                <form className="space-y-6">
                     {fields.map((field) => (
-                        <div key={field.name} className="flex flex-col">
-                            <label className="mb-1 font-semibold">{field.label}</label>
+                        <div key={field.name} className="flex flex-col mb-4">
+                            <label className="mb-2 font-semibold">{field.label}<span className="text-red-500">(*)</span></label>
                             {field.type === "textarea" ? (
                                 <textarea
                                     value={job[field.name] || ""}
                                     onChange={(e) => updateState(field.name, e.target.value)}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-3 border border-gray-300 rounded"
                                 />
                             ) : field.type === "file" ? (
                                 <div>
@@ -219,15 +145,15 @@ const PostRecruitment = () => {
                                         type="file"
                                         accept="image/*"
                                         onChange={pickImage}
-                                        className="p-2 border border-gray-300 rounded"
+                                        className="p-3 border border-gray-300 rounded"
                                         ref={fileInputRef}
                                     />
                                     {selectedImage && (
-                                        <div className="relative mt-2">
+                                        <div className="relative mt-3">
                                             <img
                                                 src={selectedImage}
                                                 alt="Selected"
-                                                className="w-40 h-40 object-cover"
+                                                className="w-40 h-40 object-cover rounded-lg"
                                             />
                                             <button
                                                 type="button"
@@ -243,7 +169,7 @@ const PostRecruitment = () => {
                                 <DatePicker
                                     selected={date}
                                     onChange={handleDateChange}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-3 border border-gray-300 rounded"
                                     dateFormat="dd-MM-yyyy"
                                 />
                             ) : (
@@ -251,72 +177,139 @@ const PostRecruitment = () => {
                                     type={field.type}
                                     value={job[field.name] || ""}
                                     onChange={(e) => updateState(field.name, e.target.value)}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-3 border border-gray-300 rounded"
                                 />
                             )}
                         </div>
                     ))}
+                    
+                    <div className="flex flex-row space-x-4 mb-4">
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Số lượng <span className="text-red-500">(*)</span>
+                            </label>
+                            <input
+                                type="number"
+                                value={job.quantity || ""}
+                                onChange={(e) => updateState("quantity", e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            />
+                        </div>
 
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold">Chọn giới tính</label>
-                        <select
-                            value={gender}
-                            onChange={(e) => handleGender(e.target.value)}
-                            className="p-2 border border-gray-300 rounded"
-                        >
-                            <option value="">Chọn giới tính</option>
-                            <option value="0">Male</option>
-                            <option value="1">Female</option>
-                            <option value="2">Both male and Female</option>
-                        </select>
-                        {genderError && (
-                            <p className="text-red-500 text-sm mt-1">Vui lòng chọn giới tính hợp lệ.</p>
-                        )}
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Hạn chót<span className="text-red-500">(*)</span>
+                            </label>
+                            <DatePicker
+                                selected={date}
+                                onChange={handleDateChange}
+                                className="p-3 border border-gray-300 rounded"
+                                dateFormat="dd-MM-yyyy"
+                            />
+                        </div>
+
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Loại hình công việc<span className="text-red-500">(*)</span>
+                            </label>
+                            <select
+                                value={job.employmenttype  || ""}
+                                onChange={(e) => updateState("employmenttype", e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            >
+                                <option value="">Chọn loại hình</option>
+                                {employmenttypes.map((types) => (
+                                    <option key={types.id} value={types.id}>
+                                        {types.type}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold">Chọn loại hình công việc</label>
-                        <select
-                            value={job.employmentType || ""}
-                            onChange={(e) => updateState("employmenttype", e.target.value)}
-                            className="p-2 border border-gray-300 rounded"
-                        >
-                            {employmentTypes.map((types) => (
-                                <option key={types.id} value={types.id}>
-                                    {types.type}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="flex flex-row space-x-4 mb-4">
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Kinh nghiệm<span className="text-red-500">(*)</span>
+                            </label>
+                            <select
+                                value={job.experience || ""}
+                                onChange={(e) => updateState("experience", e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            >
+                                <option value="">Chọn kinh nghiệm</option>
+                                <option value="Chưa có kinh nghiệm">Chưa có kinh nghiệm</option>
+                                <option value="Dưới 1 năm">Dưới 1 năm</option>
+                                <option value="Trên 1 năm">Trên 1 năm</option>
+                                <option value="Trên 3 năm">Trên 3 năm</option>
+                                <option value="Trên 5 năm">Trên 5 năm</option>
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Mức lương<span className="text-red-500">(*)</span>
+                            </label>
+                            <select
+                                value={job.salary || ""}
+                                onChange={(e) => updateState("salary", e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            >
+                                <option value="">Chọn mức lương</option>
+                                <option value="Từ 1-2 triệu">Từ 1-2 triệu</option>
+                                <option value="Từ 3-5 triệu">Từ 3-5 triệu</option>
+                                <option value="Từ 5-10 triệu">Từ 5-10 triệu</option>
+                            </select>
+                        </div>
+
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Giới tính<span className="text-red-500">(*)</span>
+                            </label>
+                            <select
+                                value={gender}
+                                onChange={(e) => handleGender(e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            >
+                                <option value="">Chọn giới tính</option>
+                                <option value="0">Male</option>
+                                <option value="1">Female</option>
+                                <option value="2">Both male and Female</option>
+                            </select>
+                            {genderError && (
+                                <p className="text-red-500 text-sm mt-1">Vui lòng chọn giới tính hợp lệ.</p>
+                            )}
+                        </div>
                     </div>
 
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold">Chọn khu vực</label>
-                        <select
-                            value={job.area || ""}
-                            onChange={(e) => updateState("area", e.target.value)}
-                            className="p-2 border border-gray-300 rounded"
-                        >
-                            {areas.map((area) => (
-                                <option key={area.id} value={area.id}>
-                                    {area.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                    <div className="flex flex-row space-x-4 mb-4">
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Lĩnh vực<span className="text-red-500">(*)</span>
+                            </label>
+                            <select
+                                value={job.career || ""}
+                                onChange={(e) => updateState("career", e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            >
+                                <option value="">Chọn lĩnh vực</option>
+                                {careers.map((career) => (
+                                    <option key={career.id} value={career.id}>
+                                        {career.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
-                    <div className="flex flex-col">
-                        <label className="mb-1 font-semibold">Chọn lĩnh vực</label>
-                        <select
-                            value={job.career || ""}
-                            onChange={(e) => updateState("career", e.target.value)}
-                            className="p-2 border border-gray-300 rounded"
-                        >
-                            {careers.map((career) => (
-                                <option key={career.id} value={career.id}>
-                                    {career.name}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="flex flex-col flex-1">
+                            <label className="mb-2 font-semibold">Khu vực<span className="text-red-500">(*)</span>
+                            </label>
+                            <select
+                                value={job.area || ""}
+                                onChange={(e) => updateState("area", e.target.value)}
+                                className="p-3 border border-gray-300 rounded"
+                            >
+                                <option value="">Chọn khu vực</option>
+                                {areas.map((area) => (
+                                    <option key={area.id} value={area.id}>
+                                        {area.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     {err && <p className="text-red-500">Có lỗi xảy ra. Vui lòng thử lại.</p>}
@@ -325,7 +318,7 @@ const PostRecruitment = () => {
                         <button
                             type="button"
                             onClick={postJob}
-                            className={`text-white bg-green-500 py-2 px-7 rounded hover:bg-green-700 ${loading ? "opacity-50" : ""}`}
+                            className={`text-white bg-green-500 py-3 px-8 rounded hover:bg-green-700 ${loading ? "opacity-50" : ""}`}
                             disabled={loading}
                         >
                             {loading ? "Đang đăng..." : "Đăng tuyển"}

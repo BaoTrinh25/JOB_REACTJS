@@ -40,14 +40,14 @@ const Header = () => {
                 Trang chủ
               </Link>
             </li>
-            <li className="text-center group">
-              <Link to="/jobs" className="text-white group-hover:text-yellow-400">
-                <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
-                Việc làm
-              </Link>
-            </li>
             {user && user.role === 0 ? (
               <>
+                <li className="text-center group">
+                  <Link to="/jobs" className="text-white group-hover:text-yellow-400">
+                    <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Việc làm
+                  </Link>
+                </li>
                 <li className="text-center group">
                   <Link to="/job-applied" className="text-white group-hover:text-yellow-400">
                     <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
@@ -66,17 +66,17 @@ const Header = () => {
                 <li className="text-center group">
                   <Link to="/post-recruitment" className="text-white group-hover:text-yellow-400">
                     <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Đăng bài tuyển dụng
+                    Đăng bài
                   </Link>
                 </li>
                 <li className="text-center group">
                   <Link to="/job-posted" className="text-white group-hover:text-yellow-400">
                     <FaHistory className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Bài tuyển dụng đã đăng 
+                    Quản lý tuyển dụng
                   </Link>
                 </li>
               </>
-            ): null}
+            ) : null}
           </ul>
         </nav>
         <div className="h-10 w-px bg-gray-300 mx-2"></div>

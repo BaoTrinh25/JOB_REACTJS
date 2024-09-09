@@ -80,15 +80,17 @@ const Home = () => {
         <div className="flex flex-col md:flex-row h-[75vh] items-center justify-between p-10">
           <div className="flex-1 max-w-md ">
             <h1 className="text-5xl text-orange-800 mb-10">Welcome Employer</h1>
-            <h2 className="text-3xl mb-6">Let's start creating recruitment posts to find suitable candidates for you!</h2>
+            <h2 className="text-3xl mb-6">Nơi gặp gỡ giữa doanh nghiệp
+            và 10 triệu ứng viên chất lượng!</h2>
+            <h3 className="text-xl mb-6">Tuyển người dễ dàng với NAKO - Chúng tôi luôn có ứng viên phù hợp cho bạn</h3>
             <Link to="/post-recruitment">
               <button className="w-[90%] p-4 mb-4 border rounded-full bg-slate-300 hover:bg-slate-500 flex items-center justify-center hover:border-2 hover:border-yellow-500">
-                <FaBriefcase className="mr-2 " /> POST JOBS
+                <FaBriefcase className="mr-2 " /> ĐĂNG TIN NGAY
               </button>
             </Link>
           </div>
           <div className="flex-1 flex items-center justify-center">
-            <img src={"https://cdni.iconscout.com/illustration/premium/thumb/we-are-hiring-2645886-2218311.png"} alt="Background" className="max-w-full h-auto" />
+            <img src={"https://ntd.vieclam24h.vn/_next/image?url=%2Fimg%2Flanding_page_right.png&w=750&q=75"} alt="Background" className="max-w-full h-auto" />
           </div>
         </div>
       )}

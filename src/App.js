@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useReducer } from "react";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import React, { useEffect, useReducer } from "react";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { gapi } from 'gapi-script';
 import { MyDispatchContext, MyUserContext } from './configs/Context';
-import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import './index.css'; 
 import Header from "./component/Header";
 import Footer from "./component/Footer";
@@ -27,26 +27,26 @@ import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
 import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
 import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
 import MyUserReducer from './configs/Reducers';
+import JobApplicantsList from "./pages/User/Company/JobApplicantsList";
+import UpdatePostRecruitment from './pages/User/Company/UpdatePostRecruitment';
 
-const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job'];
+const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment'];
 const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
 function AppLayout() {
   const location = useLocation();
-  const showHeaderFooter = !noHeaderFooterRoutes.includes(location.pathname);
+  const showHeaderFooter = !noHeaderFooterRoutes.some(route => location.pathname.startsWith(route));
 
   useEffect(() => {
     function start() {
       gapi.client.init({
         clientId: clientId,
         scope: "profile email"
-      })
-    };
+      });
+    }
 
     gapi.load('client:auth2', start);
-  })
-
- 
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -71,22 +71,21 @@ function AppLayout() {
           <Route path='/updateProfile-employer' element={<UpdateInfoProfileEmployer />} />
           <Route path='/post-recruitment' element={<PostRecruitment />} />
           <Route path='/job-posted' element={<ListPosted />} /> 
+          <Route path='/jobapplicants-list/:jobId' element={<JobApplicantsList />} /> 
 
           <Route path='/applicant-profile' element={<ProfileApplicant />} />
           <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
           <Route path='/jobApplication/:jobId' element={<JobApplication />} />
           <Route path='/liked-job' element={<ListJobLiked />} />
-          <Route path='/job-applied' element={<ListJobApplied />} />
+          <Route path='/update-post-recruitment/:jobId' element={<UpdatePostRecruitment />} />
 
-          <Route path="*" element={() => <div>404 Not Found</div>} />
+          <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
       </main>
       {showHeaderFooter && <Footer />}
     </div>
   );
 }
-
-
 
 function MyTab() {
   return (

@@ -1,95 +1,170 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaInbox } from 'react-icons/fa';
-import { Sidebar as FlowbiteSidebar } from 'flowbite-react';
-import { MyDispatchContext } from '../configs/Context';
+import React, { useState } from 'react';
+import {
+  BiChevronDown,
+  BiChevronUp,
+  BiPlus,
+  BiFile,
+  BiUser,
+  BiHeart,
+  BiListUl,
+  BiCalendar,
+  BiMoney,
+  BiBuilding,
+  BiLogOut,
+  BiSolidInbox
+} from 'react-icons/bi';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const SidebarEmployer = () => {
-    const navigate = useNavigate();
-    const [isEcommerceOpen, setIsEcommerceOpen] = useState(false);
-    const dispatch = useContext(MyDispatchContext);
+  const [openQuangLyDangTuyen, setOpenQuangLyDangTuyen] = useState(true);
+  const [openQuangLyUngVien, setOpenQuangLyUngVien] = useState(true);
+  const [openQuangLyDichVu, setOpenQuangLyDichVu] = useState(true);
+  const [openCapNhat, setOpenCapNhat] = useState(true); 
+  const [openHopThoai, setOpenHopThoai] = useState(true); 
 
-    const toggleEcommerceDropdown = () => {
-        setIsEcommerceOpen(!isEcommerceOpen);
-    };
+  const navigate = useNavigate();
 
-    const handleLogout = () => {
-        dispatch({ type: 'logout' });
-        navigate('/');
-    };
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login'); 
+  };
 
-    return (
-        <FlowbiteSidebar className="h-full !bg-gray-900 text-white w-80 flex flex-col">
-            <FlowbiteSidebar.ItemGroup>
-                <FlowbiteSidebar.Item
-                    className="hover:bg-gray-700 rounded text-2xl font-semibold text-white"
+  return (
+    <div className="w-72 h-auto bg-gray-700 shadow-lg">
+        <h2 className='text-2xl text-white text-center mt-5 p-5'>BẢNG ĐIỀU KHIỂN</h2>
+        <div class="border-t border-gray-300 my-4"></div>
+      <div className="px-6 py-4">
+        {/* Quản lý đăng tuyển */}
+        <div className="mb-4">
+          <div
+            className="flex justify-between items-center cursor-pointer"
+            onClick={() => setOpenQuangLyDangTuyen(!openQuangLyDangTuyen)}
+          >
+            <span className="font-bold text-white">Quản lý đăng tuyển</span>
+            {openQuangLyDangTuyen ? <BiChevronUp /> : <BiChevronDown />}
+          </div>
+          {openQuangLyDangTuyen && (
+            <ul className="pl-4 mt-2">
+              <li className="mb-2">
+                <NavLink to="/post-recruitment" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiPlus /> <span>Tạo tin tuyển dụng</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/job-posted" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiFile /> <span>Quản lý tuyển dụng</span>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </div>
+
+        {/* Quản lý ứng viên */}
+        <div className="mb-4">
+          <div
+            className="flex justify-between items-center cursor-pointer"
+            onClick={() => setOpenQuangLyUngVien(!openQuangLyUngVien)}
+          >
+            <span className="font-bold text-white">Quản lý ứng viên</span>
+            {openQuangLyUngVien ? <BiChevronUp /> : <BiChevronDown />}
+          </div>
+          {openQuangLyUngVien && (
+            <ul className="pl-4 mt-2">
+              <li className="mb-2">
+                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiUser /> <span>Hồ sơ ứng tuyển</span>
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiHeart /> <span>Hồ sơ đã chấp nhận</span>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </div>
+
+        {/* Quản lý dịch vụ */}
+        <div className="mb-4">
+          <div
+            className="flex justify-between items-center cursor-pointer"
+            onClick={() => setOpenQuangLyDichVu(!openQuangLyDichVu)}
+          >
+            <span className="font-bold text-white">Quản lý dịch vụ</span>
+            {openQuangLyDichVu ? <BiChevronUp /> : <BiChevronDown />}
+          </div>
+          {openQuangLyDichVu && (
+            <ul className="pl-4 mt-2">
+              <li className="mb-2">
+                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiMoney /> <span>Mua gói đăng tin</span>
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiCalendar /> <span>Lịch sử đơn hàng</span>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </div>
+
+        {/* Tài khoản */}
+        <div className="mb-4">
+          <div className="flex justify-between items-center cursor-pointer" onClick={() => setOpenCapNhat(!openCapNhat)}>
+            <span className="font-bold text-white">Tài khoản</span>
+            {openCapNhat ? <BiChevronUp /> : <BiChevronDown />}
+          </div>
+          {openCapNhat && (
+            <ul className="pl-4 mt-2">
+              <li className="mb-2">
+                <NavLink to="/employer-profile" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiBuilding /> <span>Tài khoản nhà tuyển dụng</span>
+                </NavLink>
+              </li>
+              {/* Cập nhật tài khoản và công ty */}
+              <li className="mb-2">
+                <NavLink to="/updateProfile-user" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiUser /> <span>Cập nhật tài khoản</span>
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink to="/updateProfile-employer" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiBuilding /> <span>Cập nhật thông tin công ty</span>
+                </NavLink>
+              </li>
+              {/* Xử lý đăng xuất */}
+              <li className="mb-2">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 text-white hover:text-red-600"
                 >
-                    Bảng điều khiển
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaHome}
-                    onClick={() => navigate('/')}
-                    className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                >
-                    Trang chủ
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaUser}
-                    onClick={() => navigate('/profile')}
-                    className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                >
-                    Hồ sơ của bạn
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaPlus}
-                    onClick={() => navigate('/post-recruitment')}
-                    className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                >
-                    Đăng bài
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaCog}
-                    className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                    onClick={toggleEcommerceDropdown}
-                >
-                    Cài đặt
-                    <span className="ml-auto">
-                        {isEcommerceOpen ? '▲' : '▼'}
-                    </span>
-                </FlowbiteSidebar.Item>
-                {isEcommerceOpen && (
-                    <div className="ml-6">
-                        <FlowbiteSidebar.Item
-                            onClick={() => navigate('/updateProfile-user')}
-                            className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                        >
-                            Cập nhật thông tin tài khoản
-                        </FlowbiteSidebar.Item>
-                        <FlowbiteSidebar.Item
-                            onClick={() => navigate('/updateProfile-employer')}
-                            className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                        >
-                            Cập nhật thông tin nhà tuyển dụng
-                        </FlowbiteSidebar.Item>
-                    </div>
-                )}
-                <FlowbiteSidebar.Item
-                    icon={FaInbox}
-                    onClick={() => navigate('/inbox')}
-                    className="hover:bg-gray-700 hover:text-white rounded cursor-pointer text-white"
-                >
-                    Nhắn tin
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaSignOutAlt}
-                    onClick={handleLogout}
-                    className="hover:bg-red-600 hover:text-white rounded cursor-pointer text-white"
-                >
-                    Đăng xuất
-                </FlowbiteSidebar.Item>
-            </FlowbiteSidebar.ItemGroup>
-        </FlowbiteSidebar>
-    );
+                  <BiLogOut /> <span>Đăng xuất</span>
+                </button>
+              </li>
+            </ul>
+          )}
+        </div>
+
+        {/* Kết nối */}
+        <div className="mb-4">
+          <div className="flex justify-between items-center cursor-pointer" onClick={() => setOpenHopThoai(!openHopThoai)}>
+            <span className="font-bold text-white">Hộp thoại</span>
+            {openHopThoai ? <BiChevronUp /> : <BiChevronDown />}
+          </div>
+          {openHopThoai && (
+            <ul className="pl-4 mt-2">
+              <li className="mb-2">
+                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiSolidInbox /> <span>Nhắn tin</span>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SidebarEmployer;
