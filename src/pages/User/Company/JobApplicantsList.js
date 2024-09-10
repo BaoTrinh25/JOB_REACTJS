@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import APIs, { endpoints } from "../../../configs/APIs";
+import APIs, { authApi, endpoints } from "../../../configs/APIs";
 import { getToken } from "../../../utils/storage";
 import { FaFileAlt, FaUserCircle } from "react-icons/fa";
+import ConfirmModal from "../../../component/ConfirmModal";
 
 const JobApplicantsList = () => {
   const { jobId } = useParams();
@@ -12,6 +13,8 @@ const JobApplicantsList = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCV, setSelectedCV] = useState("");
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false); // Trạng thái modal xác nhận
+  const [selectedApplicant, setSelectedApplicant] = useState(null); // Ứng viên đang chọn
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -49,35 +52,39 @@ const JobApplicantsList = () => {
     setSelectedCV("");
   };
 
-  const handleAccept = async (applicantId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn chấp nhận ứng viên này?")) {
-      return;
-    }
+  const openConfirmModal = (applicantId) => {
+    setSelectedApplicant(applicantId);
+    setConfirmModalOpen(true);
+  };
 
-    try {
-      const token = getToken();
-      const response = await APIs.patch(
-        endpoints["update_status"](applicantId),
-        { status: "accepted" },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  const closeConfirmModal = () => {
+    setConfirmModalOpen(false);
+    setSelectedApplicant(null);
+  };
 
-      if (response.status === 200) {
-        alert("Ứng viên đã được chấp nhận.");
-        setApplicants((prevApplicants) =>
-          prevApplicants.map((applicant) =>
-            applicant.id === applicantId
-              ? { ...applicant, status: "Đã chấp nhận" }
-              : applicant
-          )
+  const handleConfirmAccept = async () => {
+    if (selectedApplicant) {
+      try {
+        const token = getToken();
+        const response = await authApi(token).patch(
+          endpoints["update_status"](jobId, selectedApplicant),
+          { status: "Accepted" }
         );
+
+        if (response.status === 200) {
+          setApplicants((prevApplicants) =>
+            prevApplicants.map((applicant) =>
+              applicant.id === selectedApplicant
+                ? { ...applicant, status: 2 }
+                : applicant
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Error accepting applicant:", error);
+      } finally {
+        closeConfirmModal();
       }
-    } catch (error) {
-      console.error("Error accepting applicant:", error);
     }
   };
 
@@ -189,26 +196,41 @@ const JobApplicantsList = () => {
                       >
                         <FaFileAlt className="mr-2" /> Xem CV
                       </button>
-                      <button
-                        onClick={() => handleAccept(applicant.id)}
-                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
-                      >
-                        {applicant.status === "Đã chấp nhận"
-                          ? "Đã chấp nhận"
-                          : "Chấp nhận"}
-                      </button>
-                      <button
-                        onClick={() => handleReject(applicant.id)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-                      >
-                        Từ chối
-                      </button>
-                      <button
-                        onClick={() => handleDelete(applicant.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                      >
-                        Xóa
-                      </button>
+
+                      <div className="flex flex-col space-y-3">
+                        {applicant.status !== 2 ? (
+                          <>
+                            <button
+                              onClick={() => openConfirmModal(applicant.id)}
+                              className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
+                              style={{ minWidth: '100px' }}
+                            >
+                              Chấp nhận
+                            </button>
+                            <button
+                              onClick={() => handleReject(applicant.id)}
+                              className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
+                              style={{ minWidth: '100px' }}
+                            >
+                              Từ chối
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed text-sm"
+                            style={{ minWidth: '100px' }}
+                          >
+                            Đã chấp nhận
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(applicant.id)}
+                          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
+                          style={{ minWidth: '100px' }}
+                        >
+                          Xóa
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </li>
@@ -217,32 +239,48 @@ const JobApplicantsList = () => {
           )}
         </div>
       )}
-
-      {/* Modal */}
+      {/* Modal Xem CV */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 mt-19 pt-20">
-          <div className="bg-white pt-8 p-2 rounded-lg w-full h-5/6 max-w-5xl max-h-3xl overflow-hidden relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-gray-700 hover:text-red-500"
-            >
-              Close
-            </button>
-            <div className="w-full h-full flex justify-center items-center">
-              <iframe
-                src={selectedCV}
-                className="w-full h-full transform scale-0.75"
-                title="CV Viewer"
-                style={{
-                  transformOrigin: 'top left',
-                  border: 'none'
-                }}
-              ></iframe>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-1/2">
+            <div className="flex justify-end">
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
             </div>
+            <iframe
+              title="CV"
+              src={selectedCV}
+              className="w-full h-96"
+              frameBorder="0"
+            ></iframe>
           </div>
         </div>
       )}
-
+      {/* Modal Xác nhận */}
+      {confirmModalOpen && (
+        <ConfirmModal
+          onConfirm={handleConfirmAccept}
+          onCancel={closeConfirmModal}
+          message="Bạn có chắc chắn muốn chấp nhận ứng viên này không?"
+        />
+      )}
     </div>
   );
 };
