@@ -223,13 +223,6 @@ const JobApplicantsList = () => {
                             Đã chấp nhận
                           </button>
                         )}
-                        <button
-                          onClick={() => handleDelete(applicant.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
-                          style={{ minWidth: '100px' }}
-                        >
-                          Xóa
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -241,38 +234,29 @@ const JobApplicantsList = () => {
       )}
       {/* Modal Xem CV */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-1/2">
-            <div className="flex justify-end">
-              <button
-                onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
-              </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 my-19 pt-20">
+          <div className="bg-white pt-8 p-2 rounded-lg w-full h-5/6 max-w-5xl max-h-3xl overflow-hidden relative">
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-red-700 hover:bg-red-100 font-semibold"
+            >
+              Close
+            </button>
+            <div className="w-full h-full flex justify-center items-center">
+              <iframe
+                src={selectedCV}
+                className="w-full h-full transform scale-0.75"
+                title="CV Viewer"
+                style={{
+                  transformOrigin: 'top left',
+                  border: 'none'
+                }}
+              ></iframe>
             </div>
-            <iframe
-              title="CV"
-              src={selectedCV}
-              className="w-full h-96"
-              frameBorder="0"
-            ></iframe>
           </div>
         </div>
       )}
+
       {/* Modal Xác nhận */}
       {confirmModalOpen && (
         <ConfirmModal
