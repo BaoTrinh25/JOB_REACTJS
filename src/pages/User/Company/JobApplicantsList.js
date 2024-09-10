@@ -15,6 +15,7 @@ const JobApplicantsList = () => {
   const [selectedCV, setSelectedCV] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false); // Trạng thái modal xác nhận
   const [selectedApplicant, setSelectedApplicant] = useState(null); // Ứng viên đang chọn
+  const [confirmRejectModalOpen, setConfirmRejectModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -42,23 +43,34 @@ const JobApplicantsList = () => {
     fetchApplicants();
   }, [jobId]);
 
+  //open modal CV
   const openModal = (cvLink) => {
     setSelectedCV(cvLink);
     setIsModalOpen(true);
   };
-
+  //close open CV
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedCV("");
   };
-
+  //open accept modal
   const openConfirmModal = (applicantId) => {
     setSelectedApplicant(applicantId);
     setConfirmModalOpen(true);
   };
-
+  //close accept modal
   const closeConfirmModal = () => {
     setConfirmModalOpen(false);
+    setSelectedApplicant(null);
+  };
+  //open reject modal
+  const openConfirmRejectModal = (applicantId) => {
+    setSelectedApplicant(applicantId);
+    setConfirmRejectModalOpen(true);
+  };
+  //close reject modal
+  const closeConfirmRejectModal = () => {
+    setConfirmRejectModalOpen(false);
     setSelectedApplicant(null);
   };
 
@@ -88,13 +100,32 @@ const JobApplicantsList = () => {
     }
   };
 
-  const handleReject = (applicantId) => {
-    console.log("Từ chối ứng viên", applicantId);
+  const handleConfirmReject = async () => {
+    if (selectedApplicant) {
+      try {
+        const token = getToken();
+        const response = await authApi(token).patch(
+          endpoints["update_status"](jobId, selectedApplicant),
+          { status: "Rejected" }
+        );
+
+        if (response.status === 200) {
+          setApplicants((prevApplicants) =>
+            prevApplicants.map((applicant) =>
+              applicant.id === selectedApplicant
+                ? { ...applicant, status: 3 }
+                : applicant
+            )
+          );
+        }
+      } catch (error) {
+        console.error("Error accepting applicant:", error);
+      } finally {
+        closeConfirmRejectModal();
+      }
+    }
   };
 
-  const handleDelete = (applicantId) => {
-    console.log("Xóa ứng viên", applicantId);
-  };
 
   if (error)
     return <div className="text-center text-red-500 mt-4">Error: {error}</div>;
@@ -198,7 +229,14 @@ const JobApplicantsList = () => {
                       </button>
 
                       <div className="flex flex-col space-y-3">
-                        {applicant.status !== 2 ? (
+                        {applicant.status === 3 ? (
+                          <button
+                            className="bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed text-sm"
+                            style={{ minWidth: '100px' }}
+                          >
+                            Đã từ chối
+                          </button>
+                        ) : applicant.status !== 2 ? (
                           <>
                             <button
                               onClick={() => openConfirmModal(applicant.id)}
@@ -208,7 +246,7 @@ const JobApplicantsList = () => {
                               Chấp nhận
                             </button>
                             <button
-                              onClick={() => handleReject(applicant.id)}
+                              onClick={() => openConfirmRejectModal(applicant.id)}
                               className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
                               style={{ minWidth: '100px' }}
                             >
@@ -224,6 +262,7 @@ const JobApplicantsList = () => {
                           </button>
                         )}
                       </div>
+
                     </div>
                   </div>
                 </li>
@@ -263,6 +302,14 @@ const JobApplicantsList = () => {
           onConfirm={handleConfirmAccept}
           onCancel={closeConfirmModal}
           message="Bạn có chắc chắn muốn chấp nhận ứng viên này không?"
+        />
+      )}
+
+      {confirmRejectModalOpen && (
+        <ConfirmModal
+          onConfirm={handleConfirmReject}
+          onCancel={closeConfirmRejectModal}
+          message="Bạn có chắc chắn muốn từ chối ứng viên này không?"
         />
       )}
     </div>
