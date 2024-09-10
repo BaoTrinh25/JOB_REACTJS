@@ -38,9 +38,10 @@ export const endpoints = {
  
     'companies': `/companies/`,
     // 'company': (id) => `/companies/${id}/`,
-    'apply_job': (id) => `/jobs/${id}/apply/`,
+    'apply_job': (id) => `/jobs/${id}/apply/`, //ứng tuyển việc làm
     'job_applied': (pageNum) => `/jobseeker/list_job_apply/?page=${pageNum}`, //danh sách việc làm đã apply của ứng viên
     'jobSeeker_applied': (id) => `/jobs/${id}/list_apply/`,   //ds các ứng viên đã ứng tuyển vào 1 bài tuyển dụng
+    'update_status': (id, application_id) => `/jobs/${id}/applications/${application_id}/partial-update/`, //cập nhật đơn ứng tuyển(trạng thái)
     'num_application': (id) => `/jobs/${id}/num_applications/`, 
     'update_info_job': (id) => `/jobs/${id}/`,
 };

@@ -72,7 +72,7 @@ const Header = () => {
                 <li className="text-center group">
                   <Link to="/job-posted" className="text-white group-hover:text-yellow-400">
                     <FaHistory className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Quản lý tuyển dụng
+                    Quản lý đăng tuyển
                   </Link>
                 </li>
               </>

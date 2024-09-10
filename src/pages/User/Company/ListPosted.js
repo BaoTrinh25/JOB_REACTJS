@@ -190,7 +190,7 @@ const ListPosted = () => {
                                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center hover:text-red-700"
                                 onClick={() => openDeleteModal(job.id)}
                               >
-                                <BiTrash className="h-5 w-5 mr-2" /> Xóa
+                                <BiTrash className="h-5 w-5 mr-2" /> Ẩn bài đăng
                               </button>
                             </div>
                           )}
@@ -222,8 +222,8 @@ const ListPosted = () => {
           className="bg-white rounded-lg p-8 max-w-md mx-auto mt-20 shadow-lg"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
         >
-          <h2 className="text-lg font-bold mb-4">Xác nhận xóa bài viết</h2>
-          <p className="mb-4">Bạn có chắc chắn muốn xóa bài viết này không?</p>
+          <h2 className="text-lg font-bold mb-4">Xác nhận ẩn bài viết</h2>
+          <p className="mb-4">Bạn có chắc chắn muốn ẩn bài viết này không?</p>
           <div className="flex justify-end">
             <button
               className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-md px-4 py-2 mr-2"

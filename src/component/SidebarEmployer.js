@@ -50,9 +50,14 @@ const SidebarEmployer = () => {
                   <BiPlus /> <span>Tạo tin tuyển dụng</span>
                 </NavLink>
               </li>
-              <li>
+              <li className='mb-2'>
                 <NavLink to="/job-posted" className="flex items-center space-x-2 text-white hover:text-green-600">
                   <BiFile /> <span>Quản lý tuyển dụng</span>
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                  <BiHeart /> <span>Hồ sơ đã chấp nhận</span>
                 </NavLink>
               </li>
             </ul>
@@ -60,7 +65,7 @@ const SidebarEmployer = () => {
         </div>
 
         {/* Quản lý ứng viên */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <div
             className="flex justify-between items-center cursor-pointer"
             onClick={() => setOpenQuangLyUngVien(!openQuangLyUngVien)}
@@ -82,7 +87,7 @@ const SidebarEmployer = () => {
               </li>
             </ul>
           )}
-        </div>
+        </div> */}
 
         {/* Quản lý dịch vụ */}
         <div className="mb-4">

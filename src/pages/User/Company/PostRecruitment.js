@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import APIs, { authApi, endpoints } from "../../../configs/APIs";
+import { authApi, endpoints } from "../../../configs/APIs";
 import { MyUserContext } from "../../../configs/Context";
 import { getToken } from "../../../utils/storage";
 import { AiOutlineDelete } from "react-icons/ai";
 import SidebarEmployer from "../../../component/SidebarEmployer";
 import useFetchOptions from "../../../configs/useEffects";
+import NotificationModal from "../../../component/NotificationModal";
 
 const PostRecruitment = () => {
     const [job, setJob] = useState({});
@@ -18,15 +19,14 @@ const PostRecruitment = () => {
     const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
-
     const { locations: areas, careers, employmenttypes } = useFetchOptions();
-
     const [gender, setGender] = useState("");
     const [genderError, setGenderError] = useState(false);
-
     const [date, setDate] = useState(new Date());
-
     const fileInputRef = useRef(null);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const closeModal = () => setModalIsOpen(false);
 
     const fields = [
         { label: "Tiêu đề", name: "title", type: "text" },
@@ -72,7 +72,8 @@ const PostRecruitment = () => {
     const validateFields = () => {
         for (let field of fields) {
             if (!job[field.name]) {
-                alert(`Trường ${field.label} không được để trống.`);
+                setModalMessage(`Trường "${field.label}" không được để trống.`);
+                setModalIsOpen(true);
                 return false;
             }
         }
@@ -107,7 +108,8 @@ const PostRecruitment = () => {
             );
 
             if (res.status === 201) {
-                alert("Bài đăng đã được tạo thành công.");
+                setModalMessage("Bài đăng đã được đăng thành công");
+                setModalIsOpen(true);
                 setJob({});
                 setGender("");
                 setDate(new Date());
@@ -117,7 +119,8 @@ const PostRecruitment = () => {
             }
             console.log(res.data);
         } catch (ex) {
-            console.error(ex.response);
+            setModalMessage("Đã có lỗi xảy ra. Vui lòng thử lại!")
+            setModalIsOpen(true);
             setErr(true);
         } finally {
             setLoading(false);
@@ -182,7 +185,7 @@ const PostRecruitment = () => {
                             )}
                         </div>
                     ))}
-                    
+
                     <div className="flex flex-row space-x-4 mb-4">
                         <div className="flex flex-col flex-1">
                             <label className="mb-2 font-semibold">Số lượng <span className="text-red-500">(*)</span>
@@ -210,7 +213,7 @@ const PostRecruitment = () => {
                             <label className="mb-2 font-semibold">Loại hình công việc<span className="text-red-500">(*)</span>
                             </label>
                             <select
-                                value={job.employmenttype  || ""}
+                                value={job.employmenttype || ""}
                                 onChange={(e) => updateState("employmenttype", e.target.value)}
                                 className="p-3 border border-gray-300 rounded"
                             >
@@ -326,6 +329,13 @@ const PostRecruitment = () => {
                     </div>
                 </form>
             </div>
+
+            {/* Modal thông báo */}
+            <NotificationModal
+                isOpen={modalIsOpen}
+                message={modalMessage}
+                onClose={closeModal}
+            />
         </div>
     );
 };
