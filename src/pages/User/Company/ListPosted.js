@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import APIs, { endpoints } from '../../../configs/APIs';
 import { getToken } from '../../../utils/storage';
-import Modal from 'react-modal';
-import { BiPencil, BiTrash, BiDotsHorizontalRounded, BiStreetView, BiDetail } from 'react-icons/bi';
+import ConfirmModal from '../../../component/ConfirmModal';
+import { BiPencil, BiTrash, BiDotsHorizontalRounded, BiDetail, BiHide } from 'react-icons/bi';
 import SidebarEmployer from '../../../component/SidebarEmployer';
 
 const ListPosted = () => {
@@ -12,13 +12,15 @@ const ListPosted = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [jobToDelete, setJobToDelete] = useState(null);
+  const [isHideModalOpen, setIsHideModalOpen] = useState(false);
+  const [jobToHide, setJobToHide] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(null);
   const [applications, setApplications] = useState({});
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
   console.log(jobs);
-  
+
   const fetchJobs = async () => {
     if (loading) return;
     setLoading(true);
@@ -77,6 +79,31 @@ const ListPosted = () => {
     }
   };
 
+
+  //ẩn bài đăng 
+  const handleHideJob = async () => {
+    try {
+      let form = new FormData();
+      form.append("active", "False");
+      const token = getToken();
+      const response = await APIs.patch(endpoints['active_job'](jobToHide),
+        form, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        setIsHideModalOpen(false);
+        setJobToHide(null);
+        handleRefresh();
+      }
+    } catch (error) {
+      console.error('Error hide job:', error);
+    }
+  };
+
+
+
   const handleRefresh = () => {
     setIsRefreshing(true);
     fetchJobs();
@@ -87,9 +114,20 @@ const ListPosted = () => {
     setIsDeleteModalOpen(true);
   };
 
+  const openHideModal = (jobId) => {
+    setJobToHide(jobId);
+    setIsHideModalOpen(true);
+  };
+
+
   const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setJobToDelete(null);
+  };
+
+  const closeHideModal = () => {
+    setIsHideModalOpen(false);
+    setJobToHide(null);
   };
 
   const toggleDropdown = (jobId) => {
@@ -113,7 +151,7 @@ const ListPosted = () => {
   return (
     <div className="flex h-auto min-h-screen bg-gray-100">
       <SidebarEmployer />
-      <div className="flex-1 p-10">
+      <div className="flex-1 p-6">
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
@@ -144,6 +182,7 @@ const ListPosted = () => {
                     <tr className="bg-gray-200 text-gray-700 text-sm leading-normal">
                       <th className="py-3 px-6 text-left">Tiêu đề bài đăng</th>
                       <th className="py-3 px-6 text-left">Thời hạn</th>
+                      <th className="py-3 px-6 text-left">Trạng thái</th>
                       <th className="py-3 px-6 text-center">Lượt ứng tuyển</th>
                       <th className="py-3 px-6 text-center">Danh sách ứng viên</th>
                       <th className="py-3 px-6 text-center">Tùy chọn</th>
@@ -153,7 +192,7 @@ const ListPosted = () => {
                     {jobs.map(job => (
                       <tr key={job.id} className="border-b border-gray-200 hover:bg-gray-100">
                         <td
-                          className="py-3 px-6 text-left whitespace-nowrap cursor-pointer"
+                          className="py-3 px-6 text-left whitespace-nowrap cursor-pointer hover:text-orange-500"
                           onClick={() => navigate(`/job-detail/${job.id}`)}
                         >
                           <div className="flex items-center">
@@ -161,9 +200,13 @@ const ListPosted = () => {
                           </div>
                         </td>
                         <td className="py-3 px-6 text-left">{new Date(job.deadline).toLocaleDateString()}</td>
+                        <td className={`py-3 px-6 text-center font-semibold ${job.active ? 'text-green-600' : 'text-orange-500'}`}>
+                          {job.active ? "Đang hoạt động" : "Đã ẩn"}
+                        </td>
+
                         <td className="py-3 px-6 text-center">{applications[job.id] || 0}</td>
-                        <td 
-                          className="py-3 px-6 text-center hover:text-red-700 text-blue-800 font-bold cursor-pointer" 
+                        <td
+                          className="py-3 px-6 text-center hover:text-orange-500 text-green-700 font-bold cursor-pointer"
                           onClick={() => navigate(`/jobapplicants-list/${job.id}`)}>Xem</td>
                         <td className="py-3 px-6 text-center relative">
                           <button onClick={() => toggleDropdown(job.id)}>
@@ -186,12 +229,29 @@ const ListPosted = () => {
                               >
                                 <BiDetail className="h-5 w-5 mr-2" />Xem bài đăng
                               </button>
-                              <button
-                                className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center hover:text-red-700"
-                                onClick={() => openDeleteModal(job.id)}
-                              >
-                                <BiTrash className="h-5 w-5 mr-2" /> Ẩn bài đăng
-                              </button>
+                              {applications[job.id] > 0 ? (
+                                <button
+                                  className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center hover:text-red-700"
+                                  onClick={() => openHideModal(job.id)}
+                                >
+                                  <BiHide className="h-5 w-5 mr-2" /> Ẩn bài đăng
+                                </button>
+                              ) : (
+                                <div>
+                                  <button
+                                    className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
+                                    onClick={() => openHideModal(job.id)}
+                                  >
+                                    <BiHide className="h-5 w-5 mr-2" /> Ẩn/Kích hoạt bài đăng
+                                  </button>
+                                  <button
+                                    className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center hover:text-red-700"
+                                    onClick={() => openDeleteModal(job.id)}
+                                  >
+                                    <BiTrash className="h-5 w-5 mr-2" /> Xóa bài đăng
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           )}
                         </td>
@@ -212,33 +272,24 @@ const ListPosted = () => {
                   </button>
                 </div>
               )}
+              <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDeleteJob}
+                title="Xác nhận xóa bài đăng"
+                message="Bạn có chắc chắn muốn xóa bài đăng này không?"
+              />
+
+              <ConfirmModal
+                isOpen={isHideModalOpen}
+                onClose={closeHideModal}
+                onConfirm={handleHideJob}
+                title="Xác nhận ẩn/kích hoạt bài đăng"
+                message="Bạn có chắc chắn muốn ẩn/kích hoạt bài đăng này không?"
+              />
             </div>
           </div>
         )}
-        <Modal
-          isOpen={isDeleteModalOpen}
-          onRequestClose={closeDeleteModal}
-          contentLabel="Confirm Delete Job"
-          className="bg-white rounded-lg p-8 max-w-md mx-auto mt-20 shadow-lg"
-          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-        >
-          <h2 className="text-lg font-bold mb-4">Xác nhận ẩn bài viết</h2>
-          <p className="mb-4">Bạn có chắc chắn muốn ẩn bài viết này không?</p>
-          <div className="flex justify-end">
-            <button
-              className="bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-md px-4 py-2 mr-2"
-              onClick={closeDeleteModal}
-            >
-              Hủy
-            </button>
-            <button
-              className="bg-red-500 hover:bg-red-600 text-white rounded-md px-4 py-2"
-              onClick={handleDeleteJob}
-            >
-              Xóa
-            </button>
-          </div>
-        </Modal>
       </div>
     </div>
   );

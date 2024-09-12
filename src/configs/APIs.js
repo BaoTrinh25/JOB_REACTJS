@@ -43,6 +43,7 @@ export const endpoints = {
     'num_application': (id) => `/jobs/${id}/num_applications/`, 
     'update_info_job': (id) => `/jobs/${id}/`,
     'delete_job':(id) => `/jobs/${id}/`,
+    'active_job': (id) => `/jobs/${id}/toggle_active/`,
 };
 
 const APIs = axios.create({

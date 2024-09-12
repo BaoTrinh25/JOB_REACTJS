@@ -40,14 +40,14 @@ const Header = () => {
                 Trang chủ
               </Link>
             </li>
+            <li className="text-center group">
+              <Link to="/jobs" className="text-white group-hover:text-yellow-400">
+                <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
+                Việc làm
+              </Link>
+            </li>
             {user && user.role === 0 ? (
               <>
-                <li className="text-center group">
-                  <Link to="/jobs" className="text-white group-hover:text-yellow-400">
-                    <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Việc làm
-                  </Link>
-                </li>
                 <li className="text-center group">
                   <Link to="/job-applied" className="text-white group-hover:text-yellow-400">
                     <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
