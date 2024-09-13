@@ -11,12 +11,10 @@ import {
   BiLogOut,
   BiSolidInbox
 } from 'react-icons/bi';
-import { FaHome } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const SidebarEmployer = () => {
   const [openQuangLyDangTuyen, setOpenQuangLyDangTuyen] = useState(true);
-  const [openQuangLyUngVien, setOpenQuangLyUngVien] = useState(true);
   const [openQuangLyDichVu, setOpenQuangLyDichVu] = useState(true);
   const [openCapNhat, setOpenCapNhat] = useState(true);
   const [openHopThoai, setOpenHopThoai] = useState(true);
@@ -31,6 +29,7 @@ const SidebarEmployer = () => {
   return (
     <div className="w-72 h-auto bg-gray-700 shadow-lg">
       <h2 className='text-2xl text-white text-center mt-5 p-5'>BẢNG ĐIỀU KHIỂN</h2>
+      {/* <h3>{user.username}</h3> */}
       <div class="border-t border-gray-300 my-4"></div>
       <div className="px-6 py-4">
         {/* Quản lý đăng tuyển */}

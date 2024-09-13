@@ -58,7 +58,11 @@ const Login = () => {
       setToken(res.data.access_token);
       setTimeout(async () => {
         let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
-        dispatch({ "type": "login", "payload": user.data });
+        dispatch(
+          { 
+            "type": "login", 
+            "payload": user.data 
+          });
         setTimeout(() => nav("/"), 500);
         if (!alertShown) {
           toast.success('Đăng nhập thành công');

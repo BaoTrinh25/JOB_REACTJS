@@ -1,9 +1,9 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useContext } from "react";
+import { MyUserContext, MyDispatchContext } from "./configs/Context";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { gapi } from 'gapi-script';
-import { MyDispatchContext, MyUserContext } from './configs/Context';
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
-import './index.css'; 
+import './index.css';
 import Header from "./component/Header";
 import Footer from "./component/Footer";
 import Login from './pages/User/Login';
@@ -13,7 +13,6 @@ import RegisterEmployer from "./pages/User/Register/RegisterEmployer";
 import Home from "./pages/Home/Home";
 import AllJobLatest from './pages/Home/AllJobLatest';
 import AllJobPopular from './pages/Home/AllJobPopular';
-import About from './pages/Home/About';
 import JobDetail from './pages/Home/JobDetail';
 import ProfileApplicant from './pages/User/JobSeeker/ProfileApplicant';
 import ProfileEmployer from './pages/User/Company/ProfileEmployer';
@@ -37,6 +36,8 @@ const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleuserc
 function AppLayout() {
   const location = useLocation();
   const showHeaderFooter = !noHeaderFooterRoutes.some(route => location.pathname.startsWith(route));
+  const user = useContext(MyUserContext);
+  console.log(user);
 
   useEffect(() => {
     function start() {
@@ -54,34 +55,43 @@ function AppLayout() {
       {showHeaderFooter && <Header />}
       <main className={`flex-grow ${showHeaderFooter ? 'mt-16' : ''}`}>
         <Routes>
+          {/* Common routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/register-applicant/:userId" element={<RegisterApplicant />} />
           <Route path="/register-employer/:userId" element={<RegisterEmployer />} />
-          <Route path='/updateProfile-user' element={<UpdateProfileUser />} /> 
-
           <Route path="/" element={<Home />} />
           <Route path="/jobs" element={<AllJobLatest />} />
           <Route path="/jobs-popular" element={<AllJobPopular />} />
-          <Route path="/about" element={<About />} />
           <Route path="/job-detail/:jobId" element={<JobDetail />} />
-          <Route path='/job-applied' element={<ListJobApplied />} /> 
-          <Route path='/application-detail' element={<ApplicationDetail />} /> 
 
-          <Route path='/employer-profile' element={<ProfileEmployer />} />
-          <Route path='/updateProfile-employer' element={<UpdateInfoProfileEmployer />} />
-          <Route path='/post-recruitment' element={<PostRecruitment />} />
-          <Route path='/job-posted' element={<ListPosted />} /> 
-          <Route path='/jobapplicants-list/:jobId' element={<JobApplicantsList />} /> 
+          {/* Routes for company users */}
 
-          <Route path='/applicant-profile' element={<ProfileApplicant />} />
-          <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
-          <Route path='/jobApplication/:jobId' element={<JobApplication />} />
-          <Route path='/liked-job' element={<ListJobLiked />} />
-          <Route path='/update-post-recruitment/:jobId' element={<UpdatePostRecruitment />} />
-          <Route path='/package' element={<JobPostingPackages />} />
+          {user?.role === 1 && (
+            <>
+              <Route path='/employer-profile' element={<ProfileEmployer />} />
+              <Route path='/updateProfile-employer' element={<UpdateInfoProfileEmployer />} />
+              <Route path='/post-recruitment' element={<PostRecruitment />} />
+              <Route path='/job-posted' element={<ListPosted />} />
+              <Route path='/jobapplicants-list/:jobId' element={<JobApplicantsList />} />
+              <Route path='/update-post-recruitment/:jobId' element={<UpdatePostRecruitment />} />
+              <Route path='/package' element={<JobPostingPackages />} />
+              <Route path='/updateProfile-user' element={<UpdateProfileUser />} />
+            </>
+          )}
+          {user?.role === 0 && (
+            <>
+              <Route path='/updateProfile-user' element={<UpdateProfileUser />} />
+              <Route path='/job-applied' element={<ListJobApplied />} />
+              <Route path='/application-detail' element={<ApplicationDetail />} />
+              <Route path='/applicant-profile' element={<ProfileApplicant />} />
+              <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
+              <Route path='/jobApplication/:jobId' element={<JobApplication />} />
+              <Route path='/liked-job' element={<ListJobLiked />} />
+            </>
+          )}
 
-          <Route path="*" element={<div>404 Not Found</div>} />
+          <Route path="*" element={<div className="text-xl mt-10 ml-10">404 Not Found </div>} />
         </Routes>
       </main>
       {showHeaderFooter && <Footer />}
