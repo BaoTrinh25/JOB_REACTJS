@@ -52,9 +52,9 @@ const ProfileEmployer = () => {
         if (item.id === 1) {
             navigate('/updateProfile-employer');
         } else if (item.id === 2) {
-            navigate('/updateProfile-user'); //xóa thông tin cá nhân
+            navigate('/updateProfile-user'); 
         } else if (item.id === 3) {
-            setIsDeleteModalOpen(true); // Hiển thị modal xóa tài khoản
+            setIsDeleteModalOpen(true);
         }
     };
 
