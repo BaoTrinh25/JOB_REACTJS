@@ -29,6 +29,7 @@ import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
 import MyUserReducer from './configs/Reducers';
 import JobApplicantsList from "./pages/User/Company/JobApplicantsList";
 import UpdatePostRecruitment from './pages/User/Company/UpdatePostRecruitment';
+import JobPostingPackages from "./pages/User/Company/JobPostingPackages ";
 
 const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment'];
 const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
@@ -78,6 +79,7 @@ function AppLayout() {
           <Route path='/jobApplication/:jobId' element={<JobApplication />} />
           <Route path='/liked-job' element={<ListJobLiked />} />
           <Route path='/update-post-recruitment/:jobId' element={<UpdatePostRecruitment />} />
+          <Route path='/package' element={<JobPostingPackages />} />
 
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>

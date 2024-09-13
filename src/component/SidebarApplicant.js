@@ -1,8 +1,7 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaInbox, FaSearch, FaHeart } from 'react-icons/fa';
 import { MyDispatchContext } from '../configs/Context';
-import { Sidebar as FlowbiteSidebar } from 'flowbite-react';
 
 const SidebarApplicant = () => {
     const navigate = useNavigate();
@@ -19,94 +18,87 @@ const SidebarApplicant = () => {
     };
 
     return (
-        <FlowbiteSidebar className="h-full bg-gray-800 text-white w-80 flex flex-col">
-            <FlowbiteSidebar.ItemGroup>
-                <FlowbiteSidebar.Item
-                    className="hover:bg-gray-700 rounded text-2xl text-white"
-                >
+        <div className="h-full bg-gray-800 text-white w-80 flex flex-col p-4">
+            <ul className="space-y-4">
+                <li className="text-2xl hover:bg-gray-700 rounded p-2 cursor-pointer">
                     Bảng điều khiển
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaHome}
+                </li>
+                <div class="border-t border-gray-300 my-4"></div>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('/')}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaHome className="mr-2" />
                     Trang chủ
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaUser}
+                </li>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('/applicant-profile')}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaUser className="mr-2" />
                     Hồ sơ của bạn
-                </FlowbiteSidebar.Item>
-
-                <FlowbiteSidebar.Item
-                    icon={FaSearch}
+                </li>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('/jobs')}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaSearch className="mr-2" />
                     Tìm việc làm
-                </FlowbiteSidebar.Item>
-
-                <FlowbiteSidebar.Item
-                    icon={FaHeart}
+                </li>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('/liked-job')}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaHeart className="mr-2" />
                     Việc làm đã lưu
-                </FlowbiteSidebar.Item>
-
-                <FlowbiteSidebar.Item
-                    icon={FaPlus}
+                </li>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('/job-applied')}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaPlus className="mr-2" />
                     Việc làm đã ứng tuyển
-                </FlowbiteSidebar.Item>
-
-                <FlowbiteSidebar.Item
-                    icon={FaCog}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
+                </li>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={toggleEcommerceDropdown}
                 >
+                    <FaCog className="mr-2" />
                     Cài đặt
-                    <span className="ml-auto">
-                        {isEcommerceOpen ? '▲' : '▼'}
-                    </span>
-                </FlowbiteSidebar.Item>
+                    <span className="ml-auto">{isEcommerceOpen ? '▲' : '▼'}</span>
+                </li>
                 {isEcommerceOpen && (
-                    <div className="ml-6">
-                        <FlowbiteSidebar.Item
+                    <ul className="ml-6 space-y-2">
+                        <li
+                            className="hover:bg-gray-700 rounded p-2 cursor-pointer"
                             onClick={() => navigate('/updateProfile-user')}
-                            className="hover:bg-gray-700 rounded cursor-pointer text-white"
                         >
                             Cập nhật thông tin tài khoản
-                        </FlowbiteSidebar.Item>
-                        <FlowbiteSidebar.Item
+                        </li>
+                        <li
+                            className="hover:bg-gray-700 rounded p-2 cursor-pointer"
                             onClick={() => navigate('/updateProfile-applicant')}
-                            className="hover:bg-gray-700 rounded cursor-pointer text-white"
                         >
                             Cập nhật thông tin ứng viên
-                        </FlowbiteSidebar.Item>
-                    </div>
+                        </li>
+                    </ul>
                 )}
-                <FlowbiteSidebar.Item
-                    icon={FaInbox}
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('')}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaInbox className="mr-2" />
                     Nhắn tin
-                </FlowbiteSidebar.Item>
-                <FlowbiteSidebar.Item
-                    icon={FaSignOutAlt}
+                </li>
+                <li
+                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={handleLogout}
-                    className="hover:bg-gray-700 rounded cursor-pointer text-white"
                 >
+                    <FaSignOutAlt className="mr-2" />
                     Đăng xuất
-                </FlowbiteSidebar.Item>
-            </FlowbiteSidebar.ItemGroup>
-        </FlowbiteSidebar>
+                </li>
+            </ul>
+        </div>
     );
 };
 

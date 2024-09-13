@@ -28,7 +28,7 @@ const ProfileEmployer = () => {
 
     const dataManage = [
         { id: 1, title: 'Đăng tin tuyển dụng', icon: <PostAddSharp /> },
-        { id: 2, title: 'Danh sách ứng viên', icon: <ListAltOutlined /> },
+        { id: 2, title: 'Mua gói đăng tin', icon: <ListAltOutlined /> },
         { id: 3, title: 'Quản lý bài đăng tuyển dụng', icon: <FaBusinessTime /> },
     ];
 
@@ -42,7 +42,7 @@ const ProfileEmployer = () => {
         if (item.id === 1) {
             navigate('/post-recruitment');
         } else if (item.id === 2) {
-            navigate('');
+            navigate('/package');
         } else if (item.id === 3) {
             navigate('/job-posted');
         }

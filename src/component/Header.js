@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/job-seeker.png';
-import { FaHome, FaBriefcase, FaInfoCircle, FaEnvelope, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical, FaPencilAlt, FaHistory } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical,  FaHistory,  FaShoppingCart } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
-import { AiFillLike } from 'react-icons/ai';
-import { BsFillBookmarkFill } from 'react-icons/bs';
+import { BsFileEarmarkPost, BsFillBookmarkFill } from 'react-icons/bs';
 
 const Header = () => {
   const user = useContext(MyUserContext);
@@ -40,12 +39,14 @@ const Header = () => {
                 Trang chủ
               </Link>
             </li>
-            <li className="text-center group">
-              <Link to="/jobs" className="text-white group-hover:text-yellow-400">
-                <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
-                Việc làm
-              </Link>
-            </li>
+            {!user || user.role === 0 ? (
+              <li className="text-center group">
+                <Link to="/jobs" className="text-white group-hover:text-yellow-400">
+                  <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
+                  Việc làm
+                </Link>
+              </li>
+            ) : null}
             {user && user.role === 0 ? (
               <>
                 <li className="text-center group">
@@ -63,9 +64,15 @@ const Header = () => {
               </>
             ) : user && user.role === 1 ? (
               <>
+               <li className="text-center group">
+                  <Link to="/package" className="text-white group-hover:text-yellow-400">
+                    <FaShoppingCart className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Gói đăng tin
+                  </Link>
+                </li>
                 <li className="text-center group">
                   <Link to="/post-recruitment" className="text-white group-hover:text-yellow-400">
-                    <FaNotesMedical className="text-white group-hover:text-yellow-400 mx-auto" />
+                    <BsFileEarmarkPost className="text-white group-hover:text-yellow-400 mx-auto" />
                     Đăng bài
                   </Link>
                 </li>

@@ -5,34 +5,33 @@ import {
   BiPlus,
   BiFile,
   BiUser,
-  BiHeart,
-  BiListUl,
   BiCalendar,
   BiMoney,
   BiBuilding,
   BiLogOut,
   BiSolidInbox
 } from 'react-icons/bi';
+import { FaHome } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const SidebarEmployer = () => {
   const [openQuangLyDangTuyen, setOpenQuangLyDangTuyen] = useState(true);
   const [openQuangLyUngVien, setOpenQuangLyUngVien] = useState(true);
   const [openQuangLyDichVu, setOpenQuangLyDichVu] = useState(true);
-  const [openCapNhat, setOpenCapNhat] = useState(true); 
-  const [openHopThoai, setOpenHopThoai] = useState(true); 
+  const [openCapNhat, setOpenCapNhat] = useState(true);
+  const [openHopThoai, setOpenHopThoai] = useState(true);
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login'); 
+    navigate('/login');
   };
 
   return (
     <div className="w-72 h-auto bg-gray-700 shadow-lg">
-        <h2 className='text-2xl text-white text-center mt-5 p-5'>BẢNG ĐIỀU KHIỂN</h2>
-        <div class="border-t border-gray-300 my-4"></div>
+      <h2 className='text-2xl text-white text-center mt-5 p-5'>BẢNG ĐIỀU KHIỂN</h2>
+      <div class="border-t border-gray-300 my-4"></div>
       <div className="px-6 py-4">
         {/* Quản lý đăng tuyển */}
         <div className="mb-4">
@@ -71,7 +70,7 @@ const SidebarEmployer = () => {
           {openQuangLyDichVu && (
             <ul className="pl-4 mt-2">
               <li className="mb-2">
-                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
+                <NavLink to="/package" className="flex items-center space-x-2 text-white hover:text-green-600">
                   <BiMoney /> <span>Mua gói đăng tin</span>
                 </NavLink>
               </li>

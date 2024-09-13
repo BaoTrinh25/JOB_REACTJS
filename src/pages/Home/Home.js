@@ -64,8 +64,9 @@ const Home = () => {
       ) : user.role === 0 ? (
         <div className="flex flex-col md:flex-row h-[70vh] items-center justify-between p-8">
           <div className="flex-1 max-w-md ">
-            <h1 className="text-5xl text-orange-800 mb-10">Welcome JobSeeker</h1>
-            <h2 className="text-3xl mb-6">Start looking for jobs that match your criteria!</h2>
+            <h1 className="text-5xl text-orange-800 mb-10">Chào mừng ứng viên, {user.username}</h1>
+            <h2 className="text-3xl mb-6">Ứng tuyển 1 chạm - Mọi lúc mọi nơi</h2>
+            <h2 className="text-3xl mb-6">Bắt đầu tìm kiếm công việc phù hợp với tiêu chí của bạn!</h2>
             <Link to="/jobs">
               <button className="w-[90%] p-4 mb-4 border rounded-full bg-slate-300 hover:bg-slate-500 flex items-center justify-center hover:border-2 hover:border-yellow-500">
                 <FaUser className="mr-2" /> FIND JOBS
@@ -73,15 +74,15 @@ const Home = () => {
             </Link>
           </div>
           <div className="flex-1 flex items-center justify-center">
-            <img src={"https://th.bing.com/th/id/OIP.PPfKbaw5Q3qTk6URIM983AHaEW?rs=1&pid=ImgDetMain"} alt="Background" className="max-w-full h-auto" />
+            <img src={"https://www.pngkey.com/png/full/224-2241610_job.png"} alt="Background" className="max-w-6xl h-auto" />
           </div>
         </div>
       ) : (
         <div className="flex flex-col md:flex-row h-[75vh] items-center justify-between p-10">
           <div className="flex-1 max-w-md ">
-            <h1 className="text-5xl text-orange-800 mb-10">Welcome Employer</h1>
+            <h1 className="text-5xl text-orange-800 mb-10">Chào mừng nhà tuyển dụng, {user.username}</h1>
             <h2 className="text-3xl mb-6">Nơi gặp gỡ giữa doanh nghiệp
-            và 10 triệu ứng viên chất lượng!</h2>
+            và 1 triệu ứng viên chất lượng!</h2>
             <h3 className="text-xl mb-6">Tuyển người dễ dàng với NAKO - Chúng tôi luôn có ứng viên phù hợp cho bạn</h3>
             <Link to="/post-recruitment">
               <button className="w-[90%] p-4 mb-4 border rounded-full bg-slate-300 hover:bg-slate-500 flex items-center justify-center hover:border-2 hover:border-yellow-500">
