@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MyDispatchContext } from "../../../configs/Context";
 import APIs, { endpoints } from "../../../configs/APIs";
@@ -6,7 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
-    const [alertShown, setAlertShown] = useState(false); // New state to track alert
+    const [alertShown, setAlertShown] = useState(false); 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -17,9 +17,14 @@ const Register = () => {
         { label: "Confirm password", icon: "eye", field: "confirm", secureTextEntry: true },
     ];
 
-    const [role, setRole] = useState("applicant");
+    const [role, setRole] = useState(0);
     const [user, setUser] = useState({});
     const dispatch = useContext(MyDispatchContext);
+
+    useEffect(() => {
+        // Set the default role to 'applicant' when component mounts
+        setRole(0);
+    }, []);
 
     const change = (value, field) => {
         setUser((current) => {
@@ -52,7 +57,7 @@ const Register = () => {
                         "Content-Type": "multipart/form-data",
                     },
                 });
-            
+
                 if (res.status === 201) {
                     const userId = res.data.id;
                     toast.success('Đăng kí thành công');
@@ -62,13 +67,13 @@ const Register = () => {
                         } else if (role === 1) {
                             navigate(`/register-employer/${userId}`);
                         }
-                    }, 2000); // Chờ 2 giây để người dùng có thể thấy thông báo trước khi chuyển trang
+                    }, 2000); 
                 }
             } catch (error) {
                 console.error(error);
                 if (!alertShown) {
-                    toast.error('Đăng kí thất bại. Vui lòng thử lại!');
-                    setAlertShown(true); // Update state to prevent multiple alerts
+                    toast.error('Đăng kí thất bại. Hãy thử đổi username khác!');
+                    setAlertShown(true); 
                 }
             } finally {
                 setLoading(false);
@@ -79,13 +84,13 @@ const Register = () => {
     return (
         <div className="flex justify-center items-center h-screen bg-opacity-50" style={{ backgroundImage: "url('https://gpshortcuts.co.uk/images/reghere.jpg')" }}>
             <div className="flex w-3/4 bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="w-1/2 bg-cover" style={{ backgroundImage: "url('https://free4kwallpapers.com/uploads/originals/2015/09/11/office-desktop-vector.jpg')" }}>
+                <div className="w-1/2 bg-cover" style={{ backgroundImage: "url('https://th.bing.com/th/id/OIP.udofYzIAT3FeEUnExxvgVAAAAA?pid=ImgDet&w=207&h=155&c=7&dpr=1.5')" }}>
                     <div className="h-full bg-black bg-opacity-50 flex items-center justify-center">
                         <div className="text-center text-white text-xl">
-                            <h1 className="text-4xl font-bold mb-7">Hello World!</h1>
-                            <p className="mb-8 p-3">Welcome to DDT JOB! Please fill out the form below to create your account and join our community of job seekers and employers. 
-                                Let's get started!</p>
-                            <p className="text-3xl">__DDT JOB__</p>
+                            <h1 className="text-4xl font-bold mb-7">Welcome NAKO JOB</h1>
+                            <p className="p-3">Please fill out the form to create your account and join our community of job seekers and employers. </p>
+                            <p className="text-orange-400 mb-3">Let's get started!</p>
+                            <p className="text-3xl">__NAKO JOB__</p>
                         </div>
                     </div>
                 </div>
@@ -141,16 +146,21 @@ const Register = () => {
                     {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
                     <button
                         type="submit"
-                        className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-800"
-                        loading={loading}
+                        className={`w-full bg-green-600 text-white py-2 rounded hover:bg-green-800 ${loading ? "opacity-50 cursor-not-allowed":""}`}
+                        disabled={loading}
                         onClick={handleSubmit}
                     >
-                        Register
+                        {loading ? "Registring..." : "Register"}
                     </button>
                     <div className="mt-4 text-center">
                         <span className="text-sm">Already on DTT Job?</span>{" "}
                         <Link to="/login" className="text-green-600 underline">
                             SIGN IN
+                        </Link>
+                    </div>
+                    <div className='mt-5 text-center'>
+                        <Link to="/" className="text-green-700 text-sm justify-center">
+                            Trải nghiệm ngay không cần đăng nhập!
                         </Link>
                     </div>
                 </div>

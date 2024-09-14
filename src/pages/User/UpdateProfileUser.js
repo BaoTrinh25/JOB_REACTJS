@@ -1,15 +1,22 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { MyUserContext, MyDispatchContext } from '../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import AvatarEditor from 'react-avatar-editor';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { authApi, endpoints } from '../../configs/APIs';
 import { getToken } from '../../utils/storage';
+import NotificationModal from "../../component/NotificationModal";
+
 
 const UpdateProfileUser = () => {
     const user = useContext(MyUserContext);
     const navigate = useNavigate();
     const dispatch = useContext(MyDispatchContext);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const closeModal = () => setModalIsOpen(false);
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const [formData, setFormData] = useState({
         first_name: user.first_name || '',
@@ -33,6 +40,7 @@ const UpdateProfileUser = () => {
     };
 
     const handleSave = async () => {
+        setIsLoading(true);  
         try {
             let form = new FormData();
             Object.keys(formData).forEach((key) => {
@@ -49,7 +57,8 @@ const UpdateProfileUser = () => {
                 updateUser(form); // Gọi updateUser mà không gửi avatar
             }
         } catch (ex) {
-            console.error(ex);
+            setModalMessage("Đã xảy ra lỗi trong quá trình chuẩn bị dữ liệu.");
+            setModalIsOpen(true);
         }
     };
 
@@ -69,18 +78,20 @@ const UpdateProfileUser = () => {
             console.log('Response from server:', res.data); // Log response from server
 
             if (res.status === 200) {
-                alert('Cập nhật thông tin thành công!');
-                // // Cập nhật thông tin người dùng trong ngữ cảnh ứng dụng
-                // dispatch({
-                //     type: 'update_employer',
-                //     payload: res.data
-                // });
-                navigate('/');
+                setModalMessage("Cập nhật thông tin thành công.");
+                setModalIsOpen(true);
+                dispatch({
+                    type: 'update_user',
+                    payload: res.data, // Cập nhật user vào context
+                });
+                navigate("/applicant-profile");
             } else {
-                console.error('Lỗi khi cập nhật thông tin');
+                setModalMessage("Đã có lỗi xảy ra. Vui lòng thử lại!")
+                setModalIsOpen(true);
             }
         } catch (ex) {
-            console.error(ex);
+            setModalMessage("Đã xảy ra lỗi khi kết nối tới server.");
+            setModalIsOpen(true);
         }
     };
 
@@ -190,8 +201,9 @@ const UpdateProfileUser = () => {
                             type="button"
                             onClick={handleSave}
                             className="bg-green-500 text-white py-2 rounded-lg px-10"
-                        >
-                            Lưu
+                            disabled={isLoading}  // Vô hiệu hóa khi đang tải
+                            >
+                                {isLoading ? "Đang lưu..." : "Lưu"}
                         </button>
                     </div>
                 </form>
@@ -224,12 +236,18 @@ const UpdateProfileUser = () => {
                             type="button"
                             onClick={handleSave}
                             className="bg-green-500 text-white py-2 rounded-lg px-10"
+                             
                         >
                             Lưu
                         </button>
                     </div>
                 </form>
             </div>
+            <NotificationModal
+                isOpen={modalIsOpen}
+                message={modalMessage}
+                onClose={closeModal}
+            />
         </div>
     );
 };

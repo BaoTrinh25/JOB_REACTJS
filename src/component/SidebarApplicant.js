@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaUser, FaPlus, FaSignOutAlt, FaHome, FaCog, FaInbox, FaSearch, FaHeart } from 'react-icons/fa';
+import { FaUser, FaSignOutAlt, FaHome, FaCog, FaInbox, FaSearch, FaHeart, FaList } from 'react-icons/fa';
 import { MyDispatchContext } from '../configs/Context';
 
 const SidebarApplicant = () => {
@@ -56,7 +56,7 @@ const SidebarApplicant = () => {
                     className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={() => navigate('/job-applied')}
                 >
-                    <FaPlus className="mr-2" />
+                    <FaList className="mr-2" />
                     Việc làm đã ứng tuyển
                 </li>
                 <li

@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { MyUserContext } from '../../../configs/Context';
+import { MyUserContext, MyDispatchContext } from '../../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import { IoCameraOutline, IoBusiness, IoBriefcase, IoLocation, IoContract, IoInformationCircle } from 'react-icons/io5';
 import { FaEdit, FaUpload } from 'react-icons/fa';
@@ -15,15 +15,12 @@ import Modal from 'react-modal';
 const ProfileApplicant = () => {
     const navigate = useNavigate();
     const user = useContext(MyUserContext);
-    const skills = user?.jobSeeker?.skills || [];
-    const areas = user?.jobSeeker?.areas || [];
     const [profileImage, setProfileImage] = useState(defaultAvatar);
+    const dispatch = useContext(MyDispatchContext);
     const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [SuccessModalOpen, setSuccessModalOpen] = useState(false);
-    console.log(user.avatar);
-    
 
     useEffect(() => {
         if (user && user.avatar) {
@@ -100,6 +97,10 @@ const ProfileApplicant = () => {
             });
 
             if (response.status === 200) {
+                dispatch({
+                    type: 'update_user',
+                    payload: response.data, // Cập nhật user vào context
+                });
                 alert("Cập nhật avatar thành công!");
             }
         } catch (error) {
