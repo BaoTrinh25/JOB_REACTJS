@@ -19,18 +19,16 @@ const RegisterEmployer = () => {
 
     const fieldLabels = {
         1: 'Tên công ty',
-        2: 'Vị trí nhà tuyển dụng',
-        3: 'Loại hình công ty',
-        4: 'Địa chỉ',
-        5: 'Thông tin công ty'
+        2: 'Loại hình công ty',
+        3: 'Địa chỉ',
+        4: 'Thông tin công ty'
     };
 
     const values = {
         1: companyName,
-        2: position,
-        3: company_type,
-        4: address,
-        5: information
+        2: company_type,
+        3: address,
+        4: information
     };
 
     const handleNext = () => {
@@ -55,11 +53,10 @@ const RegisterEmployer = () => {
         }
 
         const employerData = {
-            position: position,
             companyName: companyName,
-            information: information,
             company_type: company_type,
-            address: address
+            address: address,
+            information: information,     
         };
 
         const form = new FormData();
@@ -93,13 +90,14 @@ const RegisterEmployer = () => {
         }
     };
 
-    const progressPercentage = (step / 5) * 100;
+    const progressPercentage = (step / 4) * 100;
 
     return (
-        <div className="flex justify-center items-center min-h-screen py-10">
+        <div className="flex justify-center items-center min-h-screen py-10" style={{ backgroundImage: 'url(https://image.slidesdocs.com/responsive-images/background/yellow-business-atmosphere-plane-creative-geometric-powerpoint-background_9f48dc374b__960_540.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <form
                 className="bg-yellow-50 p-8 rounded shadow-md w-full max-w-2xl relative"
                 onSubmit={handleSubmit}
+                style={{ backgroundImage: 'url(https://th.bing.com/th/id/OIP.Z2t4mX9C0tZXnGBuNfdXZQHaEb?rs=1&pid=ImgDetMain)', backgroundSize: 'cover', backgroundPosition: 'center' }}
             >
                 <h2 className="text-2xl text-red-900 font-bold mb-10 text-center">ĐĂNG KÝ THÔNG TIN NHÀ TUYỂN DỤNG</h2>
 
@@ -153,31 +151,6 @@ const RegisterEmployer = () => {
 
                 {step === 2 && (
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="position">
-                            Vị trí nhà tuyển dụng
-                        </label>
-                        <input
-                            type="text"
-                            id="position"
-                            className="w-full px-3 py-2 border rounded"
-                            value={position}
-                            onChange={(e) => setPosition(e.target.value)}
-                            required
-                        />
-                        <div className="flex justify-end mt-4">
-                            <button
-                                type="button"
-                                className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
-                                onClick={handleNext}
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {step === 3 && (
-                    <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="company_type">
                             Loại hình công ty
                         </label>
@@ -205,7 +178,7 @@ const RegisterEmployer = () => {
                     </div>
                 )}
 
-                {step === 4 && (
+                {step === 3 && (
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
                             Địa chỉ
@@ -230,7 +203,7 @@ const RegisterEmployer = () => {
                     </div>
                 )}
 
-                {step === 5 && (
+                {step === 4 && (
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="information">
                             Thông tin giới thiệu công ty
@@ -254,7 +227,7 @@ const RegisterEmployer = () => {
                     </div>
                 )}
                 {error && (
-                    <div className="text-red-500 text-sm mt-2">{error}</div>
+                    <div className="text-red-600 text-lg text-center bg-white w-[40%] rounded-xl">{error}</div>
                 )}
             </form>
         </div>

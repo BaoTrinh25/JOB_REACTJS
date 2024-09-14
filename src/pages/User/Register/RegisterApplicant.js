@@ -19,24 +19,6 @@ const RegisterApplicant = () => {
     const { userId } = useParams();
 
     useEffect(() => {
-        const fetchSkills = async () => {
-            try {
-                const res = await APIs.get(endpoints["skills"]);
-                setSkills(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        const fetchAreas = async () => {
-            try {
-                const res = await APIs.get(endpoints["areas"]);
-                setAreas(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
         const fetchCareers = async () => {
             try {
                 const res = await APIs.get(endpoints["careers"]);
@@ -45,9 +27,6 @@ const RegisterApplicant = () => {
                 console.error(err);
             }
         };
-
-        fetchSkills();
-        fetchAreas();
         fetchCareers();
     }, [navigate]);
 
@@ -56,9 +35,7 @@ const RegisterApplicant = () => {
         2: 'Mức lương mong muốn',
         3: 'Kinh nghiệm làm việc',
         4: 'Lĩnh vực nghề nghiệp',
-        5: 'Kỹ năng',
-        6: 'Khu vực làm việc',
-        7: 'CV'
+        5: 'CV'
     };
 
     const values = {
@@ -66,9 +43,7 @@ const RegisterApplicant = () => {
         2: salaryExpectation,
         3: experience,
         4: selectedCareer,
-        5: selectedSkills.length > 0,
-        6: selectedAreas.length > 0,
-        7: cv
+        5: cv
     };
 
     const handleNext = () => {
@@ -88,22 +63,6 @@ const RegisterApplicant = () => {
         setSelectedCareer(e.target.value);
     };
 
-    const handleAreaChange = (e) => {
-        const selectedOptions = Array.from(e.target.selectedOptions);
-        const selectedIds = selectedOptions.map(option => parseInt(option.value, 10)); // Chuyển đổi thành số
-        setSelectedAreas(selectedIds);
-    };
-
-    const handleSkillChange = (e) => {
-        const selectedOptions = Array.from(e.target.selectedOptions);
-        const selectedIds = selectedOptions.map(option => parseInt(option.value, 10)); // Chuyển đổi thành số
-        if (selectedIds.length <= 3) {
-            setSelectedSkills(selectedIds);
-        }
-    };
-    console.log(selectedSkills);
-    console.log(selectedAreas);
-
     const handleFileChange = (e) => {
         setCv(e.target.files[0]);
     };
@@ -120,8 +79,6 @@ const RegisterApplicant = () => {
             salary_expectation: salaryExpectation,
             experience: experience,
             career: parseInt(selectedCareer),
-            skills: selectedSkills.map(id => parseInt(id)),
-            areas: selectedAreas.map(id => parseInt(id)),
             cv: cv ? cv.name : ""
         };
 
@@ -138,8 +95,8 @@ const RegisterApplicant = () => {
 
         console.log('Data being sent:', applicantData); // Log dữ liệu được gửi đi
         try {
-            const res = await APIs.post(endpoints["register_jobseeker"](userId), 
-            form, {
+            const res = await APIs.post(endpoints["register_jobseeker"](userId),
+                form, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -153,13 +110,14 @@ const RegisterApplicant = () => {
         }
     };
 
-    const progressPercentage = (step / 7) * 100;
+    const progressPercentage = (step / 5) * 100;
 
     return (
-        <div className="flex justify-center items-center min-h-screen py-10">
+        <div className="flex justify-center items-center min-h-screen py-10" style={{ backgroundImage: 'url(https://image.slidesdocs.com/responsive-images/background/yellow-business-atmosphere-plane-creative-geometric-powerpoint-background_9f48dc374b__960_540.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
             <form
-                className="bg-yellow-50 p-8 rounded shadow-md w-full max-w-2xl relative"
+                className="bg-yellow-50 p-8 rounded-2xl shadow-md w-full max-w-2xl relative"
                 onSubmit={handleSubmit}
+                style={{ backgroundImage: 'url(https://th.bing.com/th/id/OIP.Z2t4mX9C0tZXnGBuNfdXZQHaEb?rs=1&pid=ImgDetMain)', backgroundSize: 'cover', backgroundPosition: 'center' }}
             >
                 <h2 className="text-2xl text-red-900 font-bold mb-10 text-center">ĐĂNG KÝ THÔNG TIN ỨNG VIÊN</h2>
 
@@ -188,7 +146,7 @@ const RegisterApplicant = () => {
 
                 {step === 1 && (
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="position">
+                        <label className="block text-black text-xl font-bold mb-2" htmlFor="position">
                             Vị trí ứng tuyển
                         </label>
                         <input
@@ -213,17 +171,9 @@ const RegisterApplicant = () => {
 
                 {step === 2 && (
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="salaryExpectation">
+                        <label className="block text-black text-xl font-bold mb-2" htmlFor="salaryExpectation">
                             Mức lương mong muốn
                         </label>
-                        {/* <input
-                            type="number"
-                            id="salaryExpectation"
-                            className="w-full px-3 py-2 border rounded"
-                            value={salaryExpectation}
-                            onChange={(e) => setSalaryExpectation(e.target.value)}
-                            required
-                        /> */}
                         <select
                             id="salaryExpectation"
                             className="w-full px-3 py-2 border rounded"
@@ -252,7 +202,7 @@ const RegisterApplicant = () => {
 
                 {step === 3 && (
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="experience">
+                        <label className="block text-black text-xl font-bold mb-2" htmlFor="experience">
                             Kinh nghiệm làm việc
                         </label>
                         <select
@@ -284,7 +234,7 @@ const RegisterApplicant = () => {
 
                 {step === 4 && (
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="career">
+                        <label className="block text-black text-xl font-bold mb-2" htmlFor="career">
                             Lĩnh vực nghề nghiệp
                         </label>
                         <select
@@ -315,71 +265,8 @@ const RegisterApplicant = () => {
 
                 {step === 5 && (
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="skills">
-                            Kỹ năng
-                        </label>
-                        <select
-                            id="skills"
-                            className="w-full px-3 py-2 border rounded"
-                            multiple
-                            value={selectedSkills}
-                            onChange={handleSkillChange}
-                            required
-                        >
-                            {skills.map(skill => (
-                                <option key={skill.id} value={skill.id}>
-                                    {skill.name}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="text-gray-600 text-sm mt-1">Chọn tối đa 3 kỹ năng</div>
-                        <div className="flex justify-end mt-4">
-                            <button
-                                type="button"
-                                className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
-                                onClick={handleNext}
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {step === 6 && (
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="areas">
-                            Khu vực làm việc
-                        </label>
-                        <select
-                            id="areas"
-                            className="w-full px-3 py-2 border rounded"
-                            multiple
-                            value={selectedAreas}
-                            onChange={handleAreaChange}
-                            required
-                        >
-                            {areas.map(area => (
-                                <option key={area.id} value={area.id}>
-                                    {area.name}
-                                </option>
-                            ))}
-                        </select>
-                        <div className="flex justify-end mt-4">
-                            <button
-                                type="button"
-                                className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
-                                onClick={handleNext}
-                            >
-                                Next
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {step === 7 && (
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cv">
-                            CV
+                        <label className="block text-black text-xl font-bold mb-2" htmlFor="cv">
+                            Upload CV
                         </label>
                         <input
                             type="file"
@@ -393,7 +280,7 @@ const RegisterApplicant = () => {
                                 type="submit"
                                 className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-900"
                             >
-                                Submit
+                                Hoàn tất
                             </button>
                         </div>
                     </div>

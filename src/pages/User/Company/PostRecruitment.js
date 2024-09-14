@@ -117,7 +117,6 @@ const PostRecruitment = () => {
                 setSelectedFile(null);
                 navigate("/job-posted");
             }
-            console.log(res.data);
         } catch (ex) {
             setModalMessage("Đã có lỗi xảy ra. Vui lòng thử lại!")
             setModalIsOpen(true);
