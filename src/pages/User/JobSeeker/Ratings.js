@@ -41,6 +41,7 @@ const Ratings = ({ jobId }) => {
     const [editingRatingId, setEditingRatingId] = useState(null);
     const [editRating, setEditRating] = useState(0);
     const [editComment, setEditComment] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRatings = async () => {
@@ -150,10 +151,16 @@ const Ratings = ({ jobId }) => {
         setMenuOpen((prev) => (prev === ratingId ? null : ratingId));
     };
 
+    const handleClose = () => {
+        setModalIsOpen(false);
+        navigate('/login');
+    };
+
     if (loading) {
         return <p>Loading...</p>;
     }
 
+    const isCompany = user && user.role === 1;
     return (
         <div className="mt-10">
             <h2 className="text-xl font-bold">Đánh giá và bình luận:</h2>
@@ -184,7 +191,7 @@ const Ratings = ({ jobId }) => {
                 <button
                     onClick={handleSubmitComment}
                     disabled={isSubmittingComment}
-                    className="mt-2 bg-green-600 text-white py-2 my-4 px-4 rounded hover:bg-green-500 w-[60px]"
+                    className={`mt-2 py-2 my-4 px-4 rounded w-[60px] ${isCompany ? 'bg-green-500 cursor-not-allowed' : 'bg-green-600 hover:bg-green-500'} text-white`}
                 >
                     {isSubmittingComment ? 'Đang gửi...' : 'Gửi'}
                 </button>
@@ -261,13 +268,19 @@ const Ratings = ({ jobId }) => {
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={() => setModalIsOpen(false)}
-                style={customStyles}
                 contentLabel="Thông báo đăng nhập"
+                className="relative w-full max-w-lg p-6 bg-white rounded-lg shadow-md"
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
             >
-                <h2>Bạn cần đăng nhập để thực hiện chức năng này.</h2>
-                <button onClick={() => setModalIsOpen(false)} className="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-500">
-                    Đóng
-                </button>
+                <h2 className="text-lg font-semibold mb-4">Bạn cần đăng nhập để thực hiện chức năng này.</h2>
+                <div className="flex justify-end mt-6"> {/* Căn nút đóng sang phải */}
+                    <button
+                        onClick={handleClose}
+                        className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-500"
+                    >
+                        Đóng
+                    </button>
+                </div>
             </Modal>
 
             <Modal

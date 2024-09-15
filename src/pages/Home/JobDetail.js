@@ -88,7 +88,7 @@ const JobDetail = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-400"></div>
+                <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
             </div>
         );
     }
@@ -96,6 +96,8 @@ const JobDetail = () => {
     if (!job) {
         return <div>Không tìm thấy công việc</div>;
     }
+
+    const isCompany = user && user.role === 1;
 
     return (
         <div className="container mx-auto my-2">
@@ -125,10 +127,16 @@ const JobDetail = () => {
 
                 <div className="flex flex-col items-center mt-20">
                     <div className="flex items-center space-x-4">
-                        <button onClick={handleToggleFavorite} className="text-green-500">
+                        <button onClick={handleToggleFavorite} className={`text-green-500 ${isCompany ? 'cursor-not-allowed' : ''}`}>
                             {isFavorite ? <BsFillBookmarkFill className="text-4xl" /> : <BiBookmark className="text-4xl hover:text-yellow-500" />}
                         </button>
-                        <button onClick={handleApplyJob} className="bg-green-500 text-white py-2 px-10 rounded hover:bg-yellow-500">Ứng tuyển</button>
+                        <button 
+                            onClick={handleApplyJob} 
+                            disabled={isCompany} // Vô hiệu hóa nút nếu là công ty
+                            className={`bg-green-500 text-white py-2 px-10 rounded hover:bg-yellow-500 ${isCompany ? 'cursor-not-allowed' : ''}`}
+                        >
+                            Ứng tuyển
+                        </button>
                     </div>
                     {showNotification && <div className="mt-4 text-red-500">{notificationMessage}</div>}
                 </div>
