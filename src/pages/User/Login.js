@@ -48,10 +48,10 @@ const Login = () => {
         ...user,
         // "client_id": "7rrgMPM5ZyDftLLyYE8O1iM4z9lr9QhqvbF7rNWO",
         // "client_secret": "nW8B2KcbUPxLFPCkL1iSqadDymHJrwJwN7oYZnuQzyC6TfPY3O1bMgoVtnxznyoWLwN3eDuJZPBTaPLlVICMl5qHalTKo9zeAeTXMYWBO5wTWdJuZGtE72YjFF5siGq8",
-        
+
         "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
         "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
-      
+
         "grant_type": "password",
       });
 
@@ -59,11 +59,15 @@ const Login = () => {
       setTimeout(async () => {
         let user = await authApi(res.data.access_token).get(endpoints["current_user"]);
         dispatch(
-          { 
-            "type": "login", 
-            "payload": user.data 
+          {
+            "type": "login",
+            "payload": user.data
           });
-        setTimeout(() => nav("/"), 500);
+        if (user.data.is_staff) {
+          nav("/dashboard");
+        } else {
+          nav("/");
+        }
         if (!alertShown) {
           toast.success('Đăng nhập thành công');
           setAlertShown(true);
@@ -120,7 +124,7 @@ const Login = () => {
         <GoogleLogin
           onSuccess={handleGoogleLoginSuccess}
           onFailure={handleGoogleLoginFailure}
-        
+
           render={renderProps => (
             <button
               className="flex items-center justify-center mt-4 p-2 border rounded bg-white shadow hover:bg-gray-100 w-full"
@@ -137,7 +141,7 @@ const Login = () => {
             Trải nghiệm ngay không cần đăng nhập!
           </Link>
         </div>
-        
+
       </form>
       <ToastContainer />
     </div>

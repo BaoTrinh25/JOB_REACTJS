@@ -1,39 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Dashboard from '../../../assets/dashboard_employer.png';
 
-// const JobPostingPackages = () => {
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('background-image-url')" }}>
-//       <h1 className="text-3xl font-extrabold mb-8 text-black">ĐĂNG TIN MIỄN PHÍ - TÌM ỨNG VIÊN CHẤT</h1>
-//       <div className="flex space-x-8">
-//         <div className="bg-white p-8 rounded-lg shadow-lg border-t-4 border-orange-500">
-//           <h2 className="text-xl font-bold text-orange-500 mb-4">Gói đăng tin FREEMIUM</h2>
-//           <ul className="mb-6">
-//             <li>Trải nghiệm đăng 3 tin tuyển dụng mỗi ngày</li>
-//             <li>Tiếp cận 1,000 hồ sơ ứng viên chất lượng</li>
-//           </ul>
-//           <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-700">
-//             Đăng ký ngay
-//           </button>
-//         </div>
-//         <div className="bg-white p-8 rounded-lg shadow-lg border-t-4 border-blue-800">
-//           <h2 className="text-xl font-bold text-blue-800 mb-4">Gói đăng tin hiệu quả</h2>
-//           <ul className="mb-6">
-//             <li>Chi phí hợp lý, linh hoạt theo từng nhu cầu</li>
-//             <li>Hiệu quả <span className="font-bold">tăng gấp 20 lần</span></li>
-//             <li>Rút ngắn lên đến <span className="font-bold">10 lần</span> tuyển dụng</li>
-//             <li>Đội ngũ tư vấn chuyên nghiệp <span className="font-bold">hỗ trợ 1-1</span></li>
-//           </ul>
-//           <button className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900">
-//             Tìm hiểu bảng giá
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
 const JobPostingPackages = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState({});
+  const [paymentInfo, setPaymentInfo] = useState({ method: '', amount: 0 });
+
+  const openModal = (amount) => {
+    setSelectedPackage({ amount });
+    setIsModalOpen(true);
+  };
+
+  const handlePaymentMethod = (method) => {
+    setPaymentInfo({ method, amount: selectedPackage.amount });
+    setIsModalOpen(false);
+    // Proceed with payment logic here
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div>
       <div className="relative bg-lime-50">
@@ -106,8 +93,8 @@ const JobPostingPackages = () => {
         </div>
       </div>
 
-       {/* Pricing Section */}
-       <div className="bg-white py-12">
+      {/* Pricing Section */}
+      <div className="bg-white py-12">
         <div className="text-center mb-12">
           <h2 className="text-xl font-bold">
             BÁO GIÁ DỊCH VỤ ĐĂNG TIN TUYỂN DỤNG CỦA <span className="text-green-600">NAKO JOB</span>
@@ -125,7 +112,10 @@ const JobPostingPackages = () => {
                   <li>✔️ Đăng tối đa 3 tin tuyển dụng mỗi ngày</li>
                   <li>✔️ Tin tuyển dụng online 10 ngày</li>
                 </ul>
-                <button className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition">
+                <button
+                  className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
+                  onClick={() => openModal(1000000)}
+                >
                   MUA NGAY
                 </button>
               </div>
@@ -140,7 +130,10 @@ const JobPostingPackages = () => {
                   <li>✔️ Đăng tối đa 5 tin tuyển dụng mỗi ngày</li>
                   <li>✔️ Tin tuyển dụng online 30 ngày</li>
                 </ul>
-                <button className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition">
+                <button
+                  className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
+                  onClick={() => openModal(2200000)}
+                >
                   MUA NGAY
                 </button>
               </div>
@@ -148,6 +141,34 @@ const JobPostingPackages = () => {
             </div>
           </div>
         </div>
+        {/* Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-lg font-bold mb-4">Chọn phương thức thanh toán</h2>
+              <div className="flex space-x-4">
+                <button
+                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+                  onClick={() => handlePaymentMethod('MoMo')}
+                >
+                  MoMo
+                </button>
+                <button
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  onClick={() => handlePaymentMethod('VNPay')}
+                >
+                  VNPay
+                </button>
+              </div>
+              <button
+                className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                onClick={closeModal}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

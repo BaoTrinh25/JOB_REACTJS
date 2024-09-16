@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/job-seeker.png';
-import { FaHome, FaBriefcase, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical,  FaHistory,  FaShoppingCart } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical, FaHistory, FaShoppingCart, FaBell } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
 import { BsFileEarmarkPost, BsFillBookmarkFill } from 'react-icons/bs';
@@ -33,19 +33,21 @@ const Header = () => {
       <div className="flex items-center ml-auto w-60%">
         <nav className="p-4 flex justify-between items-center mr-5">
           <ul className="flex space-x-8">
-            <li className="text-center group">
-              <Link to="/" className="text-white group-hover:text-yellow-400">
-                <FaHome className="text-white group-hover:text-yellow-400 mx-auto" />
-                Trang chủ
-              </Link>
-            </li>
             {!user || user.role === 0 ? (
-              <li className="text-center group">
-                <Link to="/jobs" className="text-white group-hover:text-yellow-400">
-                  <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
-                  Việc làm
-                </Link>
-              </li>
+              <>
+                <li className="text-center group">
+                  <Link to="/" className="text-white group-hover:text-yellow-400">
+                    <FaHome className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Trang chủ
+                  </Link>
+                </li>
+                <li className="text-center group">
+                  <Link to="/jobs" className="text-white group-hover:text-yellow-400">
+                    <FaBriefcase className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Việc làm
+                  </Link>
+                </li>
+              </>
             ) : null}
             {user && user.role === 0 ? (
               <>
@@ -64,7 +66,7 @@ const Header = () => {
               </>
             ) : user && user.role === 1 ? (
               <>
-               <li className="text-center group">
+                <li className="text-center group">
                   <Link to="/package" className="text-white group-hover:text-yellow-400">
                     <FaShoppingCart className="text-white group-hover:text-yellow-400 mx-auto" />
                     Gói đăng tin
@@ -82,6 +84,27 @@ const Header = () => {
                     Quản lý đăng tuyển
                   </Link>
                 </li>
+                <li className="text-center group">
+                  <Link to="/notification" className="text-white group-hover:text-yellow-400">
+                    <FaBell className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Thông báo
+                  </Link>
+                </li>
+              </>
+            ) : user && user.is_staff === true ? (
+              <>
+                <li className="text-center group">
+                  <Link to="/package" className="text-white group-hover:text-yellow-400">
+                    <FaUserEdit className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Quản lý người dùng
+                  </Link>
+                </li>
+                <li className="text-center group">
+                  <Link to="/package" className="text-white group-hover:text-yellow-400">
+                    <FaShoppingCart className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Quản lý gói dịch vụ
+                  </Link>
+                </li>
               </>
             ) : null}
           </ul>
@@ -89,7 +112,7 @@ const Header = () => {
         <div className="h-10 w-px bg-gray-300 mx-2"></div>
 
         <div>
-          {user && user.role !== null ? (
+          {user && user.role !== null || user && user.is_staff === true ? (
             <Dropdown
               arrowIcon={false}
               inline
@@ -97,13 +120,13 @@ const Header = () => {
                 <div className='flex flex-col items-center'>
                   <FaUser className="mr-2 my-1 group-hover:text-yellow-400" />
                   <span className="text-sm group-hover:text-yellow-400">
-                    {user.role === 1 ? "Employer Profile" : "Applicant Profile"}
+                    {user.role === 1 ? "Employer Profile" : "Applicant Profile" || user.is_staff === true ? "Admin" : ""}
                   </span>
                 </div>
                 <FaCaretDown className="ml-1 group-hover:text-yellow-400 mt-auto" />
               </div>}
             >
-              <Dropdown.Item onClick={() => handleNavigation(user.role === 1 ? "/employer-profile" : "/applicant-profile")}>
+              <Dropdown.Item onClick={() => handleNavigation(user.role === 1 ? "/employer-profile" : "/applicant-profile" || user.is_staff === true ? "/profile-admin" : "")}>
                 <div className="flex items-center">
                   <FaUserEdit className="mr-2" /> My Profile
                 </div>

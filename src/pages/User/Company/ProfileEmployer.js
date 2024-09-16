@@ -21,8 +21,8 @@ const ProfileEmployer = () => {
     const fileInputRef = useRef(null);
 
     useEffect(() => {
-        if (user && user.avatar) {
-            setProfileImage(user.avatar);
+        if (user && user?.avatar) {
+            setProfileImage(user?.avatar);
         }
     }, [user]);
 

@@ -19,8 +19,6 @@ const ListPosted = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  console.log(jobs);
-
   const fetchJobs = async () => {
     if (loading) return;
     setLoading(true);
