@@ -43,6 +43,7 @@ const Login = () => {
 
   const login = async () => {
     setIsLoggingIn(true);
+    setAlertShown(false);
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
@@ -63,13 +64,16 @@ const Login = () => {
             "type": "login",
             "payload": user.data
           });
-        if (user.data.is_staff) {
-          nav("/dashboard");
-        } else {
-          nav("/");
-        }
+
+        // Lưu token và role vào localStorage
+        window.localStorage.setItem("token", res.data.access_token);
+
         if (!alertShown) {
           toast.success('Đăng nhập thành công');
+          if (user && user.role !== null) {
+            window.localStorage.setItem('user', JSON.stringify(user.data)); // Lưu trữ thông tin user vào localStorage
+            window.localStorage.setItem('isLoggedIn', true); // Đánh dấu người dùng đã đăng nhập
+          }
           setAlertShown(true);
         }
       }, 100);

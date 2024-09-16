@@ -12,8 +12,10 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    window.localStorage.removeItem("isLoggedIn");
+    window.localStorage.removeItem("user");
     dispatch({ type: 'logout' });
-    navigate('/');
+    navigate('/login');
   };
 
   const handleNavigation = (path) => {

@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useContext } from "react";
 import { MyUserContext, MyDispatchContext } from "./configs/Context";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { gapi } from 'gapi-script';
+import { useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import './index.css';
 import Header from "./component/Header";
@@ -29,7 +30,7 @@ import MyUserReducer from './configs/Reducers';
 import JobApplicantsList from "./pages/User/Company/JobApplicantsList";
 import UpdatePostRecruitment from './pages/User/Company/UpdatePostRecruitment';
 import JobPostingPackages from "./pages/User/Company/JobPostingPackages ";
-import Payment from "./pages/User/Company/Payment";
+import Payment from './pages/User/Company/Payment';
 
 const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment'];
 const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
@@ -38,16 +39,18 @@ function AppLayout() {
   const location = useLocation();
   const showHeaderFooter = !noHeaderFooterRoutes.some(route => location.pathname.startsWith(route));
   const user = useContext(MyUserContext);
+  const dispatch = useContext(MyDispatchContext);
+  const loggedIn = window.localStorage.getItem("isLoggedIn"); //kiểm tra trạng thái login
+  const storedUser = window.localStorage.getItem('user'); //lấy thông tin user
+  const nav = useNavigate();
 
   useEffect(() => {
-    function start() {
-      gapi.client.init({
-        clientId: clientId,
-        scope: "profile email"
+    if (loggedIn && storedUser) {
+      dispatch({
+        type: 'login',
+        payload: JSON.parse(storedUser) // Khôi phục thông tin user từ localStorage
       });
     }
-
-    gapi.load('client:auth2', start);
   }, []);
 
   return (
@@ -56,27 +59,26 @@ function AppLayout() {
       <main className={`flex-grow ${showHeaderFooter ? 'mt-16' : ''}`}>
         <Routes>
           {/* Common routes */}
+          <Route path="/" element={<Home /> } />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/register-applicant/:userId" element={<RegisterApplicant />} />
           <Route path="/register-employer/:userId" element={<RegisterEmployer />} />
-          <Route path="/" element={<Home />} />
           <Route path="/jobs" element={<AllJobLatest />} />
           <Route path="/jobs-popular" element={<AllJobPopular />} />
           <Route path="/job-detail/:jobId" element={<JobDetail />} />
 
           {/* Routes for company users */}
-
           {user?.role === 1 && (
             <>
-              <Route path='/employer-profile' element={<ProfileEmployer />} />
+              <Route path='/employer-profile' exact element={< ProfileEmployer /> } />
               <Route path='/updateProfile-employer' element={<UpdateInfoProfileEmployer />} />
               <Route path='/post-recruitment' element={<PostRecruitment />} />
               <Route path='/job-posted' element={<ListPosted />} />
               <Route path='/jobapplicants-list/:jobId' element={<JobApplicantsList />} />
               <Route path='/update-post-recruitment/:jobId' element={<UpdatePostRecruitment />} />
-              <Route path='/package' element={<JobPostingPackages />} />
               <Route path='/updateProfile-user' element={<UpdateProfileUser />} />
+              <Route path='/package' element={<JobPostingPackages />} />
               <Route path='/checkout' element={<Payment />} />
             </>
           )}
@@ -85,7 +87,7 @@ function AppLayout() {
               <Route path='/updateProfile-user' element={<UpdateProfileUser />} />
               <Route path='/job-applied' element={<ListJobApplied />} />
               <Route path='/application-detail' element={<ApplicationDetail />} />
-              <Route path='/applicant-profile' element={<ProfileApplicant />} />
+              <Route path='/applicant-profile' element={<ProfileApplicant /> } />
               <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
               <Route path='/jobApplication/:jobId' element={<JobApplication />} />
               <Route path='/liked-job' element={<ListJobLiked />} />
