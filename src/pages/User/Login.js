@@ -65,11 +65,9 @@ const Login = () => {
             "payload": user.data
           });
 
-        // Lưu token và role vào localStorage
-        window.localStorage.setItem("token", res.data.access_token);
-
         if (!alertShown) {
           toast.success('Đăng nhập thành công');
+          nav("/");
           if (user && user.role !== null) {
             window.localStorage.setItem('user', JSON.stringify(user.data)); // Lưu trữ thông tin user vào localStorage
             window.localStorage.setItem('isLoggedIn', true); // Đánh dấu người dùng đã đăng nhập

@@ -1,24 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Dashboard from '../../../assets/dashboard_employer.png';
+import { useLocation } from 'react-router-dom';
+import { getToken } from "../../../utils/storage";
 
 const JobPostingPackages = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState({});
-  const [paymentInfo, setPaymentInfo] = useState({ method: '', amount: 0 });
+  const BASE_URL = 'https://baotrinh.pythonanywhere.com';
+  const location = useLocation();
 
-  const openModal = (amount) => {
-    setSelectedPackage({ amount });
-    setIsModalOpen(true);
-  };
+  const handleCheckout = async (priceId) => {
+    try {
+      const token = getToken();
+      const response = await fetch(`${BASE_URL}/payment_stripe/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          price_id: priceId, // Gửi price_id từ sản phẩm được chọn
+        }),
+      });
 
-  const handlePaymentMethod = (method) => {
-    setPaymentInfo({ method, amount: selectedPackage.amount });
-    setIsModalOpen(false);
-    // Proceed with payment logic here
-  };
+      const data = await response.json();
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+      if (response.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("Error:", data.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -114,7 +126,7 @@ const JobPostingPackages = () => {
                 </ul>
                 <button
                   className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
-                  onClick={() => openModal(1000000)}
+                  onClick={() => handleCheckout('price_1PzKGiP5Uv4CEUblO9ioWAJR')}
                 >
                   MUA NGAY
                 </button>
@@ -132,7 +144,7 @@ const JobPostingPackages = () => {
                 </ul>
                 <button
                   className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
-                  onClick={() => openModal(2200000)}
+                  onClick={() => handleCheckout('price_1PzxBPP5Uv4CEUbl90Ahfe1O')}
                 >
                   MUA NGAY
                 </button>
@@ -141,34 +153,6 @@ const JobPostingPackages = () => {
             </div>
           </div>
         </div>
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h2 className="text-lg font-bold mb-4">Chọn phương thức thanh toán</h2>
-              <div className="flex space-x-4">
-                <button
-                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                  onClick={() => handlePaymentMethod('MoMo')}
-                >
-                  MoMo
-                </button>
-                <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  onClick={() => handlePaymentMethod('VNPay')}
-                >
-                  VNPay
-                </button>
-              </div>
-              <button
-                className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                onClick={closeModal}
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
