@@ -46,17 +46,25 @@ const PaymentSuccess = () => {
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
+        </div>
       ) : (
-        invoice && (
-          <div className="bg-white p-6 rounded-lg shadow-md m-6">
-            <h2 className="text-lg font-bold">Thông tin hóa đơn</h2>
-            <p>ID: {invoice.id}</p>
-            <p>Người dùng: {invoice.user.username}</p>
-            <p>Số tiền: {invoice.amount_total} VNĐ</p>
-            <p>Ngày tạo: {invoice.created_at}</p>
-          </div>
-        )
+        <div className="flex flex-col mt-20 items-center h-screen">
+          <h1 className="text-3xl font-bold mb-4">Thank you for your payment!</h1>
+          <p className="text-lg">Your payment was <span className='text-red-600'>successful</span>. You will receive a confirmation email shortly.</p>
+
+          {invoice && (
+            <div className="mt-6">
+              <h2 className="text-xl font-bold mb-4">Invoice Details</h2>
+              <p><strong>Invoice ID:</strong> {invoice.id}</p>
+              <p><strong>Amount Paid:</strong> {invoice.amount_total} {invoice.currency.toUpperCase()}</p>
+              <p><strong>Payment Status:</strong> {invoice.payment_status}</p>
+              <p><strong>Payment Date:</strong> {new Date(invoice.payment_date * 1000).toLocaleDateString()}</p>
+              <p><strong>Customer Email:</strong> {invoice.customer_email}</p>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
