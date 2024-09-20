@@ -6,9 +6,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
-    const [alertShown, setAlertShown] = useState(false); 
+    const [alertShown, setAlertShown] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [avatar, setAvatar] = useState(null); // Avatar state to store base64 string
     const navigate = useNavigate();
 
     const fields = [
@@ -20,11 +21,6 @@ const Register = () => {
     const [role, setRole] = useState(0);
     const [user, setUser] = useState({});
     const dispatch = useContext(MyDispatchContext);
-
-    useEffect(() => {
-        // Set the default role to 'applicant' when component mounts
-        setRole(0);
-    }, []);
 
     const change = (value, field) => {
         setUser((current) => {
@@ -38,81 +34,105 @@ const Register = () => {
         setRole(rolevalue);
     };
 
+    // Function to handle avatar upload and convert to base64
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        setAvatar(file); // Save the file for uploading
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (user.password !== user.confirm)
-            setError("Mật khẩu không khớp");
-        else {
-            setError("");
-            setLoading(true);
-            try {
-                let form = new FormData();
-                for (let f in user) {
-                    form.append(f, user[f]);
-                }
-                form.append("role", role);
-                let res = await APIs.post(endpoints["register_user"], form, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+        // Check if any required field is empty
+        if (!user.username || !user.password || !user.confirm) {
+            setError("Vui lòng điền đầy đủ các trường thông tin.");
+            return;
+        }
 
-                if (res.status === 201) {
-                    const userId = res.data.id;
-                    toast.success('Đăng kí thành công');
-                    setTimeout(() => {
-                        if (role === 0) {
-                            navigate(`/register-applicant/${userId}`);
-                        } else if (role === 1) {
-                            navigate(`/register-employer/${userId}`);
-                        }
-                    }, 2000); 
-                }
-            } catch (error) {
-                console.error(error);
-                if (!alertShown) {
-                    toast.error('Đăng kí thất bại. Hãy thử đổi username khác!');
-                    setAlertShown(true); 
-                }
-            } finally {
-                setLoading(false);
+        if (user.password !== user.confirm) {
+            setError("Mật khẩu không khớp");
+            return;
+        }
+
+        setError("");
+        setLoading(true);
+
+        try {
+            let form = new FormData();
+            for (let f in user) {
+                form.append(f, user[f]);
             }
+            form.append("role", role);
+
+            if (avatar) {
+                form.append("avatar", avatar); 
+            }
+
+            let res = await APIs.post(endpoints["register_user"], form, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            if (res.status === 201) {
+                const userId = res.data.id;
+                toast.success('Đăng kí thành công');
+                setTimeout(() => {
+                    if (role === 0) {
+                        navigate(`/register-applicant/${userId}`);
+                    } else if (role === 1) {
+                        navigate(`/register-employer/${userId}`);
+                    }
+                }, 2000);
+            }
+        } catch (error) {
+            console.error(error);
+            if (!alertShown) {
+                toast.error('Đăng kí thất bại. Vui lòng thử lại hoặc đổi username!');
+                setAlertShown(true);
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="flex justify-center items-center h-screen bg-opacity-50" style={{ backgroundImage: "url('https://gpshortcuts.co.uk/images/reghere.jpg')" }}>
-            <div className="flex w-3/4 bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="flex w-3/5 bg-white rounded-xl shadow-lg overflow-hidden h-[90%]">
                 <div className="w-1/2 bg-cover" style={{ backgroundImage: "url('https://th.bing.com/th/id/OIP.udofYzIAT3FeEUnExxvgVAAAAA?pid=ImgDet&w=207&h=155&c=7&dpr=1.5')" }}>
                     <div className="h-full bg-black bg-opacity-50 flex items-center justify-center">
                         <div className="text-center text-white text-xl">
                             <h1 className="text-4xl font-bold mb-7">Welcome NAKO JOB</h1>
-                            <p className="p-3">Please fill out the form to create your account and join our community of job seekers and employers. </p>
+                            <p className="p-3">Please fill out the form to create your account and join our community of job seekers and employers.</p>
                             <p className="text-orange-400 mb-3">Let's get started!</p>
                             <p className="text-3xl">__NAKO JOB__</p>
                         </div>
                     </div>
                 </div>
                 <div className="w-1/2 p-8">
-                    <h2 className="text-2xl font-bold mb-4 text-center">REGISTER</h2>
+                    <h2 className="text-xl font-bold mb-4 text-center">REGISTER</h2>
 
                     {fields.map((f) => (
-                        <div key={f.field} className="mb-5">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={f.field}>{f.label}</label>
+                        <div key={f.field} className="mb-2">
+                            <label className="block text-gray-700 text-xs font-bold mb-2" htmlFor={f.field}>{f.label}</label>
                             <input
                                 type={f.secureTextEntry ? "password" : "text"}
                                 id={f.field}
                                 className="w-full px-3 py-2 border rounded"
-                                value={user[f.field] || ""} // Thêm || "" để tránh hiển thị undefined khi giá trị chưa được định nghĩa
-                                onChange={(event) => change(event.target.value, f.field)}// Chỉ truyền giá trị event.target.value
+                                value={user[f.field] || ""}
+                                onChange={(event) => change(event.target.value, f.field)}
                                 required
                             />
                         </div>
                     ))}
 
+                    <div className="mb-4 text-xs">
+                        <label className="block text-gray-700 text-xs font-bold mb-2">Avatar Upload</label>
+                        <input type="file" accept="image/*" onChange={handleAvatarChange} />
+                    </div>
+
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                        <label className="block text-gray-700 text-xs font-bold mb-2">
                             Choose Role
                         </label>
                         <div>
@@ -126,7 +146,7 @@ const Register = () => {
                                     onChange={handleRoleChange}
                                     required
                                 />
-                                <span className="ml-2">Applicant</span>
+                                <span className="ml-2 text-xs">Applicant</span>
                             </label>
                             <label className="inline-flex items-center">
                                 <input
@@ -138,29 +158,25 @@ const Register = () => {
                                     onChange={handleRoleChange}
                                     required
                                 />
-                                <span className="ml-2">Employer</span>
+                                <span className="ml-2 text-xs">Employer</span>
                             </label>
                         </div>
                     </div>
 
                     {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
                     <button
                         type="submit"
-                        className={`w-full bg-green-600 text-white py-2 rounded hover:bg-green-800 ${loading ? "opacity-50 cursor-not-allowed":""}`}
+                        className={`w-full bg-green-600 text-white py-2 rounded hover:bg-green-800 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                         disabled={loading}
                         onClick={handleSubmit}
                     >
-                        {loading ? "Registring..." : "Register"}
+                        {loading ? "Registering..." : "Register"}
                     </button>
                     <div className="mt-4 text-center">
-                        <span className="text-sm">Already on DTT Job?</span>{" "}
+                        <span className="text-xs">Already on NAKO Job?</span>{" "}
                         <Link to="/login" className="text-green-600 underline">
                             SIGN IN
-                        </Link>
-                    </div>
-                    <div className='mt-5 text-center'>
-                        <Link to="/" className="text-green-700 text-sm justify-center">
-                            Trải nghiệm ngay không cần đăng nhập!
                         </Link>
                     </div>
                 </div>

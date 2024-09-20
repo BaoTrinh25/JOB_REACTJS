@@ -11,7 +11,7 @@ const PaymentSuccess = () => {
   const fetchInvoiceDetails = async (sessionId) => {
     const token = getToken();
     try {
-      const response = await fetch(`${BASE_URL}/payment_stripe/${sessionId}/`, {
+      const res = await fetch(`${BASE_URL}/payment_stripe/${sessionId}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -19,11 +19,12 @@ const PaymentSuccess = () => {
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
         setInvoice(data);
       } else {
-        console.error("Error fetching invoice:", response.statusText);
+        console.error("Error fetching invoice:", res.statusText);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -58,10 +59,10 @@ const PaymentSuccess = () => {
             <div className="mt-6">
               <h2 className="text-xl font-bold mb-4">Invoice Details</h2>
               <p><strong>Invoice ID:</strong> {invoice.id}</p>
-              <p><strong>Amount Paid:</strong> {invoice.amount_total} {invoice.currency.toUpperCase()}</p>
-              <p><strong>Payment Status:</strong> {invoice.payment_status}</p>
-              <p><strong>Payment Date:</strong> {new Date(invoice.payment_date * 1000).toLocaleDateString()}</p>
-              <p><strong>Customer Email:</strong> {invoice.customer_email}</p>
+              <p><strong>Amount Paid:</strong> {invoice.amount_total ? `${invoice.amount_total} ${invoice.currency?.toUpperCase()}` : 'N/A'}</p>
+              <p><strong>Payment Status:</strong> {invoice.payment_status || 'N/A'}</p>
+              <p><strong>Payment Date:</strong> {invoice.payment_date ? new Date(invoice.payment_date).toLocaleDateString() : 'N/A'}</p>
+              <p><strong>Customer Email:</strong> {invoice.customer_email || 'N/A'}</p>
             </div>
           )}
         </div>

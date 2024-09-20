@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// const BASE_URL = 'https://baotrinh.pythonanywhere.com';
-const BASE_URL = 'http://127.0.0.1:8000';
+const BASE_URL = 'https://baotrinh.pythonanywhere.com';
 
 export const endpoints = {
     'current_user': `/users/current-user/`, 
