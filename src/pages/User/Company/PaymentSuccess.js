@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getToken } from "../../../utils/storage";
 
 const PaymentSuccess = () => {
   const BASE_URL = 'https://baotrinh.pythonanywhere.com';
@@ -9,19 +8,20 @@ const PaymentSuccess = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchInvoiceDetails = async (sessionId) => {
-    const token = getToken();
+    const token = localStorage.getItem('authToken');
+
     try {
-      const res = await fetch(`${BASE_URL}/payment_stripe/${sessionId}/`, {
+      const res = await fetch(`${BASE_URL}/payment_success/?session_id=${sessionId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
-
+      const data = await res.json();
+      console.log(data);
+      
       if (res.ok) {
-        const data = await res.json();
-        console.log(data);
         setInvoice(data);
       } else {
         console.error("Error fetching invoice:", res.statusText);
@@ -45,24 +45,30 @@ const PaymentSuccess = () => {
   }, [location]);
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
         </div>
       ) : (
-        <div className="flex flex-col mt-20 items-center h-screen">
-          <h1 className="text-3xl font-bold mb-4">Thank you for your payment!</h1>
-          <p className="text-lg">Your payment was <span className='text-red-600'>successful</span>. You will receive a confirmation email shortly.</p>
+        <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full">
+          <h1 className="text-3xl font-bold mb-4 text-center text-blue-600">Cảm ơn bạn đã thanh toán!</h1>
+          <p className="text-lg text-center mb-4">
+            Thanh toán của bạn đã <span className='text-green-600 font-semibold'>thành công</span>. Bạn sẽ nhận được email xác nhận sớm.
+          </p>
 
           {invoice && (
             <div className="mt-6">
-              <h2 className="text-xl font-bold mb-4">Invoice Details</h2>
-              <p><strong>Invoice ID:</strong> {invoice.id}</p>
-              <p><strong>Amount Paid:</strong> {invoice.amount_total ? `${invoice.amount_total} ${invoice.currency?.toUpperCase()}` : 'N/A'}</p>
-              <p><strong>Payment Status:</strong> {invoice.payment_status || 'N/A'}</p>
-              <p><strong>Payment Date:</strong> {invoice.payment_date ? new Date(invoice.payment_date).toLocaleDateString() : 'N/A'}</p>
-              <p><strong>Customer Email:</strong> {invoice.customer_email || 'N/A'}</p>
+              <h2 className="text-xl font-bold mb-4 text-blue-500">Chi tiết hóa đơn</h2>
+              <div className="space-y-2">
+                <p><strong>Gói:</strong> {invoice.product_item}</p>
+                <p><strong>Email khách hàng:</strong> {invoice.customer_email}</p>
+                <p><strong>Tổng tiền:</strong> {invoice.amount_total *100} {invoice.currency}</p>
+                <p><strong>Trạng thái:</strong> <span className={`font-semibold ${invoice.payment_status === 'Thành công' ? 'text-green-600' : 'text-red-600'}`}>{invoice.payment_status}</span></p>
+                <p><strong>Ngày thanh toán:</strong> {new Date(invoice.payment_date).toLocaleString()}</p>
+
+
+              </div>
             </div>
           )}
         </div>

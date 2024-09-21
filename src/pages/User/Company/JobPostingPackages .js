@@ -1,23 +1,22 @@
 import React from 'react';
 import Dashboard from '../../../assets/dashboard_employer.png';
-import { useLocation } from 'react-router-dom';
 import { getToken } from "../../../utils/storage";
 
 const JobPostingPackages = () => {
   const BASE_URL = 'https://baotrinh.pythonanywhere.com';
-  const location = useLocation();
 
-  const handleCheckout = async (priceId) => {
+  const handleCheckout = async (priceId, productName) => {
     try {
       const token = getToken();
-      const response = await fetch(`${BASE_URL}/payment_stripe/`, {
+      const response = await fetch(`${BASE_URL}/payment_stripe/payment/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          price_id: priceId, // Gửi price_id từ sản phẩm được chọn
+          price_id: priceId, 
+          product_item: productName
         }),
       });
 
@@ -126,7 +125,7 @@ const JobPostingPackages = () => {
                 </ul>
                 <button
                   className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
-                  onClick={() => handleCheckout('price_1PzKGiP5Uv4CEUblO9ioWAJR')}
+                  onClick={() => handleCheckout('price_1PzKGiP5Uv4CEUblO9ioWAJR', 'BASIC')}
                 >
                   MUA NGAY
                 </button>
@@ -144,7 +143,7 @@ const JobPostingPackages = () => {
                 </ul>
                 <button
                   className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
-                  onClick={() => handleCheckout('price_1PzxBPP5Uv4CEUbl90Ahfe1O')}
+                  onClick={() => handleCheckout('price_1PzxBPP5Uv4CEUbl90Ahfe1O', 'PREMIUM')}
                 >
                   MUA NGAY
                 </button>

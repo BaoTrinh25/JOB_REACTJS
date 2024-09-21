@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/job-seeker.png';
-import { FaHome, FaBriefcase, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical, FaHistory, FaShoppingCart, FaBell } from 'react-icons/fa';
+import { FaHome, FaBriefcase, FaSignInAlt, FaUserPlus, FaUser, FaCaretDown, FaUserEdit, FaNotesMedical, FaHistory, FaShoppingCart, FaBell, FaFacebookMessenger } from 'react-icons/fa';
 import { MyUserContext, MyDispatchContext } from '../configs/Context';
 import { Dropdown } from 'flowbite-react';
 import { BsFileEarmarkPost, BsFillBookmarkFill } from 'react-icons/bs';
@@ -65,6 +65,12 @@ const Header = () => {
                     Việc làm đã lưu
                   </Link>
                 </li>
+                <li className="text-center group">
+                  <Link to="/message" className="text-white group-hover:text-yellow-400">
+                    <FaFacebookMessenger className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Nhắn tin
+                  </Link>
+                </li>
               </>
             ) : user && user.role === 1 ? (
               <>
@@ -87,9 +93,9 @@ const Header = () => {
                   </Link>
                 </li>
                 <li className="text-center group">
-                  <Link to="/notification" className="text-white group-hover:text-yellow-400">
-                    <FaBell className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Thông báo
+                  <Link to="/message" className="text-white group-hover:text-yellow-400">
+                    <FaFacebookMessenger className="text-white group-hover:text-yellow-400 mx-auto" />
+                    Nhắn tin
                   </Link>
                 </li>
               </>
