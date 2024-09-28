@@ -30,9 +30,8 @@ import JobApplicantsList from "./pages/User/Company/JobApplicantsList";
 import UpdatePostRecruitment from './pages/User/Company/UpdatePostRecruitment';
 import JobPostingPackages from "./pages/User/Company/JobPostingPackages ";
 import PaymentSuccess from "./pages/User/Company/PaymentSuccess";
-import HomeMessage from "./pages/Message/HomeMessage";
 
-const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment', '/message'];
+const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment'];
 const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
 function AppLayout() {
@@ -92,12 +91,6 @@ function AppLayout() {
               <Route path='/jobApplication/:jobId' element={<JobApplication />} />
               <Route path='/liked-job' element={<ListJobLiked />} />
             </>
-          )}
-
-          {user?.role !== null && (
-            <>
-              <Route path='/message' element={<HomeMessage />}/>
-            </> 
           )}
 
           <Route path="*" element={<div className="text-xl mt-10 ml-10">404 Not Found </div>} />

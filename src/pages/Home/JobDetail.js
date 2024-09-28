@@ -16,8 +16,12 @@ const JobDetail = () => {
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
-
+    const [socket, setSocket] = useState(null);
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState('');
+    const [chatBoxOpen, setChatBoxOpen] = useState(false); // Thêm state quản lý hộp chat
     const navigate = useNavigate();
+    const [currentChatUser, setCurrentChatUser] = useState(null);
     const user = useContext(MyUserContext);
 
     useEffect(() => {
@@ -25,8 +29,10 @@ const JobDetail = () => {
             try {
                 const response = await fetchJobDetail(jobId);
                 setJob(response.data);
-
-                // Kiểm tra trạng thái lưu bài viết
+                // Lấy thông tin công ty và cập nhật currentChatUser
+                if (response.data && response.data.user && response.data.user.company) {
+                    setCurrentChatUser(response.data.user);
+                }
                 if (user) {
                     const token = getToken();
                     const likeResponse = await authApi(token).get(endpoints['check_liked'](jobId));
@@ -41,6 +47,54 @@ const JobDetail = () => {
 
         getJobDetails();
     }, [jobId, user]);
+
+    console.log(job);
+
+    useEffect(() => {
+        if (!currentChatUser) return;
+        if (user && user.role === 0) {
+            const ws = new WebSocket(`ws://localhost:8000/ws/chat/${jobId}/`);
+            setSocket(ws);
+
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+            };
+
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                setMessages((prevMessages) => [...prevMessages, message]);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error', error);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+            };
+
+            return () => {
+                if (ws) {
+                    ws.close();
+                }
+            };
+        }
+    }, [currentChatUser]);
+
+    const sendMessage = () => {
+        if (socket && input) {
+            const message = {
+                message: input,
+                sender_id: user.id,
+                receiver_id: currentChatUser.id,
+                sender: user,
+                receiver: currentChatUser,
+                jobId: jobId
+            };
+            socket.send(JSON.stringify(message));
+            setInput("");
+        }
+    };
 
     const handleApplyJob = async () => {
         if (user?.role === 1) {
@@ -85,6 +139,7 @@ const JobDetail = () => {
         }
     };
 
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -100,12 +155,12 @@ const JobDetail = () => {
     const isCompany = user && user.role === 1;
 
     return (
-        <div className="container mx-auto my-2">
+        <div className="container w-[80%] mx-auto my-2">
             <img src={job.image} alt={job.title} className="w-full h-80 object-cover mb-4" />
             <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
             <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">
                 <div>
-                    <p className="text-lg font-semibold">Công ty: {job.company?.companyName}</p>
+                    <p className="text-lg font-semibold">Công ty: {job.user.company?.companyName}</p>
                     <p>Tuyển vị trí: {job?.position}</p>
                     <p>Lĩnh vực: {job?.career.name}</p>
                     <p>Mức lương: {job?.salary} VNĐ</p>
@@ -121,8 +176,8 @@ const JobDetail = () => {
                     <h2 className="text-xl font-bold mt-4">Thông tin công ty:</h2>
                     <p>- Công ty: {job.company?.companyName}</p>
                     <p>- Địa chỉ: {job.company?.address}</p>
-                    <p>- Loại doanh nghiệp: {job.company?.company_type_display}</p>
-                    <p>- Thông tin chi tiết: {job.company?.information}</p>
+                    <p>- Loại doanh nghiệp: {job.user.company?.company_type_display}</p>
+                    <p>- Thông tin chi tiết: {job.user.company?.information}</p>
                 </div>
 
                 <div className="flex flex-col items-center mt-20">
@@ -130,9 +185,9 @@ const JobDetail = () => {
                         <button onClick={handleToggleFavorite} className={`text-green-500 ${isCompany ? 'cursor-not-allowed' : ''}`}>
                             {isFavorite ? <BsFillBookmarkFill className="text-4xl" /> : <BiBookmark className="text-4xl hover:text-yellow-500" />}
                         </button>
-                        <button 
-                            onClick={handleApplyJob} 
-                            disabled={isCompany} // Vô hiệu hóa nút nếu là công ty
+                        <button
+                            onClick={handleApplyJob}
+                            disabled={isCompany}
                             className={`bg-green-500 text-white py-2 px-10 rounded hover:bg-yellow-500 ${isCompany ? 'cursor-not-allowed' : ''}`}
                         >
                             Ứng tuyển
@@ -142,6 +197,48 @@ const JobDetail = () => {
                 </div>
             </div>
             <Ratings jobId={jobId} />
+
+            {/* Chat Box */}
+            {user && user.role === 0 && ( // Chỉ hiển thị hộp chat nếu là ứng viên
+                <div className="fixed bottom-0 right-0 w-80 h-80 bg-white shadow-lg border rounded-t-lg flex flex-col">
+                    <div className="flex justify-between items-center p-3 bg-gray-800 text-white">
+                        <span>NTD - {job.user.username}</span>
+                        <button onClick={() => setChatBoxOpen(false)} className="text-red-500">X</button>
+                    </div>
+                    <div className="flex-grow p-3 overflow-y-auto">
+                        {messages.map((msg, index) => (
+                            <div key={index}>
+                                <div className='flex flex-col mb-2'>
+                                    <div className="flex items-center">
+                                        <img
+                                            src={msg.sender.avatar}
+                                            alt="Avatar"
+                                            className="w-6 h-6 rounded-full mr-2"
+                                        />
+                                        <p>
+                                            <small>{msg.sender.username}</small>: {msg.message}
+                                        </p>
+                                    </div>
+                                    <span className='text-xs text-gray-500'>{job.title}</span>
+                                </div>
+
+                            </div>
+                        ))}
+                    </div>
+                    <div className="p-3">
+                        <input
+                            type="text"
+                            className="w-full p-2 border rounded"
+                            placeholder="Nhập tin nhắn..."
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        />
+                        <button onClick={sendMessage} className="mt-2 w-full bg-yellow-700 text-white py-2 rounded">
+                            Gửi
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Modal */}
             {showModal && (

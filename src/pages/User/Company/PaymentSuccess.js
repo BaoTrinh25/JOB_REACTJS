@@ -54,7 +54,7 @@ const PaymentSuccess = () => {
         <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full">
           <h1 className="text-3xl font-bold mb-4 text-center text-blue-600">Cảm ơn bạn đã thanh toán!</h1>
           <p className="text-lg text-center mb-4">
-            Thanh toán của bạn đã <span className='text-green-600 font-semibold'>thành công</span>. Bạn sẽ nhận được email xác nhận sớm.
+            Giao dịch của bạn đã <span className='text-green-600 font-semibold'>thành công</span>. Bạn sẽ nhận được email xác nhận sớm.
           </p>
 
           {invoice && (

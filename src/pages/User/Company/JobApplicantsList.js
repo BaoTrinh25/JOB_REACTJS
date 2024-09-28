@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import APIs, { authApi, endpoints } from "../../../configs/APIs";
 import { getToken } from "../../../utils/storage";
-import { FaFileAlt, FaUserCircle } from "react-icons/fa";
+import { FaCommentDots, FaFileAlt, FaUserCircle } from "react-icons/fa";
 import ConfirmModal from "../../../component/ConfirmModal";
+import { MyUserContext } from "../../../configs/Context";
 
 const JobApplicantsList = () => {
   const { jobId } = useParams();
@@ -13,9 +14,16 @@ const JobApplicantsList = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCV, setSelectedCV] = useState("");
-  const [confirmModalOpen, setConfirmModalOpen] = useState(false); // Trạng thái modal xác nhận
-  const [selectedApplicant, setSelectedApplicant] = useState(null); // Ứng viên đang chọn
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [confirmRejectModalOpen, setConfirmRejectModalOpen] = useState(false);
+  const [chatBoxOpen, setChatBoxOpen] = useState(false);
+  const [currentChatUser, setCurrentChatUser] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const user = useContext(MyUserContext);
+  
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -30,6 +38,7 @@ const JobApplicantsList = () => {
           },
         });
         setApplicants(response.data);
+        
         if (response.data.length > 0) {
           setJobTitle(response.data[0].job.title);
         }
@@ -43,32 +52,75 @@ const JobApplicantsList = () => {
     fetchApplicants();
   }, [jobId]);
 
-  //open modal CV
+  useEffect(() => {
+    if (!currentChatUser) return;
+
+    const ws = new WebSocket(`ws://localhost:8000/ws/chat/${jobId}/`);
+    setSocket(ws);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, data]);
+      console.log(data);
+    };
+    
+
+    return () => {
+      ws.close();
+    };
+  }, [currentChatUser]);
+
+  const sendMessage = () => {
+    if (socket && input) {
+      const message = {
+        message: input,
+        sender_id: user.id,
+        receiver_id: currentChatUser.id,
+        sender: user,
+        receiver: currentChatUser,
+        jobId: jobId
+      };
+      socket.send(JSON.stringify(message));
+      setInput("");
+    }
+  };
+
+  const openChatBox = (applicant) => {
+    setCurrentChatUser(applicant.user);
+    setMessages([]); // Reset messages when opening a new chat
+    setChatBoxOpen(true);
+  };
+
+  const closeChatBox = () => {
+    setChatBoxOpen(false);
+    setCurrentChatUser(null);
+  };
+
   const openModal = (cvLink) => {
     setSelectedCV(cvLink);
     setIsModalOpen(true);
   };
-  //close open CV
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedCV("");
   };
-  //open accept modal
+
   const openConfirmModal = (applicantId) => {
     setSelectedApplicant(applicantId);
     setConfirmModalOpen(true);
   };
-  //close accept modal
+
   const closeConfirmModal = () => {
     setConfirmModalOpen(false);
     setSelectedApplicant(null);
   };
-  //open reject modal
+
   const openConfirmRejectModal = (applicantId) => {
     setSelectedApplicant(applicantId);
     setConfirmRejectModalOpen(true);
   };
-  //close reject modal
+
   const closeConfirmRejectModal = () => {
     setConfirmRejectModalOpen(false);
     setSelectedApplicant(null);
@@ -119,16 +171,16 @@ const JobApplicantsList = () => {
           );
         }
       } catch (error) {
-        console.error("Error accepting applicant:", error);
+        console.error("Error rejecting applicant:", error);
       } finally {
         closeConfirmRejectModal();
       }
     }
   };
 
-
-  if (error)
+  if (error) {
     return <div className="text-center text-red-500 mt-4">Error: {error}</div>;
+  }
 
   const stripHtml = (html) => {
     const doc = new DOMParser().parseFromString(html, "text/html");
@@ -146,7 +198,7 @@ const JobApplicantsList = () => {
           <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
         </div>
       ) : (
-        <div className="bg-white shadow-lg rounded-lg p-6 border-2 mb-20">
+        <div className="bg-gray-100 shadow-lg rounded-lg p-6 border-2 border-orange-200 mb-20">
           {applicants.length === 0 ? (
             <div className="text-center text-gray-500">
               Hiện không có ứng viên nào cho công việc này.
@@ -154,9 +206,8 @@ const JobApplicantsList = () => {
           ) : (
             <ul>
               {applicants.map((applicant) => (
-                <li key={applicant.id} className="border-b border-gray-200 py-4">
+                <li key={applicant.id} className="border-b border-orange-200 py-4">
                   <div className="flex justify-between items-start">
-                    {/* User Information */}
                     <div className="w-1/3">
                       <div className="flex items-center">
                         {applicant.user.avatar ? (
@@ -209,9 +260,8 @@ const JobApplicantsList = () => {
                       </div>
                     </div>
 
-                    {/* Cover Letter */}
-                    <div className="w-2/4 bg-red-50 p-4 rounded-lg text-center border-2">
-                      <p className="font-semibold text-gray-700 mb-2">
+                    <div className="w-2/4 bg-red-50 p-4 rounded-lg border-black text-center border-2">
+                      <p className="font-semibold text-yellow-700 mb-2">
                         Thư giới thiệu
                       </p>
                       <p className="text-gray-600 text-sm"><span className="pr-2">Nội dung:</span>
@@ -219,7 +269,6 @@ const JobApplicantsList = () => {
                       </p>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex flex-col space-y-3">
                       <button
                         onClick={() => openModal(applicant.user.jobSeeker.cv)}
@@ -227,7 +276,6 @@ const JobApplicantsList = () => {
                       >
                         <FaFileAlt className="mr-2" /> Xem CV
                       </button>
-
                       <div className="flex flex-col space-y-3">
                         {applicant.status === 3 ? (
                           <button
@@ -262,7 +310,12 @@ const JobApplicantsList = () => {
                           </button>
                         )}
                       </div>
-
+                      <button
+                        onClick={() => openChatBox(applicant)}
+                        className="flex items-center text-orange-700 hover:text-red-700 hover:underline cursor-pointer"
+                      >
+                        <FaCommentDots className="mr-2" /> Nhắn tin
+                      </button>
                     </div>
                   </div>
                 </li>
@@ -271,7 +324,6 @@ const JobApplicantsList = () => {
           )}
         </div>
       )}
-      {/* Modal Xem CV */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 my-19 pt-20">
           <div className="bg-white pt-8 p-2 rounded-lg w-full h-5/6 max-w-5xl max-h-3xl overflow-hidden relative">
@@ -296,7 +348,43 @@ const JobApplicantsList = () => {
         </div>
       )}
 
-      {/* Modal Xác nhận */}
+      {chatBoxOpen && currentChatUser && (
+        <div className="fixed bottom-0 right-0 w-80 h-80 bg-white shadow-lg border rounded-t-lg flex flex-col">
+          <div className="flex justify-between items-center p-3 bg-gray-800 text-white">
+            <span>Ứng viên - {currentChatUser.username}</span>
+            <button onClick={closeChatBox} className="text-red-500">
+              X
+            </button>
+          </div>
+          <div className="flex-grow p-3 overflow-y-auto">
+            {messages.map((msg, index) => (
+              <div key={index} className="flex items-center mb-2">
+                <img
+                  src={msg.sender.avatar}
+                  alt="Avatar"
+                  className="w-6 h-6 rounded-full mr-2"
+                />
+                <p>
+                  <small>{msg.sender.username}</small>: {msg.message}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="p-3">
+            <input
+              type="text"
+              className="w-full p-2 border rounded"
+              placeholder="Nhập tin nhắn..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <button onClick={sendMessage} className="mt-2 w-full bg-yellow-700 text-white py-2 rounded">
+              Gửi
+            </button>
+          </div>
+        </div>
+      )}
+
       {confirmModalOpen && (
         <ConfirmModal
           onConfirm={handleConfirmAccept}
