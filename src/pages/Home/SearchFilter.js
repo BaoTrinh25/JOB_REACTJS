@@ -41,9 +41,9 @@ const SearchFilter = () => {
               <button
                 key={career.id}
                 onClick={() => handleCareerClick(career.name)}
-                className={`flex-none w-40 h-12 ${
+                className={`flex-none w-32 h-10 ${
                   selectedCareer === career.name ? 'bg-yellow-600' : 'bg-slate-400'
-                } text-white rounded-lg shadow-md hover:bg-slate-500 transition-colors duration-200 whitespace-nowrap overflow-hidden text-ellipsis`}
+                } text-white text-sm rounded-lg shadow-md hover:bg-yellow-500 transition-colors duration-200 whitespace-nowrap overflow-hidden text-ellipsis`}
               >
                 {career.name}
               </button>
@@ -52,7 +52,7 @@ const SearchFilter = () => {
           {selectedCareer && (
             <button
               onClick={handleClearFilter}
-              className="self-end w-32 h-10 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-colors duration-200"
+              className="self-end w-20 h-8 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-colors duration-200"
             >
               Xóa lọc
             </button>

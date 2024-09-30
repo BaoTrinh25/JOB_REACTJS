@@ -48,7 +48,7 @@ const TopLatestJob = () => {
   const renderJobItem = (job) => (
     <div
       key={job.id}
-      className="flex flex-col items-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-7 border-2 border-lime-600 rounded-lg p-6 bg-yellow-50 mx-4 my-5 cursor-pointer h-[300px]"
+      className="flex flex-col items-center shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 mb-10 border-2 border-lime-600 rounded-lg p-3 bg-yellow-50 mx-2 my-5 cursor-pointer h-[250px] w-[200px]"
       onClick={() => navigate(`/job-detail/${job.id}`)}
     >
       <img src={job.image} alt={job.title} className="w-32 h-24 rounded-sm border-2 border-cyan-900 mb-4" />
@@ -70,7 +70,7 @@ const TopLatestJob = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-100 rounded-lg shadow-lg">
+    <div className="p-8 bg-gray-100 rounded-lg shadow-lg w-[85%] border-2 border-cyan-600">
       <div className="flex justify-between items-center mb-1">
         <h2 className="text-2xl font-bold text-orange-700">Công việc mới nhất</h2>
         <button onClick={() => navigate("/jobs")} className="bg-lime-500 font-semibold">

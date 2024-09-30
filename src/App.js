@@ -22,7 +22,6 @@ import JobApplication from './pages/User/JobSeeker/JobApplication';
 import UpdateInfoProfileEmployer from './pages/User/Company/UpdateInfoEmployer';
 import PostRecruitment from './pages/User/Company/PostRecruitment';
 import ListPosted from './pages/User/Company/ListPosted';
-import ApplicationDetail from './pages/User/JobSeeker/ApplicationDetail';
 import ListJobApplied from './pages/User/JobSeeker/ListJobApplied';
 import ListJobLiked from './pages/User/JobSeeker/ListJobLiked';
 import MyUserReducer from './configs/Reducers';
@@ -85,7 +84,6 @@ function AppLayout() {
             <>
               <Route path='/updateProfile-user' element={<UpdateProfileUser />} />
               <Route path='/job-applied' element={<ListJobApplied />} />
-              <Route path='/application-detail' element={<ApplicationDetail />} />
               <Route path='/applicant-profile' element={<ProfileApplicant /> } />
               <Route path='/updateProfile-appplicant' element={<UpdateInfoApplicant />} />
               <Route path='/jobApplication/:jobId' element={<JobApplication />} />

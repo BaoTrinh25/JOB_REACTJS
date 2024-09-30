@@ -85,13 +85,6 @@ const SidebarApplicant = () => {
                 )}
                 <li
                     className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
-                    onClick={() => navigate('')}
-                >
-                    <FaInbox className="mr-2" />
-                    Nhắn tin
-                </li>
-                <li
-                    className="flex items-center hover:bg-gray-700 rounded p-2 cursor-pointer"
                     onClick={handleLogout}
                 >
                     <FaSignOutAlt className="mr-2" />

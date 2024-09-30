@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import APIs, { authApi, endpoints } from '../../../configs/APIs';
-import defaultAvatar from '../../../assets/default_avatar.png';
+import avatar_local from '../../../assets/default_avatar.png';
 import { useNavigate } from "react-router-dom";
 import { MyUserContext } from "../../../configs/Context";
 import Modal from 'react-modal';
@@ -159,10 +159,12 @@ const Ratings = ({ jobId }) => {
     if (loading) {
         return <p>Loading...</p>;
     }
+    console.log(ratings);
+
 
     const isCompany = user && user.role === 1;
     return (
-        <div className="mt-10">
+        <div className="my-20">
             <h2 className="text-xl font-bold">Đánh giá và bình luận:</h2>
             <div className="border-t mt-4 pt-4 flex flex-col">
                 <div className="flex space-x-1">
@@ -203,14 +205,14 @@ const Ratings = ({ jobId }) => {
                     ratings.map((rating) => (
                         <div key={rating.id} className="flex items-start mb-4 w-[40%] relative">
                             <img
-                                src={rating.user.avatar ? rating.user.avatar : defaultAvatar}
+                                src={rating.user?.avatar ? rating.user?.avatar : avatar_local}
                                 alt="avatar"
                                 className="w-14 h-14 rounded-full mr-4 border-2 border-orange-200"
                             />
                             <div className="bg-red-50 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300 relative">
                                 <div className="flex flex-col">
                                     <p className="text-base text-black-600 mb-1">
-                                        By: {rating.user.username}
+                                        By: {rating.user?.username}
                                     </p>
                                     <p className="text-xs text-gray-500 mb-1">
                                         {rating.created_date}
@@ -233,7 +235,7 @@ const Ratings = ({ jobId }) => {
                                     ))}
                                 </div>
                                 <p>{rating.comment}</p>
-                                {user && rating.user.username === user.username && (
+                                {user && rating.user?.username === user?.username && (
                                     <div className="absolute top-2 right-2">
                                         <button
                                             className="focus:outline-none"
@@ -289,13 +291,15 @@ const Ratings = ({ jobId }) => {
                 style={customStyles}
                 contentLabel="Xác nhận xóa"
             >
-                <h2>Bạn có chắc chắn muốn xóa đánh giá này?</h2>
-                <button onClick={handleDeleteRating} className="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500">
-                    Xóa
-                </button>
-                <button onClick={closeConfirmationModal} className="mt-4 ml-2 bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-500">
-                    Hủy
-                </button>
+                <h2>Bạn có chắc chắn muốn <span className='text-orange-600'>"xóa"</span> đánh giá này?</h2>
+                <div className="flex justify-end mt-4 space-x-2">
+                    <button onClick={handleDeleteRating} className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-500">
+                        Xóa
+                    </button>
+                    <button onClick={closeConfirmationModal} className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-500">
+                        Hủy
+                    </button>
+                </div>
             </Modal>
 
             <Modal

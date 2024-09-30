@@ -6,6 +6,9 @@ import { BsFillBookmarkFill } from 'react-icons/bs';
 import { MyUserContext } from '../../configs/Context';
 import Ratings from '../User/JobSeeker/Ratings';
 import { getToken } from '../../utils/storage';
+import ChatWebSocket from '../../component/ChatWebSocket';
+import ChatBox from '../../component/ChatBox';
+import { FaFacebookMessenger } from 'react-icons/fa';
 
 const JobDetail = () => {
     const { jobId } = useParams();
@@ -16,20 +19,19 @@ const JobDetail = () => {
     const [showNotification, setShowNotification] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [socket, setSocket] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState('');
-    const [chatBoxOpen, setChatBoxOpen] = useState(false); // Thêm state quản lý hộp chat
+    const [chatBoxOpen, setChatBoxOpen] = useState(false);
     const navigate = useNavigate();
     const [currentChatUser, setCurrentChatUser] = useState(null);
     const user = useContext(MyUserContext);
 
     useEffect(() => {
+        if (job && job.user) {
+            setCurrentChatUser(job.user);
+        }
         const getJobDetails = async () => {
             try {
                 const response = await fetchJobDetail(jobId);
                 setJob(response.data);
-                // Lấy thông tin công ty và cập nhật currentChatUser
                 if (response.data && response.data.user && response.data.user.company) {
                     setCurrentChatUser(response.data.user);
                 }
@@ -48,53 +50,8 @@ const JobDetail = () => {
         getJobDetails();
     }, [jobId, user]);
 
-    console.log(job);
-
-    useEffect(() => {
-        if (!currentChatUser) return;
-        if (user && user.role === 0) {
-            const ws = new WebSocket(`ws://localhost:8000/ws/chat/${jobId}/`);
-            setSocket(ws);
-
-            ws.onopen = () => {
-                console.log('WebSocket connected');
-            };
-
-            ws.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-                setMessages((prevMessages) => [...prevMessages, message]);
-            };
-
-            ws.onerror = (error) => {
-                console.error('WebSocket error', error);
-            };
-
-            ws.onclose = () => {
-                console.log('WebSocket disconnected');
-            };
-
-            return () => {
-                if (ws) {
-                    ws.close();
-                }
-            };
-        }
-    }, [currentChatUser]);
-
-    const sendMessage = () => {
-        if (socket && input) {
-            const message = {
-                message: input,
-                sender_id: user.id,
-                receiver_id: currentChatUser.id,
-                sender: user,
-                receiver: currentChatUser,
-                jobId: jobId
-            };
-            socket.send(JSON.stringify(message));
-            setInput("");
-        }
-    };
+    // Use WebSocket hook
+    const { messages, sendMessage } = ChatWebSocket(jobId, currentChatUser, user);
 
     const handleApplyJob = async () => {
         if (user?.role === 1) {
@@ -140,6 +97,14 @@ const JobDetail = () => {
     };
 
 
+    const handleToggleChatBox = () => {
+        setChatBoxOpen(prevState => !prevState);
+    };
+
+    const closeChatBox = () => {
+        setChatBoxOpen(false);
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -157,8 +122,10 @@ const JobDetail = () => {
     return (
         <div className="container w-[80%] mx-auto my-2">
             <img src={job.image} alt={job.title} className="w-full h-80 object-cover mb-4" />
-            <h1 className="text-3xl font-bold mb-2">{job.title}</h1>
             <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">
+                <div className='flex justify-center'>
+                    <h1 className="text-3xl text-orange-700 font-bold my-10">{job.title}</h1>
+                </div>
                 <div>
                     <p className="text-lg font-semibold">Công ty: {job.user.company?.companyName}</p>
                     <p>Tuyển vị trí: {job?.position}</p>
@@ -198,46 +165,24 @@ const JobDetail = () => {
             </div>
             <Ratings jobId={jobId} />
 
-            {/* Chat Box */}
-            {user && user.role === 0 && ( // Chỉ hiển thị hộp chat nếu là ứng viên
-                <div className="fixed bottom-0 right-0 w-80 h-80 bg-white shadow-lg border rounded-t-lg flex flex-col">
-                    <div className="flex justify-between items-center p-3 bg-gray-800 text-white">
-                        <span>NTD - {job.user.username}</span>
-                        <button onClick={() => setChatBoxOpen(false)} className="text-red-500">X</button>
-                    </div>
-                    <div className="flex-grow p-3 overflow-y-auto">
-                        {messages.map((msg, index) => (
-                            <div key={index}>
-                                <div className='flex flex-col mb-2'>
-                                    <div className="flex items-center">
-                                        <img
-                                            src={msg.sender.avatar}
-                                            alt="Avatar"
-                                            className="w-6 h-6 rounded-full mr-2"
-                                        />
-                                        <p>
-                                            <small>{msg.sender.username}</small>: {msg.message}
-                                        </p>
-                                    </div>
-                                    <span className='text-xs text-gray-500'>{job.title}</span>
-                                </div>
+            {/* Render the ChatBox component */}
+            {chatBoxOpen && (
+                <ChatBox
+                    currentChatUser={currentChatUser}
+                    messages={messages}
+                    sendMessage={sendMessage}
+                    closeChatBox={closeChatBox}
+                />
+            )}
 
-                            </div>
-                        ))}
-                    </div>
-                    <div className="p-3">
-                        <input
-                            type="text"
-                            className="w-full p-2 border rounded"
-                            placeholder="Nhập tin nhắn..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                        />
-                        <button onClick={sendMessage} className="mt-2 w-full bg-yellow-700 text-white py-2 rounded">
-                            Gửi
-                        </button>
-                    </div>
-                </div>
+            {/* Biểu tượng tin nhắn */}
+            {user?.role === 0 && (
+                <button
+                    onClick={handleToggleChatBox}
+                    className="z-0 fixed bottom-36 right-5 bg-orange-500 text-white p-3 rounded-full shadow-lg hover:bg-orange-600 transition duration-300"
+                >
+                    <FaFacebookMessenger size={24} />
+                </button>
             )}
 
             {/* Modal */}

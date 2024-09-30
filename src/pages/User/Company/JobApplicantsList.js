@@ -3,8 +3,11 @@ import { useParams } from "react-router-dom";
 import APIs, { authApi, endpoints } from "../../../configs/APIs";
 import { getToken } from "../../../utils/storage";
 import { FaCommentDots, FaFileAlt, FaUserCircle } from "react-icons/fa";
-import ConfirmModal from "../../../component/ConfirmModal";
 import { MyUserContext } from "../../../configs/Context";
+import ChatBox from "../../../component/ChatBox";
+import ChatWebSocket from "../../../component/ChatWebSocket";
+import ConfirmModal from "../../../component/ConfirmModal";
+import NotificationModal from "../../../component/NotificationModal";
 
 const JobApplicantsList = () => {
   const { jobId } = useParams();
@@ -12,18 +15,21 @@ const JobApplicantsList = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCV, setSelectedCV] = useState("");
-  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [selectedApplicant, setSelectedApplicant] = useState(null);
-  const [confirmRejectModalOpen, setConfirmRejectModalOpen] = useState(false);
   const [chatBoxOpen, setChatBoxOpen] = useState(false);
   const [currentChatUser, setCurrentChatUser] = useState(null);
-  const [socket, setSocket] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
   const user = useContext(MyUserContext);
-  
+
+  // New state variables for modals
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [notificationModalOpen, setNotificationModalOpen] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
+  // Use the custom hook for WebSocket logic
+  const { messages, sendMessage } = ChatWebSocket(jobId, currentChatUser, user);
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -38,6 +44,7 @@ const JobApplicantsList = () => {
           },
         });
         setApplicants(response.data);
+        console.log(response.data);
         
         if (response.data.length > 0) {
           setJobTitle(response.data[0].job.title);
@@ -52,78 +59,16 @@ const JobApplicantsList = () => {
     fetchApplicants();
   }, [jobId]);
 
-  useEffect(() => {
-    if (!currentChatUser) return;
-
-    const ws = new WebSocket(`ws://localhost:8000/ws/chat/${jobId}/`);
-    setSocket(ws);
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, data]);
-      console.log(data);
-    };
-    
-
-    return () => {
-      ws.close();
-    };
-  }, [currentChatUser]);
-
-  const sendMessage = () => {
-    if (socket && input) {
-      const message = {
-        message: input,
-        sender_id: user.id,
-        receiver_id: currentChatUser.id,
-        sender: user,
-        receiver: currentChatUser,
-        jobId: jobId
-      };
-      socket.send(JSON.stringify(message));
-      setInput("");
-    }
-  };
-
-  const openChatBox = (applicant) => {
-    setCurrentChatUser(applicant.user);
-    setMessages([]); // Reset messages when opening a new chat
-    setChatBoxOpen(true);
-  };
-
-  const closeChatBox = () => {
-    setChatBoxOpen(false);
-    setCurrentChatUser(null);
-  };
-
-  const openModal = (cvLink) => {
-    setSelectedCV(cvLink);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedCV("");
-  };
-
-  const openConfirmModal = (applicantId) => {
+  const openConfirmModal = (applicantId, action) => {
     setSelectedApplicant(applicantId);
+    setConfirmAction(action);
     setConfirmModalOpen(true);
   };
 
   const closeConfirmModal = () => {
     setConfirmModalOpen(false);
     setSelectedApplicant(null);
-  };
-
-  const openConfirmRejectModal = (applicantId) => {
-    setSelectedApplicant(applicantId);
-    setConfirmRejectModalOpen(true);
-  };
-
-  const closeConfirmRejectModal = () => {
-    setConfirmRejectModalOpen(false);
-    setSelectedApplicant(null);
+    setConfirmAction(null);
   };
 
   const handleConfirmAccept = async () => {
@@ -143,9 +88,13 @@ const JobApplicantsList = () => {
                 : applicant
             )
           );
+          setNotificationMessage("Ứng viên đã được chấp nhận thành công.");
+          setNotificationModalOpen(true);
         }
       } catch (error) {
         console.error("Error accepting applicant:", error);
+        setNotificationMessage("Đã xảy ra lỗi khi chấp nhận ứng viên.");
+        setNotificationModalOpen(true);
       } finally {
         closeConfirmModal();
       }
@@ -169,13 +118,42 @@ const JobApplicantsList = () => {
                 : applicant
             )
           );
+          setNotificationMessage("Ứng viên đã bị từ chối thành công.");
+          setNotificationModalOpen(true);
         }
       } catch (error) {
         console.error("Error rejecting applicant:", error);
+        setNotificationMessage("Đã xảy ra lỗi khi từ chối ứng viên.");
+        setNotificationModalOpen(true);
       } finally {
-        closeConfirmRejectModal();
+        closeConfirmModal();
       }
     }
+  };
+
+  const openChatBox = (applicant) => {
+    if (!chatBoxOpen) {
+      setCurrentChatUser(applicant.user);
+      setChatBoxOpen(true);
+    } else {
+      setChatBoxOpen(false);
+      setCurrentChatUser(null);
+    }
+  };
+
+  const closeChatBox = () => {
+    setChatBoxOpen(false);
+    setCurrentChatUser(null);
+  };
+
+  const openModal = (cvLink) => {
+    setSelectedCV(cvLink);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedCV("");
   };
 
   if (error) {
@@ -188,17 +166,18 @@ const JobApplicantsList = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold my-6 text-center text-gray-800">
+    <div className="container mx-auto p-4 bg-cover bg-center w-full min-h-screen" style={{ backgroundImage: "url('https://img.freepik.com/free-photo/wall-blank-paper-frame-with-acorn-decoration_53876-105706.jpg?w=996&t=st=1727511578~exp=1727512178~hmac=5c37806fb505d3257e983bfedabda531ab3125918e7c3818576398545c519050')" }}>
+      <h1 className="text-3xl font-bold my-10 text-center text-red-900">
         {jobTitle}
+        <p className="text-lg my-7 pt-5 text-gray-600">____Danh sách các ứng viên____</p>
       </h1>
-      <p className="text-2xl mb-6 text-gray-800">Danh sách các ứng viên</p>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
         </div>
       ) : (
-        <div className="bg-gray-100 shadow-lg rounded-lg p-6 border-2 border-orange-200 mb-20">
+        <div className="bg-gray-200 shadow-lg rounded-lg p-6 border-2 border-orange-200 ml-24 my-10 w-[70%]">
           {applicants.length === 0 ? (
             <div className="text-center text-gray-500">
               Hiện không có ứng viên nào cho công việc này.
@@ -206,22 +185,22 @@ const JobApplicantsList = () => {
           ) : (
             <ul>
               {applicants.map((applicant) => (
-                <li key={applicant.id} className="border-b border-orange-200 py-4">
+                <li key={applicant.id} className="border-b border-black py-4">
                   <div className="flex justify-between items-start">
-                    <div className="w-1/3">
+                    <div className="w-1/3 pr-4">
                       <div className="flex items-center">
-                        {applicant.user.avatar ? (
+                        {applicant.user?.avatar ? (
                           <img
-                            src={applicant.user.avatar}
+                            src={applicant.user?.avatar}
                             alt="Avatar"
-                            className="w-16 h-16 rounded-lg mr-3"
+                            className="w-20 h-20 rounded-ls mr-3"
                           />
                         ) : (
                           <FaUserCircle className="text-3xl text-gray-500 mr-3" />
                         )}
                         <div>
-                          <div className="flex text-lg font-semibold mb-2 text-gray-700">
-                            <h2 className="pr-3">ỨNG VIÊN:</h2>
+                          <div className="flex text-sm font-semibold mb-2 text-yellow-700">
+                            <h2 className="pr-1">ỨNG VIÊN:</h2>
                             <p>{applicant.user.username}</p>
                           </div>
                           <div className="flex mb-2">
@@ -233,8 +212,8 @@ const JobApplicantsList = () => {
                             </p>
                           </div>
                           <div className="flex mb-2">
-                            <p className="font-semibold pr-3 text-gray-700 text-sm">
-                              Số điện thoại:
+                            <p className="font-semibold pr-1 text-gray-700 text-sm">
+                              SĐT:
                             </p>
                             <p className="text-gray-600 text-sm">
                               {applicant.user.mobile}
@@ -250,7 +229,7 @@ const JobApplicantsList = () => {
                           </div>
                           <div className="flex">
                             <p className="font-semibold pr-3 text-gray-700 text-sm">
-                              Ngày ứng tuyển:
+                              Ngày nộp:
                             </p>
                             <p className="text-gray-600 text-sm">
                               {applicant.date}
@@ -260,12 +239,17 @@ const JobApplicantsList = () => {
                       </div>
                     </div>
 
-                    <div className="w-2/4 bg-red-50 p-4 rounded-lg border-black text-center border-2">
-                      <p className="font-semibold text-yellow-700 mb-2">
-                        Thư giới thiệu
-                      </p>
-                      <p className="text-gray-600 text-sm"><span className="pr-2">Nội dung:</span>
-                        {stripHtml(applicant.content)}
+                    <div className="w-2/4 relative bg-white p-4 rounded-lg mx-4 ">
+                      <div
+                        className="absolute inset-0 bg-cover bg-center opacity-20 w-full h-full"
+                        style={{ backgroundImage: "url('https://img.freepik.com/free-photo/wall-blank-paper-frame-with-acorn-decoration_53876-105706.jpg?w=996&t=st=1727511578~exp=1727512178~hmac=5c37806fb505d3257e983bfedabda531ab3125918e7c3818576398545c519050')" }}
+                      />
+                      <div className="relative z-10 flex items-center justify-center">
+                        <p className="font-semibold text-yellow-700 mb-2">Thư giới thiệu</p>
+                      </div>
+                      <p className="text-gray-600 text-sm">
+                        <span className="pr-2 font-semibold text-green-600">Nội dung:</span>
+                        <span>{stripHtml(applicant.content)}</span>
                       </p>
                     </div>
 
@@ -287,14 +271,14 @@ const JobApplicantsList = () => {
                         ) : applicant.status !== 2 ? (
                           <>
                             <button
-                              onClick={() => openConfirmModal(applicant.id)}
-                              className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
+                              onClick={() => openConfirmModal(applicant.id, 'accept')}
+                              className="bg-green-500 hover:bg-green-600 text-white font-semibold px-2 py-2 rounded-lg shadow-md text-sm"
                               style={{ minWidth: '100px' }}
                             >
                               Chấp nhận
                             </button>
                             <button
-                              onClick={() => openConfirmRejectModal(applicant.id)}
+                              onClick={() => openConfirmModal(applicant.id, 'reject')}
                               className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md text-sm"
                               style={{ minWidth: '100px' }}
                             >
@@ -303,7 +287,7 @@ const JobApplicantsList = () => {
                           </>
                         ) : (
                           <button
-                            className="bg-gray-500 text-white font-semibold px-4 py-2 rounded-lg cursor-not-allowed text-sm"
+                            className="bg-gray-500 text-white font-semibold py-2 rounded-lg cursor-not-allowed text-sm"
                             style={{ minWidth: '100px' }}
                           >
                             Đã chấp nhận
@@ -324,82 +308,51 @@ const JobApplicantsList = () => {
           )}
         </div>
       )}
+
+      {/* Render the ChatBox component */}
+      {chatBoxOpen && (
+        <ChatBox
+          currentChatUser={currentChatUser}
+          messages={messages}
+          sendMessage={sendMessage}
+          closeChatBox={closeChatBox}
+        />
+      )}
+
+      {/* Render the CV modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 my-19 pt-20">
-          <div className="bg-white pt-8 p-2 rounded-lg w-full h-5/6 max-w-5xl max-h-3xl overflow-hidden relative">
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-10">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-3/4 h-3/4">
             <button
+              className="text-red-700 hover:text-red-800"
               onClick={closeModal}
-              className="absolute top-2 right-2 text-red-700 hover:bg-red-100 font-semibold"
             >
-              Close
+              Đóng
             </button>
-            <div className="w-full h-full flex justify-center items-center">
-              <iframe
-                src={selectedCV}
-                className="w-full h-full transform scale-0.75"
-                title="CV Viewer"
-                style={{
-                  transformOrigin: 'top left',
-                  border: 'none'
-                }}
-              ></iframe>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {chatBoxOpen && currentChatUser && (
-        <div className="fixed bottom-0 right-0 w-80 h-80 bg-white shadow-lg border rounded-t-lg flex flex-col">
-          <div className="flex justify-between items-center p-3 bg-gray-800 text-white">
-            <span>Ứng viên - {currentChatUser.username}</span>
-            <button onClick={closeChatBox} className="text-red-500">
-              X
-            </button>
-          </div>
-          <div className="flex-grow p-3 overflow-y-auto">
-            {messages.map((msg, index) => (
-              <div key={index} className="flex items-center mb-2">
-                <img
-                  src={msg.sender.avatar}
-                  alt="Avatar"
-                  className="w-6 h-6 rounded-full mr-2"
-                />
-                <p>
-                  <small>{msg.sender.username}</small>: {msg.message}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="p-3">
-            <input
-              type="text"
-              className="w-full p-2 border rounded"
-              placeholder="Nhập tin nhắn..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
+            <iframe
+              src={selectedCV}
+              title="CV Viewer"
+              className="w-full h-full"
             />
-            <button onClick={sendMessage} className="mt-2 w-full bg-yellow-700 text-white py-2 rounded">
-              Gửi
-            </button>
           </div>
         </div>
       )}
 
-      {confirmModalOpen && (
-        <ConfirmModal
-          onConfirm={handleConfirmAccept}
-          onCancel={closeConfirmModal}
-          message="Bạn có chắc chắn muốn chấp nhận ứng viên này không?"
-        />
-      )}
+      {/* Render the ConfirmModal */}
+      <ConfirmModal
+        isOpen={confirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={confirmAction === 'accept' ? handleConfirmAccept : handleConfirmReject}
+        title={confirmAction === 'accept' ? "Xác nhận chấp nhận" : "Xác nhận từ chối"}
+        message={confirmAction === 'accept' ? "Bạn có chắc chắn muốn chấp nhận ứng viên này?" : "Bạn có chắc chắn muốn từ chối ứng viên này?"}
+      />
 
-      {confirmRejectModalOpen && (
-        <ConfirmModal
-          onConfirm={handleConfirmReject}
-          onCancel={closeConfirmRejectModal}
-          message="Bạn có chắc chắn muốn từ chối ứng viên này không?"
-        />
-      )}
+      {/* Render the NotificationModal */}
+      <NotificationModal
+        isOpen={notificationModalOpen}
+        message={notificationMessage}
+        onClose={() => setNotificationModalOpen(false)}
+      />
     </div>
   );
 };

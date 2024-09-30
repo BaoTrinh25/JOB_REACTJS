@@ -46,12 +46,12 @@ const Login = () => {
     try {
       let res = await APIs.post(endpoints["login"], {
         ...user,
-        // "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
-        // "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
+        "client_id": "8gMvsTseiW2YTOd9tik7q5VZxGNbhqdmY49qHkVU",
+        "client_secret": "qLfzKj3gXRmzVk4s6guZrm1KPYelxZF3aqJKMSMXmc4Dv8QYGq4bhJhpkae0yN1Qf2C7jiT0IqXqLwBlxX4xYzcqjTdCYoBnuq760mUOGRxOuRw3Zi7hSW8IkSTIhWhf",
         "grant_type": "password",
 
-        "client_id": "3Mj3P2rLZV34jTnqcn09cc0cAGAZATPjUfhO9ftG",
-        "client_secret": "77sUVuOmGc5O2vwfxmCHZEEAJ6qfJBLYUMaKSti6jnhZ04GrL30DtLyLo5gcf6x1DxUJZiHV6Uf3ClH2NlyHVuHqjnxSFMr2ZwCktWWTfr3lF8YKN6VHJGTFZ6dYhnQv",
+        // "client_id": "3Mj3P2rLZV34jTnqcn09cc0cAGAZATPjUfhO9ftG",
+        // "client_secret": "77sUVuOmGc5O2vwfxmCHZEEAJ6qfJBLYUMaKSti6jnhZ04GrL30DtLyLo5gcf6x1DxUJZiHV6Uf3ClH2NlyHVuHqjnxSFMr2ZwCktWWTfr3lF8YKN6VHJGTFZ6dYhnQv",
       });
 
       setToken(res.data.access_token);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const BASE_URL = 'https://baotrinh.pythonanywhere.com';
-const BASE_URL = ' http://127.0.0.1:8000/';
+const BASE_URL = 'https://baotrinh.pythonanywhere.com';
+// const BASE_URL = ' http://127.0.0.1:8000/';
 
 export const endpoints = {
     'current_user': `/users/current-user/`, 
@@ -26,9 +26,9 @@ export const endpoints = {
     'skills': `/skills/`,
 
     'apply_job': (id) => `/jobs/${id}/apply/`, //ứng tuyển việc làm
-    'job_applied': (pageNum) => `/jobseeker/list_job_apply/?page=${pageNum}`, //danh sách việc làm đã apply của ứng viên
+    'job_applied': `/jobseeker/list_job_apply/`, //danh sách việc làm đã apply của ứng viên
     'rating' : (id) => `/jobs/${id}/ratings/`,
-    'delete_rating': (id, rating_id) => `/jobs/${id}/rating/${rating_id}/delete/`,
+    'delete_rating': (id, rating_id) => `/jobs/${id}/ratings/${rating_id}/delete/`,
     'patch_rating':(id, rating_id) => `/jobs/${id}/ratings/${rating_id}/partial-update/`,
     'like': (id) => `/jobs/${id}/like/`,
     'check_liked': (id) => `/jobs/${id}/check_liked/`,

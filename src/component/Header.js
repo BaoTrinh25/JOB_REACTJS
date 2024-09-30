@@ -88,28 +88,13 @@ const Header = () => {
                 </li>
                 
               </>
-            ) : user && user.is_staff === true ? (
-              <>
-                <li className="text-center group">
-                  <Link to="/package" className="text-white group-hover:text-yellow-400">
-                    <FaUserEdit className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Quản lý người dùng
-                  </Link>
-                </li>
-                <li className="text-center group">
-                  <Link to="/package" className="text-white group-hover:text-yellow-400">
-                    <FaShoppingCart className="text-white group-hover:text-yellow-400 mx-auto" />
-                    Quản lý gói dịch vụ
-                  </Link>
-                </li>
-              </>
             ) : null}
           </ul>
         </nav>
         <div className="h-10 w-px bg-gray-300 mx-2"></div>
 
         <div>
-          {user && user.role !== null || user && user.is_staff === true ? (
+          {user && user.role !== null ? (
             <Dropdown
               arrowIcon={false}
               inline
@@ -117,13 +102,13 @@ const Header = () => {
                 <div className='flex flex-col items-center'>
                   <FaUser className="mr-2 my-1 group-hover:text-yellow-400" />
                   <span className="text-sm group-hover:text-yellow-400">
-                    {user.role === 1 ? "Employer Profile" : "Applicant Profile" || user.is_staff === true ? "Admin" : ""}
+                    {user.role === 1 ? "Employer Profile" : "Applicant Profile" }
                   </span>
                 </div>
                 <FaCaretDown className="ml-1 group-hover:text-yellow-400 mt-auto" />
               </div>}
             >
-              <Dropdown.Item onClick={() => handleNavigation(user.role === 1 ? "/employer-profile" : "/applicant-profile" || user.is_staff === true ? "/profile-admin" : "")}>
+              <Dropdown.Item onClick={() => handleNavigation(user.role === 1 ? "/employer-profile" : "/applicant-profile" )}>
                 <div className="flex items-center">
                   <FaUserEdit className="mr-2" /> My Profile
                 </div>

@@ -232,7 +232,7 @@ const ListPosted = () => {
                                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center hover:text-red-700"
                                   onClick={() => openHideModal(job.id)}
                                 >
-                                  <BiHide className="h-5 w-5 mr-2" /> Ẩn bài đăng
+                                  <BiHide className="h-5 w-5 mr-2" /> Ẩn/Kích hoạt bài đăng
                                 </button>
                               ) : (
                                 <div>

@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useSyncExternalStore } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MyUserContext } from "../../../configs/Context";
 import { authApi, endpoints } from "../../../configs/APIs";
 import { getToken } from "../../../utils/storage";
 import { ErrorOutline } from "@mui/icons-material";
+import NotificationModal from "../../../component/NotificationModal";
 
 const JobApplication = () => {
     const navigate = useNavigate();
@@ -15,6 +16,8 @@ const JobApplication = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [maxLength, setMaxLength] = useState(1000);
     const [showErrorSnackbar, setShowErrorSnackbar] = useState(false);
+    const [isModelOpen, setIsModelOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
     const user = useContext(MyUserContext);
 
     const handleApplyJob = async () => {
@@ -39,6 +42,7 @@ const JobApplication = () => {
         }
 
         let form = new FormData();
+        form.append("job", jobId);
         form.append("is_student", isStudent ? "True" : "False");
         form.append("content", content);
         form.append("status", "Pending");
@@ -56,10 +60,8 @@ const JobApplication = () => {
                 }
             );
             if (res.status === 201) {
-                alert("Success", "Ứng tuyển thành công!");
-                setTimeout(() => {
-                    navigate("/");
-                }, 2000);
+                setModalMessage("Ứng tuyển thành công!");
+                setIsModelOpen(true);
             }
         } catch (error) {
             if (error.response) {
@@ -70,6 +72,12 @@ const JobApplication = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    // Khi đóng modal thì chuyển hướng
+    const handleCloseModal = () => {
+        setIsModelOpen(false);
+        navigate("/"); // Chuyển hướng sau khi modal đóng
     };
 
     return (
@@ -148,6 +156,12 @@ const JobApplication = () => {
                     </span>
                 </div>
             )}
+
+            <NotificationModal
+                isOpen={isModelOpen}
+                message={modalMessage}
+                onClose={handleCloseModal} 
+            />
         </div>
     );
 };

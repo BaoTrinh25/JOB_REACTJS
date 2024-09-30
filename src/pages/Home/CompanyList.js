@@ -26,19 +26,19 @@ const CompanyList = () => {
   const currentCompanies = companies.slice(currentIndex, currentIndex + 4);
 
   return (
-    <div className="p-8 bg-gray-100 rounded-lg shadow-lg">
+    <div className="p-8 rounded-lg shadow-lg bg-slate-100 w-[85%]">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-red-700">Top Công ty hàng đầu</h2>
         <div className="flex space-x-2">
           <button
-            className="bg-white text-green-600 rounded-full shadow-lg p-2 hover:bg-green-100 disabled:opacity-50"
+            className="text-xl bg-white text-green-600 rounded-full shadow-lg p-2 hover:bg-green-100 disabled:opacity-50"
             onClick={handlePrevious}
             disabled={currentIndex === 0}
           >
             &lt;
           </button>
           <button
-            className="bg-white text-green-600 rounded-full shadow-lg p-2 hover:bg-green-100 disabled:opacity-50"
+            className="bg-white text-xl text-green-600 rounded-full shadow-lg p-2 hover:bg-green-100 disabled:opacity-50"
             onClick={handleNext}
             disabled={currentIndex >= companies.length - 4}
           >
@@ -46,7 +46,7 @@ const CompanyList = () => {
           </button>
         </div>
       </div>
-      <div className="flex overflow-x-auto space-x-4">
+      <div className="flex overflow-x-auto space-x-4 justify-center">
         {currentCompanies.map((company, index) => (
           <div
             key={index}

@@ -57,29 +57,29 @@ const ListJobLiked = () => {
                     </div>
                 ) : (
                     <div className='border-2 shadow-lg bg-gray-50 bg-opacity-90 rounded-lg p-4'>
-                        <div className='text-3xl pl-4'> Việc làm đã lưu</div>
+                        <div className='text-3xl pl-4 text-green-700'> VIỆC LÀM ĐÃ LƯU</div>
                         <div class="border-t border-gray-300 my-4"></div>
                         <div className="grid grid-cols-1 gap-6 mt-6">
                             {jobs.map((like) => (
-                                <div key={like.id} className="flex bg-purple-100 p-3 shadow-md rounded-lg group relative">
-                                    <div className="w-1/4 bg-white p-2 rounded-lg shadow-md">
-                                        <div className="w-full h-32 flex items-center justify-center mb-4">
+                                <div key={like.id} className="flex bg-purple-100 p-3 shadow-md rounded-lg group relative max-h-52">
+                                    <div className="w-1/4 bg-slate-300 p-2 rounded-lg shadow-md">
+                                        <div className="w-full h-32 flex items-center justify-center mb-2">
                                             <img src={like.job.image} alt="Job" className="h-full object-cover rounded-md" />
                                         </div>
                                         
                                         <p className="mb-2 text-xl text-center text-gray-700">{like.job.company.companyName}</p>
                                     </div>
                                     <div className="w-3/4 bg-white p-6 ml-4 rounded-lg shadow-md">
-                                        <p className="mb-2 font-bold text-xs text-red-800">{like.job.title}</p>
-                                        <p className="mb-4 text-xs">Địa chỉ: <span className='text-gray-500'>{like.job.company.address}</span></p>
-                                        <p className="mb-4 text-xs">Nghề nghiệp: <span className='text-gray-500'>{like.job.career.name}</span></p>
-                                        <p className="mb-4 text-xs">Loại công việc: <span className='text-gray-500'>{like.job.employmenttype.type}</span></p>
-                                        <p className="mb-4 text-xs">Ngày đăng: <span className='text-orange-400'> {like.job.created_date}</span></p>
+                                        <p className="mb-2 font-bold text-xl text-red-800">{like.job.title}</p>
+                                        <p className="mb-2 text-sm">Địa chỉ: <span className='text-gray-700'>{like.job.company.address}</span></p>
+                                        <p className="mb-2 text-sm">Nghề nghiệp: <span className='text-gray-700'>{like.job.career.name}</span></p>
+                                        <p className="mb-2 text-sm">Loại công việc: <span className='text-gray-700'>{like.job.employmenttype.type}</span></p>
+                                        <p className="mb-2 text-sm">Hạn cuối: <span className='text-orange-400'> {like.job.deadline}</span></p>
 
                                     </div>
                                     <button
                                         onClick={() => handleViewDetails(like.job.id)}
-                                        className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300"
+                                        className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 text-white text-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300"
                                     >
                                         Xem chi tiết
                                     </button>

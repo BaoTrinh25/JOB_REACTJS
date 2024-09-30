@@ -96,8 +96,10 @@ const AllJobPopular = () => {
             <div className="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-gray-400"></div>
           </div>
         ) : jobs.length > 0 ? (
-          <div className="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            {jobs.map(renderJobItem)}
+          <div className='flex items-center justify-center min-h-screen'>
+            <div className=" mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4">
+              {jobs.map(renderJobItem)}
+            </div>
           </div>
         ) : (
           <div className="text-center py-4 text-gray-600">
