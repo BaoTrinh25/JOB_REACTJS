@@ -40,8 +40,15 @@ const UpdateInfoProfileEmployer = () => {
                 }
             });
             if (res.status === 200) {
+                dispatch({
+                    type: 'update_company',
+                    payload: {
+                        ...user.company, // Giữ lại các trường không thay đổi
+                        ...res.data, // Chỉ cập nhật các trường cần thiết từ server
+                    },
+                });
                 alert('Cập nhật thông tin thành công!');
-                navigate('/employer-profile');
+                // navigate('/employer-profile');
             } else {
                 console.error('Lỗi khi cập nhật thông tin');
             }

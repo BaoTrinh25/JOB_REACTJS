@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { MyUserContext } from '../../../configs/Context';
+import { MyDispatchContext, MyUserContext } from '../../../configs/Context';
 import { useNavigate } from 'react-router-dom';
 import { IoCameraOutline, IoBusiness, IoLocation, IoContract } from 'react-icons/io5';
 import { FaUpload, FaBusinessTime, FaTrash, FaEdit } from 'react-icons/fa';
@@ -18,6 +18,7 @@ const ProfileEmployer = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const dispatch = useContext(MyDispatchContext);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -25,6 +26,8 @@ const ProfileEmployer = () => {
             setProfileImage(user?.avatar);
         }
     }, [user]);
+    console.log(user);
+    
 
     const dataManage = [
         { id: 1, title: 'Đăng tin tuyển dụng', icon: <PostAddSharp /> },
@@ -80,15 +83,23 @@ const ProfileEmployer = () => {
 
         try {
             const token = getToken();
-            const response = await authApi(token).patch(endpoints['patch_user'], 
+            const res = await authApi(token).patch(endpoints['patch_user'], 
                 form, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
 
-            if (response.status === 200) {
+            if (res.status === 200) {
+                dispatch({
+                    type: 'update_user',
+                    payload: {
+                        ...user, // Giữ lại các trường không thay đổi
+                        ...res.data, // Chỉ cập nhật các trường cần thiết từ server
+                    },
+                });
                 alert("Cập nhật avatar thành công!");
+
             }
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -211,9 +222,9 @@ const ProfileEmployer = () => {
                                 <span className="font-sans pl-2">{user.mobile}</span>
                             </div>
                             <div className="flex items-center mb-3 px-5">
-                                {user.gender === 'male' ? <BsGenderMale className="mr-2 w-6 h-6" /> : <BsGenderFemale className="mr-2 w-6 h-6" />}
+                                {user.gender === 0 ? <BsGenderMale className="mr-2 w-6 h-6" /> : <BsGenderFemale className="mr-2 w-6 h-6" />}
                                 <span>Giới tính: </span>
-                                <span className="font-sans pl-2">{user.gender === 'male' ? 'Nam' : 'Nữ'}</span>
+                                <span className="font-sans pl-2">{user.gender === 0 ? 'Nam' : 'Nữ'}</span>
                             </div>
                         </div>
                     </div>

@@ -209,7 +209,7 @@ const Ratings = ({ jobId }) => {
                                 alt="avatar"
                                 className="w-14 h-14 rounded-full mr-4 border-2 border-orange-200"
                             />
-                            <div className="bg-red-50 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300 relative">
+                            <div className="bg-green-50 p-4 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-300 relative">
                                 <div className="flex flex-col">
                                     <p className="text-base text-black-600 mb-1">
                                         By: {rating.user?.username}

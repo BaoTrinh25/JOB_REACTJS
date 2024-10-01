@@ -42,11 +42,9 @@ const JobApplication = () => {
         }
 
         let form = new FormData();
-        form.append("job", jobId);
         form.append("is_student", isStudent ? "True" : "False");
         form.append("content", content);
         form.append("status", "Pending");
-
         setLoading(true);
         try {
             const token = getToken();
@@ -81,7 +79,7 @@ const JobApplication = () => {
     };
 
     return (
-        <div className="container mx-auto bg-gray-100 p-10">
+        <div className="container mx-auto bg-gray-100 p-10 w-[70%] shadow-md rounded-lg m-20">
             <span className="flex justify-center text-3xl text-red-800 mb-7">ĐƠN ỨNG TUYỂN</span>
             <div>
                 <label className="block mb-2 text-lg font-medium">

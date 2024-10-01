@@ -31,9 +31,14 @@ const ChatBox = ({ currentChatUser, messages, sendMessage, closeChatBox }) => {
   if (!currentChatUser || !isOpen) return null;
 
   return (
-    <div className="fixed bottom-0 right-0 w-64 h-96 bg-white shadow-lg rounded-t-lg z-10 mr-5">
+    <div className="fixed bottom-0 right-0 w-64 h-96 bg-white shadow-lg rounded-t-lg z-10 mr-5 border-2 border-orange-200">
       <div className="flex justify-between items-center bg-slate-500 p-3 rounded-t-lg">
-        <h2 className="text-lg font-bold">{currentChatUser.username}</h2>
+        <div className="flex">
+          <img src={currentChatUser?.avatar ? currentChatUser?.avatar : avatar_default}
+            alt="Avatar" className="w-8 h-8 rounded-full mx-2"
+          />
+          <h2 className="text-lg font-bold">{currentChatUser.username}</h2>
+        </div>
         <button onClick={() => setIsOpen(false)} className="text-orange-700 text-xl hover:bg-red-50 px-2">
           X
         </button>
@@ -47,8 +52,8 @@ const ChatBox = ({ currentChatUser, messages, sendMessage, closeChatBox }) => {
           >
             {msg.sender_id === currentChatUser.id ? (
               <>
-                <img src={msg.sender?.avatar ? msg.sender.avatar : avatar_default} 
-                  alt="Avatar" className="w-8 h-8 rounded-full mr-2" 
+                <img src={msg.sender?.avatar ? msg.sender.avatar : avatar_default}
+                  alt="Avatar" className="w-8 h-8 rounded-full mr-2"
                 />
                 <div className={`p-2 rounded-lg bg-green-100`}>
                   <p className="text-sm">{msg.message}</p>
@@ -56,11 +61,11 @@ const ChatBox = ({ currentChatUser, messages, sendMessage, closeChatBox }) => {
               </>
             ) : (
               <>
-                <div className={`p-2 rounded-lg bg-gray-100`}>
-                  <p className="text-sm">{msg.message}</p> 
+                <div className={`p-2 rounded-lg bg-gray-200`}>
+                  <p className="text-sm">{msg.message}</p>
                 </div>
-                <img src={msg.sender?.avatar ? msg.sender.avatar : avatar_default}  
-                  alt="Avatar" className="w-8 h-8 rounded-full ml-2" 
+                <img src={msg.sender?.avatar ? msg.sender.avatar : avatar_default}
+                  alt="Avatar" className="w-8 h-8 rounded-full ml-2"
                 />
               </>
             )}

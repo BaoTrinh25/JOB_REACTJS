@@ -82,9 +82,12 @@ const UpdateProfileUser = () => {
                 setModalIsOpen(true);
                 dispatch({
                     type: 'update_user',
-                    payload: res.data, // Cập nhật user vào context
+                    payload: {
+                        ...user, // Giữ lại các trường không thay đổi
+                        ...res.data, // Chỉ cập nhật các trường cần thiết từ server
+                    },
                 });
-                navigate("/applicant-profile");
+                // navigate("/");
             } else {
                 setModalMessage("Đã có lỗi xảy ra. Vui lòng thử lại!")
                 setModalIsOpen(true);

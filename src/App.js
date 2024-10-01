@@ -29,8 +29,9 @@ import JobApplicantsList from "./pages/User/Company/JobApplicantsList";
 import UpdatePostRecruitment from './pages/User/Company/UpdatePostRecruitment';
 import JobPostingPackages from "./pages/User/Company/JobPostingPackages ";
 import PaymentSuccess from "./pages/User/Company/PaymentSuccess";
+import InvoiceHistory from "./pages/User/Company/InvoiceHistory";
 
-const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment'];
+const noHeaderFooterRoutes = ['/login', '/register', '/job-posted', '/job-applied', '/liked-job', '/post-recruitment', '/update-post-recruitment', '/checkout'];
 const clientId = '611474340578-ilfvgku96p9c6iim54le53pnhimvi8bv.apps.googleusercontent.com';
 
 function AppLayout() {
@@ -78,6 +79,7 @@ function AppLayout() {
               <Route path='/updateProfile-user' element={<UpdateProfileUser />} />
               <Route path='/package' element={<JobPostingPackages />} />
               <Route path='/payment_success' element={<PaymentSuccess />} />
+              <Route path='/checkout' element={<InvoiceHistory />} />
             </>
           )}
           {user?.role === 0 && (

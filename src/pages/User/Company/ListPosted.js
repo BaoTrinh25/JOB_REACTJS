@@ -18,6 +18,8 @@ const ListPosted = () => {
   const [applications, setApplications] = useState({});
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  console.log(jobs);
+  
 
   const fetchJobs = async () => {
     if (loading) return;
@@ -146,6 +148,12 @@ const ListPosted = () => {
     };
   }, [dropdownRef]);
 
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return dateString; 
+  };
+
   return (
     <div className="flex h-auto min-h-screen bg-gray-100">
       <SidebarEmployer />
@@ -177,36 +185,36 @@ const ListPosted = () => {
               <div className="min-w-full bg-white shadow-md rounded-lg mt-4">
                 <table className="min-w-full">
                   <thead>
-                    <tr className="bg-gray-200 text-gray-700 text-sm leading-normal">
-                      <th className="py-3 px-6 text-left">Tiêu đề bài đăng</th>
-                      <th className="py-3 px-6 text-left">Thời hạn</th>
-                      <th className="py-3 px-6 text-left">Trạng thái</th>
-                      <th className="py-3 px-6 text-center">Lượt ứng tuyển</th>
-                      <th className="py-3 px-6 text-center">Danh sách ứng viên</th>
-                      <th className="py-3 px-6 text-center">Tùy chọn</th>
+                    <tr className="bg-gray-100 text-gray-700 text-sm leading-normal">
+                      <th className="py-3 px-6 text-left border">Tiêu đề bài đăng</th>
+                      <th className="py-3 px-6 text-left border">Thời hạn</th>
+                      <th className="py-3 px-6 text-left border">Trạng thái</th>
+                      <th className="py-3 px-6 text-center border">Lượt ứng tuyển</th>
+                      <th className="py-3 px-6 text-center border">Danh sách ứng viên</th>
+                      <th className="py-3 px-6 text-center border">Tùy chọn</th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-600 text-sm font-light">
                     {jobs.map(job => (
                       <tr key={job.id} className="border-b border-gray-200 hover:bg-gray-100">
                         <td
-                          className="py-3 px-6 text-left whitespace-nowrap cursor-pointer hover:text-orange-500"
+                          className="py-3 px-6 border text-left whitespace-nowrap cursor-pointer hover:text-orange-500"
                           onClick={() => navigate(`/job-detail/${job.id}`)}
                         >
                           <div className="flex items-center">
                             <span className="font-medium">{job.title}</span>
                           </div>
                         </td>
-                        <td className="py-3 px-6 text-left">{new Date(job.deadline).toLocaleDateString()}</td>
-                        <td className={`py-3 px-6 text-center font-semibold ${job.active ? 'text-green-600' : 'text-orange-500'}`}>
+                        <td className="py-3 px-6 border text-left">{formatDate(job.deadline)}</td>
+                        <td className={`py-3 px-6 text-center border font-semibold ${job.active ? 'text-green-600' : 'text-orange-500'}`}>
                           {job.active ? "Đang hoạt động" : "Đã ẩn"}
                         </td>
 
-                        <td className="py-3 px-6 text-center">{applications[job.id] || 0}</td>
+                        <td className="py-3 px-6 border text-center">{applications[job.id] || 0}</td>
                         <td
-                          className="py-3 px-6 text-center hover:text-orange-500 text-green-700 font-bold cursor-pointer"
+                          className="py-3 px-6 border text-center hover:text-orange-500 text-green-700 font-bold cursor-pointer"
                           onClick={() => navigate(`/jobapplicants-list/${job.id}`)}>Xem</td>
-                        <td className="py-3 px-6 text-center relative">
+                        <td className="py-3 px-6 border text-center relative">
                           <button onClick={() => toggleDropdown(job.id)}>
                             <BiDotsHorizontalRounded className="h-6 w-6 text-gray-700" />
                           </button>

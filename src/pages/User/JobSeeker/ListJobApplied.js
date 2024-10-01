@@ -73,8 +73,8 @@ const ListJobApplied = () => {
                   <h2 className="font-bold text-xl mb-2 text-center">Đơn ứng tuyển</h2>
                   <p className="mb-2 text-sm">Là sinh viên: <span className='text-gray-700'>{jobApplication.is_student ? 'Yes' : 'No'}</span></p>
                   <p className="mb-2 text-sm">Nội dung ứng tuyển: <span className='text-gray-700 text-sm' dangerouslySetInnerHTML={{ __html: jobApplication.content }} /></p>
-                  <p className="mb-2 text-sm">Trạng thái: <span className='text-green-600'> {jobApplication.status.role}</span></p>
-                  <p className="mb-2 text-sm">Ngày ứng tuyển: <span className='text-orange-400'> {jobApplication.date}</span></p>
+                  <p className="mb-2 text-sm">Trạng thái: <span className='text-orange-500 font-semibold'> {jobApplication.status.role}</span></p>
+                  <p className="mb-2 text-sm">Ngày ứng tuyển: <span className='text-red-400'> {jobApplication.date}</span></p>
                 </div>
               </div>
             ))}

@@ -23,6 +23,8 @@ const JobDetail = () => {
     const navigate = useNavigate();
     const [currentChatUser, setCurrentChatUser] = useState(null);
     const user = useContext(MyUserContext);
+    console.log(job);
+
 
     useEffect(() => {
         if (job && job.user) {
@@ -120,95 +122,100 @@ const JobDetail = () => {
     const isCompany = user && user.role === 1;
 
     return (
-        <div className="container w-[80%] mx-auto my-2">
-            <img src={job.image} alt={job.title} className="w-full h-80 object-cover mb-4" />
-            <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">
-                <div className='flex justify-center'>
-                    <h1 className="text-3xl text-orange-700 font-bold my-10">{job.title}</h1>
-                </div>
-                <div>
-                    <p className="text-lg font-semibold">Công ty: {job.user.company?.companyName}</p>
-                    <p>Tuyển vị trí: {job?.position}</p>
-                    <p>Lĩnh vực: {job?.career.name}</p>
-                    <p>Mức lương: {job?.salary} VNĐ</p>
-                    <p>Giới tính: {job?.gender === 1 ? 'Nữ' : 'Nam'}</p>
-                    <p>Loại hình công việc: {job?.employmenttype?.type}</p>
-                    <p>Số lượng tuyển: {job?.quantity}</p>
-                    <p>Địa điểm: {job?.location}</p>
-                    <p className="text-red-500">Hạn nộp hồ sơ: {job?.deadline}</p>
-                    <h2 className="text-xl font-bold mt-4">Mô tả công việc:</h2>
-                    <p>{job?.description}</p>
-                    <h2 className="text-xl font-bold mt-4">Yêu cầu kinh nghiệm:</h2>
-                    <p>{job?.experience}</p>
-                    <h2 className="text-xl font-bold mt-4">Thông tin công ty:</h2>
-                    <p>- Công ty: {job.company?.companyName}</p>
-                    <p>- Địa chỉ: {job.company?.address}</p>
-                    <p>- Loại doanh nghiệp: {job.user.company?.company_type_display}</p>
-                    <p>- Thông tin chi tiết: {job.user.company?.information}</p>
-                </div>
-
-                <div className="flex flex-col items-center mt-20">
-                    <div className="flex items-center space-x-4">
-                        <button onClick={handleToggleFavorite} className={`text-green-500 ${isCompany ? 'cursor-not-allowed' : ''}`}>
-                            {isFavorite ? <BsFillBookmarkFill className="text-4xl" /> : <BiBookmark className="text-4xl hover:text-yellow-500" />}
-                        </button>
-                        <button
-                            onClick={handleApplyJob}
-                            disabled={isCompany}
-                            className={`bg-green-500 text-white py-2 px-10 rounded hover:bg-yellow-500 ${isCompany ? 'cursor-not-allowed' : ''}`}
-                        >
-                            Ứng tuyển
-                        </button>
+        <div className='bg-slate-100 min-h-screen flex flex-col'>
+            <div className="container w-[70%] mx-auto my-2 pb-6">
+                <img src={job.image} alt={job.title} className="w-full h-80 object-cover mb-4" />
+                <div className="bg-yellow-50 p-10 pt-0 shadow rounded mb-4">
+                    <div className='flex justify-center'>
+                        <h1 className="text-3xl text-orange-700 font-bold my-10">{job.title}</h1>
                     </div>
-                    {showNotification && <div className="mt-4 text-red-500">{notificationMessage}</div>}
-                </div>
-            </div>
-            <Ratings jobId={jobId} />
+                    <div className='ml-20'>
+                        <p className="text-xl font-semibold">Công ty: {job.user.company?.companyName}</p>
+                        <p className='text-xs text-red-700 mb-5'>Ngày đăng tuyển: {job?.created_date}</p>
+                        <p>Tuyển vị trí: {job?.position}</p>
+                        <p>Lĩnh vực: {job?.career.name}</p>
+                        <p>Mức lương: {job?.salary} VNĐ</p>
+                        <p>Giới tính: {job?.gender === 1 ? 'Nữ' : 'Nam'}</p>
+                        <p>Loại hình công việc: {job?.employmenttype?.type}</p>
+                        <p>Số lượng tuyển: {job?.quantity}</p>
+                        <p>Địa điểm: {job?.location}</p>
+                        <p className="text-red-500">Hạn nộp hồ sơ: {job?.deadline}</p>
+                        <h2 className="text-xl font-bold mt-4">Mô tả công việc:</h2>
+                        <p>{job?.description}</p>
+                        <h2 className="text-xl font-bold mt-4">Yêu cầu kinh nghiệm:</h2>
+                        <p>{job?.experience}</p>
+                        <h2 className="text-xl font-bold mt-4">Thông tin công ty:</h2>
+                        <p>- Công ty: {job.company?.companyName}</p>
+                        <p>- Địa chỉ: {job.company?.address}</p>
+                        <p>- Loại doanh nghiệp: {job.user.company?.company_type_display}</p>
+                        <p>- Thông tin chi tiết: {job.user.company?.information}</p>
+                    </div>
 
-            {/* Render the ChatBox component */}
-            {chatBoxOpen && (
-                <ChatBox
-                    currentChatUser={currentChatUser}
-                    messages={messages}
-                    sendMessage={sendMessage}
-                    closeChatBox={closeChatBox}
-                />
-            )}
-
-            {/* Biểu tượng tin nhắn */}
-            {user?.role === 0 && (
-                <button
-                    onClick={handleToggleChatBox}
-                    className="z-0 fixed bottom-36 right-5 bg-orange-500 text-white p-3 rounded-full shadow-lg hover:bg-orange-600 transition duration-300"
-                >
-                    <FaFacebookMessenger size={24} />
-                </button>
-            )}
-
-            {/* Modal */}
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="fixed inset-0 bg-black opacity-70"></div>
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-96 z-50">
-                        <h2 className="text-xl font-bold mb-4">Thông báo</h2>
-                        <p>{notificationMessage}</p>
-                        <div className="flex justify-end space-x-4 mt-6">
-                            <button
-                                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-gray-700"
-                                onClick={() => navigate('/login')}
-                            >
-                                Đăng nhập
+                    <div className="flex flex-col items-center mt-20">
+                        <div className="flex items-center space-x-4">
+                            <button onClick={handleToggleFavorite} className={`text-green-500 ${isCompany ? 'cursor-not-allowed' : ''}`}>
+                                {isFavorite ? <BsFillBookmarkFill className="text-4xl" /> : <BiBookmark className="text-4xl hover:text-yellow-500" />}
                             </button>
                             <button
-                                className="bg-red-700 text-white py-2 px-4 rounded hover:bg-gray-700"
-                                onClick={() => setShowModal(false)}
+                                onClick={handleApplyJob}
+                                disabled={isCompany}
+                                className={`bg-green-500 text-white py-2 px-10 rounded hover:bg-yellow-500 ${isCompany ? 'cursor-not-allowed' : ''}`}
                             >
-                                Đóng
+                                Ứng tuyển
                             </button>
                         </div>
+                        {showNotification && <div className="mt-4 text-red-500">{notificationMessage}</div>}
                     </div>
                 </div>
-            )}
+                <div className='shadow rounded px-20 py-1'>
+                    <Ratings jobId={jobId} />
+                </div>
+
+                {/* Render the ChatBox component */}
+                {chatBoxOpen && (
+                    <ChatBox
+                        currentChatUser={currentChatUser}
+                        messages={messages}
+                        sendMessage={sendMessage}
+                        closeChatBox={closeChatBox}
+                    />
+                )}
+
+                {/* Biểu tượng tin nhắn */}
+                {user?.role === 0 && (
+                    <button
+                        onClick={handleToggleChatBox}
+                        className="z-0 fixed bottom-36 right-5 bg-orange-500 text-white p-3 rounded-full shadow-lg hover:bg-orange-600 transition duration-300"
+                    >
+                        <FaFacebookMessenger size={24} />
+                    </button>
+                )}
+
+                {/* Modal */}
+                {showModal && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="fixed inset-0 bg-black opacity-70"></div>
+                        <div className="bg-white rounded-lg shadow-lg p-6 w-96 z-50">
+                            <h2 className="text-xl font-bold mb-4">Thông báo</h2>
+                            <p>{notificationMessage}</p>
+                            <div className="flex justify-end space-x-4 mt-6">
+                                <button
+                                    className="bg-green-500 text-white py-2 px-4 rounded hover:bg-gray-700"
+                                    onClick={() => navigate('/login')}
+                                >
+                                    Đăng nhập
+                                </button>
+                                <button
+                                    className="bg-red-700 text-white py-2 px-4 rounded hover:bg-gray-700"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Đóng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

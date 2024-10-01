@@ -102,7 +102,7 @@ const Header = () => {
                 <div className='flex flex-col items-center'>
                   <FaUser className="mr-2 my-1 group-hover:text-yellow-400" />
                   <span className="text-sm group-hover:text-yellow-400">
-                    {user.role === 1 ? "Employer Profile" : "Applicant Profile" }
+                    {user.role === 1 ? "Nhà tuyển dụng" : "Ứng Viên" }
                   </span>
                 </div>
                 <FaCaretDown className="ml-1 group-hover:text-yellow-400 mt-auto" />
@@ -110,7 +110,7 @@ const Header = () => {
             >
               <Dropdown.Item onClick={() => handleNavigation(user.role === 1 ? "/employer-profile" : "/applicant-profile" )}>
                 <div className="flex items-center">
-                  <FaUserEdit className="mr-2" /> My Profile
+                  <FaUserEdit className="mr-2" /> Hồ sơ
                 </div>
               </Dropdown.Item>
 

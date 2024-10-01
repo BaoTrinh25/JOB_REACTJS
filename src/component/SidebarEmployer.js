@@ -75,7 +75,7 @@ const SidebarEmployer = () => {
               </li>
               <li className="mb-2">
                 <NavLink to="/checkout" className="flex items-center space-x-2 text-white hover:text-green-600">
-                  <BiCalendar /> <span>Lịch sử đơn hàng</span>
+                  <BiCalendar /> <span>Lịch sử thanh toán</span>
                 </NavLink>
               </li>
             </ul>

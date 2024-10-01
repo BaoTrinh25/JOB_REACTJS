@@ -169,7 +169,7 @@ const JobApplicantsList = () => {
     <div className="container mx-auto p-4 bg-cover bg-center w-full min-h-screen" style={{ backgroundImage: "url('https://img.freepik.com/free-photo/wall-blank-paper-frame-with-acorn-decoration_53876-105706.jpg?w=996&t=st=1727511578~exp=1727512178~hmac=5c37806fb505d3257e983bfedabda531ab3125918e7c3818576398545c519050')" }}>
       <h1 className="text-3xl font-bold my-10 text-center text-red-900">
         {jobTitle}
-        <p className="text-lg my-7 pt-5 text-gray-600">____Danh sách các ứng viên____</p>
+        <p className="text-lg my-7 text-gray-600">____Danh sách các ứng viên____</p>
       </h1>
 
       {loading ? (
