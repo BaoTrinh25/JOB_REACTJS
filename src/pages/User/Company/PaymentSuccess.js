@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { BASE_URL } from '../../../configs/APIs';
 
 const PaymentSuccess = () => {
-  const BASE_URL = 'https://baotrinh.pythonanywhere.com';
   const location = useLocation();
   const [invoice, setInvoice] = useState(null);
   const [loading, setLoading] = useState(true);

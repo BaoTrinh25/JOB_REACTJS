@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://baotrinh.pythonanywhere.com';
-// const BASE_URL = ' http://127.0.0.1:8000/';
+export const BASE_URL = 'https://baotrinh.pythonanywhere.com';
+// export const BASE_URL = 'http://127.0.0.1:8000';
 
 export const endpoints = {
     'current_user': `/users/current-user/`, 
@@ -14,7 +14,6 @@ export const endpoints = {
     'put_jobSeeker': (id) => `/jobSeeker/${id}/`,
     'patch_company': (id) => `/companies/${id}/`,
     'delete_user': (id) => `/users/${id}/delete-account/`,
-    'captcha': `/users/verify-captcha/`,
     'login_google': `/users/google-login/`,
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
@@ -48,6 +47,8 @@ export const endpoints = {
     'active_job': (id) => `/jobs/${id}/toggle_active/`,
     'invoice_history': `/invoices/`,
 };
+
+export const GET_INVOICE_DETAILS = (sessionId) => `${BASE_URL}/payment_success/?session_id=${sessionId}`;
 
 const APIs = axios.create({
     baseURL: BASE_URL,

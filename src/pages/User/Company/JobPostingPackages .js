@@ -1,10 +1,9 @@
 import React from 'react';
 import Dashboard from '../../../assets/dashboard_employer.png';
 import { getToken } from "../../../utils/storage";
+import { BASE_URL } from '../../../configs/APIs';
 
 const JobPostingPackages = () => {
-  const BASE_URL = 'https://baotrinh.pythonanywhere.com';
-
   const handleCheckout = async (priceId, productName) => {
     try {
       const token = getToken();

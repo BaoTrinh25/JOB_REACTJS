@@ -22,13 +22,11 @@ const JobApplicantsList = () => {
   const [currentChatUser, setCurrentChatUser] = useState(null);
   const user = useContext(MyUserContext);
 
-  // New state variables for modals
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [notificationModalOpen, setNotificationModalOpen] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
-  // Use the custom hook for WebSocket logic
   const { messages, sendMessage } = ChatWebSocket(jobId, currentChatUser, user);
 
   useEffect(() => {
@@ -201,14 +199,14 @@ const JobApplicantsList = () => {
                         <div>
                           <div className="flex text-sm font-semibold mb-2 text-yellow-700">
                             <h2 className="pr-1">ỨNG VIÊN:</h2>
-                            <p>{applicant.user.username}</p>
+                            <p>{applicant.user?.username}</p>
                           </div>
                           <div className="flex mb-2">
                             <p className="font-semibold pr-3 text-gray-700 text-sm">
                               Email:
                             </p>
                             <p className="text-gray-600 text-sm">
-                              {applicant.user.email}
+                              {applicant.user?.email}
                             </p>
                           </div>
                           <div className="flex mb-2">
@@ -216,7 +214,7 @@ const JobApplicantsList = () => {
                               SĐT:
                             </p>
                             <p className="text-gray-600 text-sm">
-                              {applicant.user.mobile}
+                              {applicant.user?.mobile}
                             </p>
                           </div>
                           <div className="flex mb-2">
@@ -224,7 +222,7 @@ const JobApplicantsList = () => {
                               Giới tính:
                             </p>
                             <p className="text-gray-600 text-sm">
-                              {applicant.user.gender === 0 ? "Nam" : "Nữ"}
+                              {applicant.user?.gender === 0 ? "Nam" : "Nữ"}
                             </p>
                           </div>
                           <div className="flex">
@@ -232,14 +230,14 @@ const JobApplicantsList = () => {
                               Ngày nộp:
                             </p>
                             <p className="text-gray-600 text-sm">
-                              {applicant.date}
+                              {applicant?.date}
                             </p>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="w-2/4 relative bg-white p-4 rounded-lg mx-4 ">
+                    <div className="w-2/4 relative bg-white p-7 rounded-lg mr-4 ">
                       <div
                         className="absolute inset-0 bg-cover bg-center opacity-20 w-full h-full"
                         style={{ backgroundImage: "url('https://img.freepik.com/free-photo/wall-blank-paper-frame-with-acorn-decoration_53876-105706.jpg?w=996&t=st=1727511578~exp=1727512178~hmac=5c37806fb505d3257e983bfedabda531ab3125918e7c3818576398545c519050')" }}
@@ -259,6 +257,12 @@ const JobApplicantsList = () => {
                         className="flex items-center text-blue-700 hover:text-red-700 hover:underline cursor-pointer"
                       >
                         <FaFileAlt className="mr-2" /> Xem CV
+                      </button>
+                      <button
+                        onClick={() => openChatBox(applicant)}
+                        className="flex items-center text-orange-700 hover:text-red-700 hover:underline cursor-pointer"
+                      >
+                        <FaCommentDots className="mr-2" /> Nhắn tin
                       </button>
                       <div className="flex flex-col space-y-3">
                         {applicant.status === 3 ? (
@@ -294,12 +298,7 @@ const JobApplicantsList = () => {
                           </button>
                         )}
                       </div>
-                      <button
-                        onClick={() => openChatBox(applicant)}
-                        className="flex items-center text-orange-700 hover:text-red-700 hover:underline cursor-pointer"
-                      >
-                        <FaCommentDots className="mr-2" /> Nhắn tin
-                      </button>
+                      
                     </div>
                   </div>
                 </li>

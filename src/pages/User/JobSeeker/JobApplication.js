@@ -45,6 +45,7 @@ const JobApplication = () => {
         form.append("is_student", isStudent ? "True" : "False");
         form.append("content", content);
         form.append("status", "Pending");
+    
         setLoading(true);
         try {
             const token = getToken();
@@ -53,10 +54,12 @@ const JobApplication = () => {
                 form,
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json",
                     },
                 }
             );
+            console.log(form);
+            
             if (res.status === 201) {
                 setModalMessage("Ứng tuyển thành công!");
                 setIsModelOpen(true);
