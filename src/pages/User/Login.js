@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-
 import { MyDispatchContext } from '../../configs/Context';
 import APIs, { authApi, endpoints } from '../../configs/APIs';
 import { setToken } from '../../utils/storage';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoginGG from './LoginGG';
 
 const Login = () => {
   const [error, setError] = useState('');
@@ -19,14 +18,6 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     login();
-  };
-
-  const handleGoogleLoginSuccess = (res) => {
-    console.log("LOGIN SUCCESS! Current user: ", res);
-  };
-
-  const handleGoogleLoginFailure = (res) => {
-    console.log("LOGIN FAILED! res: ", res);
   };
 
   const fields = [
@@ -62,7 +53,6 @@ const Login = () => {
             "type": "login",
             "payload": user.data
           });
-
         if (!alertShown) {
           toast.success('Đăng nhập thành công');
           nav("/");
@@ -121,21 +111,7 @@ const Login = () => {
           <span className="flex-shrink text-sm text-gray-500 px-4">OR</span>
           <div className="flex-grow h-px bg-gray-400"></div>
         </div>
-        <GoogleLogin
-          onSuccess={handleGoogleLoginSuccess}
-          onFailure={handleGoogleLoginFailure}
-
-          render={renderProps => (
-            <button
-              className="flex items-center justify-center mt-4 p-2 border rounded bg-white shadow hover:bg-gray-100 w-full"
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled || isLoggingIn}
-            >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google logo" className="w-5 h-5 mr-2" />
-              Continue with Google
-            </button>
-          )}
-        />
+        <LoginGG />
         <div className='mt-5'>
           <Link to="/" className="text-green-700 text-sm justify-center">
             Trải nghiệm ngay không cần đăng nhập!

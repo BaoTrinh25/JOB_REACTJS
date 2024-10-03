@@ -14,6 +14,8 @@ export const endpoints = {
     'put_jobSeeker': (id) => `/jobSeeker/${id}/`,
     'patch_company': (id) => `/companies/${id}/`,
     'delete_user': (id) => `/users/${id}/delete-account/`,
+    'captcha': `/users/verify-captcha/`,
+    'login_google': `/users/google-login/`,
 
     'alljob': (pageNum) => `/jobs/?page=${pageNum}`,
     'alljobs': `/jobs/`,
