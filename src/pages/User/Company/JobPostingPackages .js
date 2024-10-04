@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Dashboard from '../../../assets/dashboard_employer.png';
 import { getToken } from "../../../utils/storage";
 import { BASE_URL } from '../../../configs/APIs';
+import NotificationModal from '../../../component/NotificationModal';
 
 const JobPostingPackages = () => {
-  const handleCheckout = async (priceId, productName) => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const handleCheckout = async (priceId, productName, daily_post_limit) => {
     try {
       const token = getToken();
       const response = await fetch(`${BASE_URL}/payment_stripe/payment/`, {
@@ -15,7 +18,8 @@ const JobPostingPackages = () => {
         },
         body: JSON.stringify({
           price_id: priceId, 
-          product_item: productName
+          product_item: productName,
+          daily_post_limit: daily_post_limit
         }),
       });
 
@@ -24,11 +28,17 @@ const JobPostingPackages = () => {
       if (response.ok && data.url) {
         window.location.href = data.url;
       } else {
-        console.error("Error:", data.error || "Unknown error");
+        setModalMessage(data.error || "Unknown error");
+        setModalIsOpen(true);
       }
     } catch (error) {
-      console.error("Error:", error);
+      setModalMessage("Đã có lỗi gì đó. Vui lòng thử lại sau.");
+      setModalIsOpen(true);
     }
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
   };
 
   return (
@@ -120,11 +130,11 @@ const JobPostingPackages = () => {
                 <p className="text-orange-600 text-sm">1,000,000VNĐ</p>
                 <ul className="mt-2 text-left text-sm">
                   <li>✔️ Đăng tối đa 3 tin tuyển dụng mỗi ngày</li>
-                  <li>✔️ Tin tuyển dụng online 10 ngày</li>
+                  <li>✔️ Hiệu lực trong 3 ngày</li>
                 </ul>
                 <button
                   className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
-                  onClick={() => handleCheckout('price_1PzKGiP5Uv4CEUblO9ioWAJR', 'BASIC')}
+                  onClick={() => handleCheckout('price_1PzKGiP5Uv4CEUblO9ioWAJR', 'BASIC', 3)}
                 >
                   MUA NGAY
                 </button>
@@ -138,11 +148,11 @@ const JobPostingPackages = () => {
                 <p className="text-orange-600 text-sm">2,200,000VNĐ</p>
                 <ul className="mt-2 text-left text-sm">
                   <li>✔️ Đăng tối đa 5 tin tuyển dụng mỗi ngày</li>
-                  <li>✔️ Tin tuyển dụng online 30 ngày</li>
+                  <li>✔️ Hiệu lực trong 3 ngày</li>
                 </ul>
                 <button
                   className="mt-4 px-6 py-2 bg-green-600 text-white text-sm font-semibold rounded-full hover:bg-green-700 transition"
-                  onClick={() => handleCheckout('price_1PzxBPP5Uv4CEUbl90Ahfe1O', 'PREMIUM')}
+                  onClick={() => handleCheckout('price_1PzxBPP5Uv4CEUbl90Ahfe1O', 'PREMIUM', 5)}
                 >
                   MUA NGAY
                 </button>
@@ -151,6 +161,12 @@ const JobPostingPackages = () => {
             </div>
           </div>
         </div>
+         {/* Notification Modal */}
+         <NotificationModal
+          isOpen={modalIsOpen}
+          message={modalMessage}
+          onClose={closeModal}
+        />
       </div>
     </div>
   );

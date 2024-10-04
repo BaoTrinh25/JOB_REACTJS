@@ -110,23 +110,44 @@ const PostRecruitment = () => {
             );
 
             if (res.status === 201) {
-                setModalMessage("Bài đăng đã được đăng thành công");
+                let successMessage = "Bài đăng đã được đăng thành công";
+                if (res.data.message) {
+                    successMessage += `. ${res.data.message}`;
+                }
+                setModalMessage(successMessage);
                 setModalIsOpen(true);
                 setJob({});
                 setGender("");
                 setDate(new Date());
                 setSelectedImage(null);
                 setSelectedFile(null);
-                navigate("/job-posted");
+                setTimeout(() => {
+                    navigate("/job-posted");
+                }, 2000);
             }
         } catch (ex) {
-            if (ex.response && ex.response.status === 400 && ex.response.data.detail === "Bạn chỉ được đăng một bài tuyển dụng mỗi ngày.") {
-                setModalMessage('Xin lỗi. Bạn chỉ được đăng một tin tuyển dụng mỗi ngày.');
+            let errorMessage;
+            if (ex.response) {
+                switch (ex.response.status) {
+                    case 400:
+                        if (ex.response.data.detail.includes("Đã đạt giới hạn")) {
+                            errorMessage = ex.response.data.detail;
+                            if (!ex.response.data.has_package) {
+                                errorMessage += " Bạn có thể mua gói dịch vụ khác sau khi hết hạn để đăng nhiều tin hơn.";
+                            }
+                        } else {
+                            errorMessage = ex.response.data.detail;
+                        }
+                        break;
+                    default:
+                        errorMessage = "Đã có lỗi xảy ra. Vui lòng thử lại sau.";
+                }
+            } else {
+                errorMessage = "Không thể kết nối đến server. Vui lòng kiểm tra kết nối của bạn.";
             }
+            setModalMessage(errorMessage);
             setModalIsOpen(true);
             setErr(true);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -318,16 +339,22 @@ const PostRecruitment = () => {
                         </div>
                     </div>
 
-                    {err && <p className="text-orange-500 ml-10">Vui lòng thử lại sau nếu bạn đã vượt giới hạn đăng bài hôm nay.
-                        <p > Hoặc bạn có thể chọn gói đăng tin để tiếp tục đăng bài!</p>
-                        <p
-                          onClick={() => navigate("/package")}
-                          style={{ cursor: 'pointer' }}
-                          className="text-green-600 font-semibold"
-                          > 
-                            CLICK Ở ĐÂY
-                        </p>
-                    </p>}
+                    {err && (
+                        <div className="text-orange-500 ml-10 mb-4">
+                            <p>Lưu ý: {modalMessage}</p>
+                            {!job.has_package && (
+                                <>
+                                    <p
+                                        onClick={() => navigate("/package")}
+                                        style={{ cursor: 'pointer' }}
+                                        className="text-green-600 font-semibold mt-1"
+                                    >
+                                        CLICK Ở ĐÂY để xem thêm các gói dịch vụ.
+                                    </p>
+                                </>
+                            )}
+                        </div>
+                    )}
 
                     <div className="flex justify-end">
                         <button

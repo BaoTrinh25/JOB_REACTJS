@@ -8,6 +8,8 @@ import SidebarEmployer from '../../../component/SidebarEmployer';
 const InvoiceHistory = ({ token }) => {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
+    console.log(invoices);
+    
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -38,24 +40,27 @@ const InvoiceHistory = ({ token }) => {
                 <table className="min-w-full bg-white border border-gray-200">
                     <thead>
                         <tr className="bg-gray-100">
-                            <th className="py-2 px-4 border">Gói Sản Phẩm</th>
-                            <th className="py-2 px-4 border">Số Tiền</th>
-                            <th className="py-2 px-4 border">Tiền Tệ</th>
-                            <th className="py-2 px-4 border">Trạng Thái</th>
-                            <th className="py-2 px-4 border">Ngày Thanh Toán</th>
-                            <th className="py-2 px-4 border">Email</th>
-
+                            <th className="py-2 px-4 border text-sm">Gói Sản Phẩm</th>
+                            <th className="py-2 px-4 border text-sm">Số Tiền</th>
+                            <th className="py-2 px-4 border text-sm">Trạng Thái</th>
+                            <th className="py-2 px-4 border text-sm">Email</th>
+                            <th className="py-2 px-4 border text-sm">Ngày Thanh Toán</th>
+                            <th className="py-2 px-4 border text-sm">Ngày hết hạn</th>
+                            <th className="py-2 px-4 border text-sm">Số lần đăng/1ngày</th>
+                            
+                           
                         </tr>
                     </thead>
                     <tbody>
                         {invoices.map((invoice) => (
                             <tr key={invoice.session_id}>
-                                <td className="py-2 px-4 border text-orange-500 text-center">{invoice?.product_item}</td>
-                                <td className="py-2 px-4 border text-center">{invoice?.amount_total *100}</td>
-                                <td className="py-2 px-4 border text-center">{invoice?.currency}</td>
-                                <td className="py-2 px-4 border text-center text-green-700">{invoice.payment_status}</td>
-                                <td className="py-2 px-4 border text-center">{new Date(invoice?.payment_date).toLocaleString()}</td>
-                                <td className="py-2 px-4 border text-center">{invoice?.customer_email}</td>
+                                <td className="py-2 px-4 border text-sm text-orange-500 text-center">{invoice?.product_item}</td>
+                                <td className="py-2 px-4 border text-sm text-center">{invoice?.amount_total *100}{invoice?.currency}</td>
+                                <td className="py-2 px-4 border text-sm text-center text-green-700">{invoice.payment_status}</td>
+                                <td className="py-2 px-4 border text-sm text-center">{invoice?.customer_email}</td>
+                                <td className="py-2 px-4 border text-sm text-center">{new Date(invoice?.payment_date).toLocaleString()}</td>
+                                <td className="py-2 px-4 border text-sm text-center">{new Date(invoice?.expiry_date).toLocaleString()}</td>
+                                <td className="py-2 px-4 border text-sm text-center">{invoice?.daily_post_limit}</td>
                             </tr>
                         ))}
                     </tbody>

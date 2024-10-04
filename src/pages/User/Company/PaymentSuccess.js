@@ -64,10 +64,10 @@ const PaymentSuccess = () => {
                 <p><strong>Gói:</strong> {invoice.product_item}</p>
                 <p><strong>Email khách hàng:</strong> {invoice.customer_email}</p>
                 <p><strong>Tổng tiền:</strong> {invoice.amount_total *100} {invoice.currency}</p>
+                <p><strong>Số lần đăng tin/1 ngày:</strong> {invoice.daily_post_limit}<span> lần</span></p>
                 <p><strong>Trạng thái:</strong> <span className={`font-semibold ${invoice.payment_status === 'Thành công' ? 'text-green-600' : 'text-red-600'}`}>{invoice.payment_status}</span></p>
                 <p><strong>Ngày thanh toán:</strong> {new Date(invoice.payment_date).toLocaleString()}</p>
-
-
+                <p><strong>Ngày hết hạn:</strong> {new Date(invoice.expiry_date).toLocaleString()}</p>
               </div>
             </div>
           )}
