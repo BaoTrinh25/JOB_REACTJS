@@ -43,7 +43,7 @@ const PostRecruitment = () => {
     const handleDateChange = (date) => {
         setDate(date);
         // updateState("deadline", date.toISOString().split("T")[0]);
-        const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`; 
+        const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
         updateState("deadline", formattedDate);
     };
 
@@ -120,7 +120,9 @@ const PostRecruitment = () => {
                 navigate("/job-posted");
             }
         } catch (ex) {
-            setModalMessage("Đã có lỗi xảy ra. Vui lòng thử lại!")
+            if (ex.response && ex.response.status === 400 && ex.response.data.detail === "Bạn chỉ được đăng một bài tuyển dụng mỗi ngày.") {
+                setModalMessage('Xin lỗi. Bạn chỉ được đăng một tin tuyển dụng mỗi ngày.');
+            }
             setModalIsOpen(true);
             setErr(true);
         } finally {
@@ -316,7 +318,16 @@ const PostRecruitment = () => {
                         </div>
                     </div>
 
-                    {err && <p className="text-red-500">Có lỗi xảy ra. Vui lòng thử lại.</p>}
+                    {err && <p className="text-orange-500 ml-10">Vui lòng thử lại sau nếu bạn đã vượt giới hạn đăng bài hôm nay.
+                        <p > Hoặc bạn có thể chọn gói đăng tin để tiếp tục đăng bài!</p>
+                        <p
+                          onClick={() => navigate("/package")}
+                          style={{ cursor: 'pointer' }}
+                          className="text-green-600 font-semibold"
+                          > 
+                            CLICK Ở ĐÂY
+                        </p>
+                    </p>}
 
                     <div className="flex justify-end">
                         <button
