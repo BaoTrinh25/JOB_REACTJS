@@ -6,8 +6,7 @@ import { BsFillBookmarkFill } from 'react-icons/bs';
 import { MyUserContext } from '../../configs/Context';
 import Ratings from '../User/JobSeeker/Ratings';
 import { getToken } from '../../utils/storage';
-import ChatWebSocket from '../../component/ChatWebSocket';
-import ChatBox from '../../component/ChatBox';
+import ChatBox from '../User/ChatBox';
 import { FaFacebookMessenger } from 'react-icons/fa';
 
 const JobDetail = () => {
@@ -51,9 +50,6 @@ const JobDetail = () => {
 
         getJobDetails();
     }, [jobId, user]);
-
-    // Use WebSocket hook
-    const { messages, sendMessage } = ChatWebSocket(jobId, currentChatUser, user);
 
     const handleApplyJob = async () => {
         if (user?.role === 1) {
@@ -173,12 +169,12 @@ const JobDetail = () => {
 
                 {/* Render the ChatBox component */}
                 {chatBoxOpen && (
-                    <ChatBox
+                        <ChatBox
                         currentChatUser={currentChatUser}
-                        messages={messages}
-                        sendMessage={sendMessage}
-                        closeChatBox={closeChatBox}
-                    />
+                        currentUser={user} // assuming 'user' is the current user context
+                        jobId={jobId}
+                        onClose={closeChatBox}
+                      />
                 )}
 
                 {/* Biểu tượng tin nhắn */}

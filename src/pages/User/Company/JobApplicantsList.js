@@ -4,8 +4,7 @@ import APIs, { authApi, endpoints } from "../../../configs/APIs";
 import { getToken } from "../../../utils/storage";
 import { FaCommentDots, FaFileAlt, FaUserCircle } from "react-icons/fa";
 import { MyUserContext } from "../../../configs/Context";
-import ChatBox from "../../../component/ChatBox";
-import ChatWebSocket from "../../../component/ChatWebSocket";
+import ChatBox from "../ChatBox";
 import ConfirmModal from "../../../component/ConfirmModal";
 import NotificationModal from "../../../component/NotificationModal";
 
@@ -27,7 +26,6 @@ const JobApplicantsList = () => {
   const [notificationModalOpen, setNotificationModalOpen] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
-  const { messages, sendMessage } = ChatWebSocket(jobId, currentChatUser, user);
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -43,7 +41,7 @@ const JobApplicantsList = () => {
         });
         setApplicants(response.data);
         console.log(response.data);
-        
+
         if (response.data.length > 0) {
           setJobTitle(response.data[0].job.title);
         }
@@ -298,7 +296,7 @@ const JobApplicantsList = () => {
                           </button>
                         )}
                       </div>
-                      
+
                     </div>
                   </div>
                 </li>
@@ -312,9 +310,9 @@ const JobApplicantsList = () => {
       {chatBoxOpen && (
         <ChatBox
           currentChatUser={currentChatUser}
-          messages={messages}
-          sendMessage={sendMessage}
-          closeChatBox={closeChatBox}
+          currentUser={user} // assuming 'user' is the current user context
+          jobId={jobId}
+          onClose={closeChatBox}
         />
       )}
 

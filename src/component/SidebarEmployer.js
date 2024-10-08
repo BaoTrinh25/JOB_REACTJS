@@ -11,6 +11,7 @@ import {
   BiLogOut,
   BiSolidInbox
 } from 'react-icons/bi';
+import { FaHome } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const SidebarEmployer = () => {
@@ -32,6 +33,13 @@ const SidebarEmployer = () => {
       {/* <h3>{user.username}</h3> */}
       <div class="border-t border-gray-300 my-4"></div>
       <div className="px-6 py-4">
+        <div
+          className="flex items-center hover:bg-gray-700 rounded pb-4 text-white text-xl cursor-pointer"
+          onClick={() => navigate('/')}
+        >
+          <FaHome className="mr-2" />
+          Trang chủ
+        </div>
         {/* Quản lý đăng tuyển */}
         <div className="mb-4">
           <div
@@ -114,23 +122,6 @@ const SidebarEmployer = () => {
                 >
                   <BiLogOut /> <span>Đăng xuất</span>
                 </button>
-              </li>
-            </ul>
-          )}
-        </div>
-
-        {/* Kết nối */}
-        <div className="mb-4">
-          <div className="flex justify-between items-center cursor-pointer" onClick={() => setOpenHopThoai(!openHopThoai)}>
-            <span className="font-bold text-white">Hộp thoại</span>
-            {openHopThoai ? <BiChevronUp /> : <BiChevronDown />}
-          </div>
-          {openHopThoai && (
-            <ul className="pl-4 mt-2">
-              <li className="mb-2">
-                <NavLink to="" className="flex items-center space-x-2 text-white hover:text-green-600">
-                  <BiSolidInbox /> <span>Nhắn tin</span>
-                </NavLink>
               </li>
             </ul>
           )}
